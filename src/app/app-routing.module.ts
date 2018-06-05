@@ -26,39 +26,34 @@ const appRoutes: Routes = [{
     component: FrListComponent
 }, {
     path: 'fundingRequests',
-    component: FrListComponent,
-    children: [{
-        path: ':id',
-        component: FrAddEditComponent
-    }]
+    component: FrListComponent
+}, {
+    path: 'fundingRequests/:id',
+    component: FrAddEditComponent
 }, {
     path: 'expenseReports',
-    component: ErListComponent,
-    children: [{
-        path: ':id',
-        component: ErAddEditComponent
-    }]
+    component: ErListComponent
+}, {
+    path: 'expenseReports/:id',
+    component: ErAddEditComponent
 }, {
     path: 'projects',
-    component: PListComponent,
-    children: [{
-        path: ':id',
-        component: PAddEditComponent
-    }]
+    component: PListComponent
+}, {
+    path: 'projects/:id',
+    component: PAddEditComponent
 }, {
     path: 'users',
-    component: UListComponent,
-    children: [{
-        path: ':id',
-        component: UAddEditComponent
-    }]
+    component: UListComponent
+}, {
+    path: 'users/:id',
+    component: UAddEditComponent
 }, {
     path: 'clients',
-    component: CListComponent,
-    children: [{
-        path: ':id',
-        component: CAddEditComponent
-    }]
+    component: CListComponent
+}, {
+    path: 'clients/:id',
+    component: CAddEditComponent
 }, {
     path: '**',
     redirectTo: '/'
