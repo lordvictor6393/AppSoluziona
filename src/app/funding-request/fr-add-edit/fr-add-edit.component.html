@@ -1,3 +1,64 @@
-<p>
-  fr-add-edit works!
-</p>
+<h4>SOLICITUD DE FONDOS EN AVANCE</h4>
+<div class="form-group">
+  <strong>Datos del solicitante</strong>
+  <br><br>
+  <table class="table">
+    <tr>
+      <td>Nombre y apellidos:</td>
+      <td>
+        <input type="text" 
+              class="form-control"
+              
+              >
+      </td>
+      <td>Cargo:</td>
+      <td>Gerente general</td>
+    </tr>
+    <tr>
+      <td>Carnet de Identidad:</td>
+      <td>1234567</td>
+      <td>Expedido</td>
+      <td>La Paz</td>
+    </tr>
+  </table>
+</div>
+<br>
+
+<div class="form-group">
+  <strong>Datos de Solicitud</strong>
+  <br><br>
+  <table class="table">
+    <tr>
+      <td>Cliente:</td>
+      <td>SOLUZIONA</td>
+      <td>Fecha:</td>
+      <td>6/5/2018</td>
+    </tr>
+  </table>
+</div>
+
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Item</th>
+      <th scope="col">Detalle</th>
+      <th scope="col">Cantidad</th>
+      <th scope="col">Precio Unitario</th>
+      <th scope="col">Precio Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of items">
+      <td>{{item.id}}</td>
+      <td>{{item.detail}}</td>
+      <td>{{item.quantity}}</td>
+      <td>{{item.singlePrice}}</td>
+      <td>{{item.totalPrice}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<button class="btn btn-primary">
+  Añadir
+</button>
+

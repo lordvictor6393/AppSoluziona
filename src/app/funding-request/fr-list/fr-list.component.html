@@ -1,3 +1,27 @@
-<p>
-  list works!
-</p>
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Solicitud</th>
+      <th scope="col">Detalle</th>
+      <th scope="col">Solicitante</th>
+      <th scope="col">Proyecto</th>
+      <th scope="col">Estado</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let req of requests">
+      <td>{{req.id}}</td>
+      <td>{{req.detail}}</td>
+      <td>{{req.createUser}}</td>
+      <td>{{req.projectName}}</td>
+      <td>{{req.state}}</td>
+      <td>
+        <button class="btn btn-primary"
+        (click)="onEditFundingRequest(req.id)">Editar
+
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

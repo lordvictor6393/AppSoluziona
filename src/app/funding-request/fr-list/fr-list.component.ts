@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FundingRequest } from '../funding-request.model';
+import { FundingRequestService } from '../funding-request.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-fr-list',
@@ -7,9 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FrListComponent implements OnInit {
 
-  constructor() { }
+  requests: FundingRequest[];
+
+  constructor(private requestService: FundingRequestService,
+              private route: ActivatedRoute,
+              private router: Router) { }
 
   ngOnInit() {
+    this.requests = this.requestService.getRequests();
+  }
+
+  onEditFundingRequest(fr_id: string) {
+    this.router.navigate([fr_id], {
+      relativeTo: this.route
+    })
   }
 
 }
