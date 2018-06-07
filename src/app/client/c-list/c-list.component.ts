@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ClientService } from '../client.service';
+import { Client } from '../client.model';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-c-list',
@@ -7,9 +10,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CListComponent implements OnInit {
 
-  constructor() { }
+  clients: Client[];
+
+  constructor(private clientService: ClientService,
+              private route: ActivatedRoute,
+              private router: Router) { }
 
   ngOnInit() {
+    this.clientService.getClientList()
+      .subscribe(
+        clientsList => {
+          this.clients = clientsList;
+          console.log(clientsList);
+        }
+      );
   }
 
+  onEditClient(clientId: string) {
+    this.router.navigate([clientId], {
+      relativeTo: this.route
+    });
+  }
+
+  onAddClient() {
+
+  }
 }

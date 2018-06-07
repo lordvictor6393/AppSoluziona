@@ -17,7 +17,7 @@ export class FrListComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
-    this.requests = this.requestService.getRequests();
+    this.requests = this.requestService.getFundingRequests();
   }
 
   onEditFundingRequest(fr_id: string) {

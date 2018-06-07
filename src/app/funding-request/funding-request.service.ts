@@ -25,7 +25,14 @@ export class FundingRequestService {
         )
     ];
 
-    getRequests() {
+    getFundingRequests() {
         return this.requests.slice();
+    }
+
+    getFundingRequest(id: string) {
+        const request = this.requests.find(
+            fr => { return fr.id === id; }
+        );
+        return request;
     }
 }

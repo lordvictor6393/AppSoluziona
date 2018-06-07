@@ -1,4 +1,5 @@
 import { User } from "../user/user.model";
+import { Client } from "../client/client.model";
 
 export class Project {
     public id: string;
@@ -14,6 +15,7 @@ export class Project {
     public totalExpense: number;
     public budget: number;
     public contactDetails: any;
+    public client: Client;
 
     constructor (
         id: string,
@@ -28,7 +30,8 @@ export class Project {
         lead: User,
         totalExpense: number,
         budget: number,
-        contactDetails: any
+        contactDetails: any,
+        client: Client
     ) {
         this.id = id;
         this.name = name;
@@ -43,5 +46,6 @@ export class Project {
         this.totalExpense = totalExpense;
         this.budget = budget;
         this.contactDetails = contactDetails;
+        this.client = client;
     }
 }

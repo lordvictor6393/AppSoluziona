@@ -1,3 +1,34 @@
-<p>
-  c-list works!
-</p>
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Nombre</th>
+      <th scope="col">Contacto</th>
+      <th scope="col">Proyectos</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let client of clients">
+      <td>{{client.name}}</td>
+      <td>
+          <div>
+            <span>Nombre: </span>
+            <span>{{client.contactDetails.name}}</span>
+          </div>
+          <div>
+            <span>Telefono: </span>
+            <span>{{client.contactDetails.phone}}</span>
+          </div>
+      </td>
+      <td>{{client.projectsIds.join(',')}}</td>
+      <td>
+        <button class="btn btn-primary"
+        (click)="onEditClient(client.id)">Editar
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<button 
+  class="btn btn-primary"
+  (click)="onAddClient()">Add</button>
