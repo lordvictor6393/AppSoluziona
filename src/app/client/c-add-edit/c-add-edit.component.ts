@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Client } from '../client.model';
+import { ClientService } from '../client.service';
 
 @Component({
   selector: 'app-c-add-edit',
@@ -9,8 +12,11 @@ import { FormGroup, FormControl } from '@angular/forms';
 export class CAddEditComponent implements OnInit {
 
   clientForm: FormGroup;
+  selectedClient: any;
+  selectedClientId: string;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute,
+              private clientService: ClientService) { }
 
   ngOnInit() {
     this.clientForm = new FormGroup({
@@ -21,6 +27,18 @@ export class CAddEditComponent implements OnInit {
       }),
       'clientProjects': new FormControl(null)
     });
+    this.route.params.subscribe(
+      params => {
+        this.selectedClientId = params.id;
+        this.clientService.getClient(this.selectedClientId).subscribe(
+          (client) => {
+            this.selectedClient = client;
+            console.log("client: ", client);
+          }
+        )
+        console.log(this.selectedClientId);
+      }
+    )
   }
 
   onClientSubmit() {

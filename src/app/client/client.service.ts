@@ -15,4 +15,7 @@ export class ClientService {
             map(clientsList => clientsList.map(Client.getClientFromSnapshot))
         );
     }
+    getClient(clientId: string): Observable<any> {
+        return this.db.doc('clients/' + clientId).valueChanges();
+    }
 }
