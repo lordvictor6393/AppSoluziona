@@ -23,4 +23,7 @@ export class Client {
         const id = client.payload.doc.id;
         return new Client(id, data.name, data.contactDetails, data.projectsIds);
     }
+    static getClientFromValue(clientId, client): Client {
+        return new Client(clientId, client.name, client.contactDetails, client.projectsIds);
+    }
 }

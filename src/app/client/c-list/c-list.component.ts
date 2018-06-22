@@ -21,7 +21,6 @@ export class CListComponent implements OnInit {
       .subscribe(
         clientsList => {
           this.clients = clientsList;
-          console.log(clientsList);
         }
       );
   }
@@ -33,6 +32,8 @@ export class CListComponent implements OnInit {
   }
 
   onAddClient() {
-
+    this.router.navigate(['create'], {
+      relativeTo: this.route
+    });
   }
 }

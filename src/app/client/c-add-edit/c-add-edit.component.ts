@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Client } from '../client.model';
 import { ClientService } from '../client.service';
 
@@ -11,11 +11,13 @@ import { ClientService } from '../client.service';
 })
 export class CAddEditComponent implements OnInit {
 
+  isNew: boolean = false;
   clientForm: FormGroup;
-  selectedClient: any;
+  selectedClient: Client;
   selectedClientId: string;
 
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private clientService: ClientService) { }
 
   ngOnInit() {
@@ -30,19 +32,51 @@ export class CAddEditComponent implements OnInit {
     this.route.params.subscribe(
       params => {
         this.selectedClientId = params.id;
-        this.clientService.getClient(this.selectedClientId).subscribe(
-          (client) => {
-            this.selectedClient = client;
-            console.log("client: ", client);
+        if(this.selectedClientId) {
+          this.loadClient();
+        } else {
+          this.isNew = true;
+        }
+      }
+    )
+  }
+
+  loadClient() {
+    this.clientService.getClient(this.selectedClientId).subscribe(
+      (client) => {
+        this.selectedClient = client;
+        this.clientForm.setValue({
+          clientName: client.name,
+          clientProjects: client.projectsIds.join(','),
+          contactInfo:{
+            contactName: client.contactDetails.name,
+            contactPhone: client.contactDetails.phone
           }
-        )
-        console.log(this.selectedClientId);
+        });
       }
     )
   }
 
   onClientSubmit() {
-    console.log(this.clientForm);
+    let formValues = this.clientForm.value;
+    let clientData = {
+      name: formValues.clientName,
+      projectsIds: formValues.clientProjects.split(','),
+      contactDetails: {
+        name: formValues.contactInfo.contactName,
+        phone: formValues.contactInfo.contactPhone
+      }
+    };
+    if(this.isNew) {
+      this.clientService.addClient(clientData);
+    } else {
+      this.clientService.updateClient(clientData);
+    }
     this.clientForm.reset();
+    this.backToList();
+  }
+
+  backToList() {
+    this.router.navigate(['/clients']);
   }
 }

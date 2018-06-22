@@ -52,11 +52,15 @@ const appRoutes: Routes = [{
     path: 'clients',
     component: CListComponent
 }, {
+    path: 'clients/create',
+    component: CAddEditComponent,
+    pathMatch: 'full'
+}, {
     path: 'clients/:id',
     component: CAddEditComponent
 }, {
     path: '**',
-    redirectTo: '/'
+    redirectTo: '/'     
 }];
 
 @NgModule({
