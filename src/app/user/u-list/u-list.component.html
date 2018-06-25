@@ -1,3 +1,27 @@
-<p>
-  u-list works!
-</p>
+<table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Nombre</th>
+        <th scope="col">Celular</th>
+        <th scope="col">CI</th>
+        <th scope="col">Correo</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{user.name}}</td>
+        <td>{{user.phone}}</td>
+        <td>{{user.ci}}</td>
+        <td>{{user.mail}}</td>
+        <td>
+          <button class="btn btn-primary"
+          (click)="onEditUser(user.id)">Editar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <button 
+    class="btn btn-primary"
+    (click)="onAddUser()">Añadir</button>

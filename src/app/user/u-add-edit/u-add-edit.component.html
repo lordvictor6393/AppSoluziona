@@ -1,3 +1,88 @@
-<p>
-  u-add-edit works!
-</p>
+<div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+        <form [formGroup]="userForm" (ngSubmit)="onUserSubmit()">
+          <div class="form-group">
+            <label for="name">Nombre:</label>
+            <input 
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="lastName">Apellido:</label>
+            <input 
+              type="text"
+              id="lastName"
+              formControlName="lastName"
+              class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="ci">Cedula de identidad:</label>
+            <input 
+              type="text"
+              id="ci"
+              formControlName="ci"
+              class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="ciPlace">Expedido en:</label>
+            <input 
+              type="text"
+              id="ciPlace"
+              formControlName="ciPlace"
+              class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="mail">Correo:</label>
+            <input 
+              type="text"
+              id="mail"
+              formControlName="mail"
+              class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="phone">Telefono:</label>
+            <input 
+              type="text"
+              id="phone"
+              formControlName="phone"
+              class="form-control">
+          </div>
+          <hr>
+          <div class="form-group">
+            <label for="position">Cargo:</label>
+            <input 
+              type="text"
+              id="position"
+              formControlName="position"
+              class="form-control">
+          </div>
+          <hr>
+          <div class="form-group">
+            <label for="displayName">Nombre de usuario:</label>
+            <input 
+              type="text"
+              id="displayName"
+              formControlName="displayName"
+              class="form-control">
+          </div> 
+          <div class="form-group" *ngIf="isNew">
+            <label for="password">Contraseña:</label>
+            <input 
+              type="text"
+              id="password"
+              class="form-control"
+              #userPassword>
+          </div>         
+          <hr>
+          <button class="btn btn-primary">Guardar</button>
+          <button 
+            class="btn btn-secondary"
+            type="button" 
+            (click)="backToList()">Cancelar</button>
+        </form>
+      </div>
+    </div>
+  </div>

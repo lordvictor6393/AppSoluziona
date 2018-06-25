@@ -36,6 +36,10 @@ import { AngularFireAuthModule } from 'angularfire2/auth'
 import { FundingRequestService } from './funding-request/funding-request.service';
 import { environment } from '../environments/environment';
 import { ClientService } from './client/client.service';
+import { SigninComponent } from './auth/signin/signin.component';
+import { HomeComponent } from './home/home.component';
+import { AuthService } from './auth/auth.service';
+import { UsersService } from './user/user.service';
 
 @NgModule({
   declarations: [
@@ -53,7 +57,9 @@ import { ClientService } from './client/client.service';
     CListComponent,
     CAddEditComponent,
     HeaderComponent,
-    SidebarComponent
+    SidebarComponent,
+    SigninComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -65,6 +71,8 @@ import { ClientService } from './client/client.service';
     ReactiveFormsModule
   ],
   providers: [
+    AuthService,
+    UsersService,
     ClientService,
     FundingRequestService
   ],

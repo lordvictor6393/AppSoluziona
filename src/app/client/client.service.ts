@@ -6,8 +6,8 @@ import { map } from "rxjs/operators";
 
 @Injectable()
 export class ClientService {
-    private clientsCollectionRef: AngularFirestoreCollection<Client>;
     private clientRef: AngularFirestoreDocument;
+    private clientsCollectionRef: AngularFirestoreCollection<Client>;
 
     constructor(private db: AngularFirestore) {
         this.clientsCollectionRef = this.db.collection('clients');
