@@ -31,6 +31,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore'
 import { AngularFireStorageModule } from 'angularfire2/storage'
 import { AngularFireAuthModule } from 'angularfire2/auth'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // SERVICES
 import { FundingRequestService } from './funding-request/funding-request.service';
@@ -40,6 +41,8 @@ import { SigninComponent } from './auth/signin/signin.component';
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './user/user.service';
+
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -64,6 +67,8 @@ import { UsersService } from './user/user.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    MatTabsModule,
+    BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireStorageModule,

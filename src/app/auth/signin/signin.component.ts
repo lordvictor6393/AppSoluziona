@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { UsersService } from '../../user/user.service';
 
 @Component({
   selector: 'app-signin',
@@ -12,7 +13,8 @@ export class SigninComponent implements OnInit {
   signinForm: FormGroup;
 
   constructor(private authService: AuthService,
-              private router: Router) { }
+              private router: Router,
+              private usersService: UsersService) { }
 
   ngOnInit() {
     this.signinForm = new FormGroup({
@@ -27,7 +29,12 @@ export class SigninComponent implements OnInit {
       .then(
         (response) => {
           console.log(response);
+          this.authService.setLoggedUser();
           this.router.navigate(['']);
+        }
+      ).catch(
+        response => {
+          console.log('login failed', response);
         }
       );
   }

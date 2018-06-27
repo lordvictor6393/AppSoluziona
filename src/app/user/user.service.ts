@@ -24,7 +24,11 @@ export class UsersService {
     getUser(userId: string): Observable<User> {
         this.userRef = this.db.doc('users/' + userId);
         return this.userRef.valueChanges().pipe(
-            map(user => User.getUserFromValue(userId, user))
+            map(user => {
+                if(user) {
+                    return User.getUserFromValue(userId, user);
+                }
+            })
         );
     }
 

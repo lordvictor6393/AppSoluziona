@@ -21,6 +21,7 @@ import { UAddEditComponent } from './user/u-add-edit/u-add-edit.component';
 
 import { CListComponent } from './client/c-list/c-list.component';
 import { CAddEditComponent } from './client/c-add-edit/c-add-edit.component';
+import { AuthGuard } from "./auth/auth.guard";
 
 
 const appRoutes: Routes = [{
@@ -29,6 +30,7 @@ const appRoutes: Routes = [{
 }, {
     path: '',
     component: HomeComponent,
+    canActivate: [AuthGuard],
     children: [{
         path: 'fundingRequests',
         component: FrListComponent
