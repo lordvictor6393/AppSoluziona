@@ -32,6 +32,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore'
 import { AngularFireStorageModule } from 'angularfire2/storage'
 import { AngularFireAuthModule } from 'angularfire2/auth'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularMaterialCmpsModule } from './shared/angular-material-cmps.module';
 
 // SERVICES
 import { FundingRequestService } from './funding-request/funding-request.service';
@@ -42,7 +43,6 @@ import { HomeComponent } from './home/home.component';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './user/user.service';
 
-import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -67,7 +67,7 @@ import { MatTabsModule } from '@angular/material/tabs';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MatTabsModule,
+    AngularMaterialCmpsModule,
     BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
