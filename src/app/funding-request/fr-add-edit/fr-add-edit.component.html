@@ -1,15 +1,32 @@
+<form [formGroup]="fundingRequestForm">
+  <mat-horizontal-stepper>
+    <mat-step>
+      <ng-template matStepLabel>Datos personales - Solicitante</ng-template>
+      <mat-form-field>
+        <mat-select placeholder="Usuario solicitante">
+          <mat-option [value]='1'>User 1</mat-option>
+          <mat-option [value]='2'>User 2</mat-option>
+          <mat-option [value]='3'>User 3</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br>
+      <mat-form-field>
+        <input matInput placeholder="Nombres y apellidos" [value]="currentUser.fullName" disabled>
+      </mat-form-field>
+    </mat-step>
+  </mat-horizontal-stepper>
+</form>
+
 <h4>SOLICITUD DE FONDOS EN AVANCE</h4>
 <div class="form-group">
   <strong>Datos del solicitante</strong>
-  <br><br>
+  <br>
+  <br>
   <table class="table">
     <tr>
       <td>Nombre y apellidos:</td>
       <td>
-        <input type="text" 
-              class="form-control"
-              
-              >
+        <input type="text" class="form-control">
       </td>
       <td>Cargo:</td>
       <td>Gerente general</td>
@@ -26,7 +43,8 @@
 
 <div class="form-group">
   <strong>Datos de Solicitud</strong>
-  <br><br>
+  <br>
+  <br>
   <table class="table">
     <tr>
       <td>Cliente:</td>
@@ -61,4 +79,3 @@
 <button class="btn btn-primary">
   Añadir
 </button>
-

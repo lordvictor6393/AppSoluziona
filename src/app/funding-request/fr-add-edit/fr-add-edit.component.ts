@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FundingRequestItem } from './fr-form-item/funding-request-item.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UsersService } from '../../user/user.service';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-fr-add-edit',
@@ -8,6 +11,10 @@ import { FundingRequestItem } from './fr-form-item/funding-request-item.model';
 })
 export class FrAddEditComponent implements OnInit {
 
+  fundingRequestForm: FormGroup;
+  currentUser = {
+    fullName: 'victor vasquez'
+  };
   items: FundingRequestItem[] = [
     new FundingRequestItem(
       '1',
@@ -17,9 +24,15 @@ export class FrAddEditComponent implements OnInit {
       100
     )
   ];
-  constructor() { }
+
+  constructor(private route: ActivatedRoute,
+    private router: Router,
+    private userService: UsersService) { }
 
   ngOnInit() {
+    this.fundingRequestForm = new FormGroup({
+
+    });
   }
 
 }
