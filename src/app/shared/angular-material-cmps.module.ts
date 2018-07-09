@@ -5,6 +5,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from "@angular/material/stepper";
 import { MatExpansionModule } from "@angular/material/expansion";
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material';
+import { MatTableModule } from '@angular/material/table';
 
 const angularMaterialModules: any[] = [
     MatTabsModule,
@@ -12,7 +15,10 @@ const angularMaterialModules: any[] = [
     MatStepperModule,
     MatSelectModule,
     MatInputModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatDatepickerModule,
+    MatTableModule,
+    MatNativeDateModule
 ];
 
 @NgModule({

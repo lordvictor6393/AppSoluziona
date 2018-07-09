@@ -3,6 +3,11 @@ import { FundingRequestItem } from './fr-form-item/funding-request-item.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService } from '../../user/user.service';
 import { FormGroup } from '@angular/forms';
+import { User } from '../../user/user.model';
+import { Subject } from 'rxjs';
+import { AuthService } from '../../auth/auth.service';
+import { ClientService } from '../../client/client.service';
+import { Client } from '../../client/client.model';
 
 @Component({
   selector: 'app-fr-add-edit',
@@ -11,10 +16,17 @@ import { FormGroup } from '@angular/forms';
 })
 export class FrAddEditComponent implements OnInit {
 
+  users: User[];
+  clients: Client[];
+  selectedUserId: string;
+  selectedClientId: string;
   fundingRequestForm: FormGroup;
-  currentUser = {
-    fullName: 'victor vasquez'
-  };
+  currentUser: User;
+  // TODO remove if confirm that is not needed
+  currentClient: Client;
+
+  frColumns: string[];
+
   items: FundingRequestItem[] = [
     new FundingRequestItem(
       '1',
@@ -27,12 +39,36 @@ export class FrAddEditComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private router: Router,
+    private clientService: ClientService,
     private userService: UsersService) { }
 
   ngOnInit() {
     this.fundingRequestForm = new FormGroup({
 
     });
+    this.initializeFundingRequestData();
   }
 
+  initializeFundingRequestData() {
+    this.frColumns = ['position', 'detail', 'quantity', 'singlePrice', 'totalPrice'];
+    this.userService.getUserList().subscribe(
+      usersList => this.users = usersList
+    )
+    this.clientService.getClientList().subscribe(
+      clientList => this.clients = clientList
+    )
+  }
+
+  updateCurrentSelectedUser() {
+    this.currentUser = this.users.find(
+      userElement => userElement.id === this.selectedUserId
+    )
+  }
+
+  // TODO remove if confirm that is not needed
+  updateCurrentSelectedClient() {
+    this.currentClient = this.clients.find(
+      clientElement => clientElement.id === this.selectedClientId
+    )
+  }
 }

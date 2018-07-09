@@ -16,6 +16,7 @@ interface User {
 @Injectable()
 export class AuthService {
 
+  loggedUserId: string;
   user: Observable<User>;
   
   constructor(private afAuth: AngularFireAuth,
@@ -25,12 +26,18 @@ export class AuthService {
     this.setLoggedUser();
   }
 
+  getLoggedUserId() {
+    return this.loggedUserId;
+  }
+
   setLoggedUser() {
     this.user = this.afAuth.authState.pipe(
       switchMap(user => {
         if(user) {
+          this.loggedUserId = user.uid;
           return this.usersService.getUser(user.uid);
         } else {
+          this.loggedUserId = '';
           return ObservableOf(null)
         }
       })
