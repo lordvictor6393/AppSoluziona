@@ -1,5 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+.sz-content {
+    padding: 10px;
+}
 .sz-sidebar.mat-nav-list{
     padding-top: 70px;
     width: 200px;

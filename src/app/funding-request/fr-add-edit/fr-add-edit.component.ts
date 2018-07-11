@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FundingRequestItem } from './fr-form-item/funding-request-item.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService } from '../../user/user.service';
@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { User } from '../../user/user.model';
 import { ClientService } from '../../client/client.service';
 import { Client } from '../../client/client.model';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatTable } from '@angular/material';
 import { FrFormItemComponent } from './fr-form-item/fr-form-item.component';
 
 @Component({
@@ -26,10 +26,11 @@ export class FrAddEditComponent implements OnInit {
   currentClient: Client;
 
   frColumns: string[];
+  frColumnsFooter: string[];
+  @ViewChild(MatTable) frItemTable: MatTable<FundingRequestItem>;
 
   items: FundingRequestItem[] = [
     new FundingRequestItem(
-      '1',
       'Materiales',
       2,
       50,
@@ -51,7 +52,8 @@ export class FrAddEditComponent implements OnInit {
   }
 
   initializeFundingRequestData() {
-    this.frColumns = ['position', 'detail', 'quantity', 'singlePrice', 'totalPrice'];
+    this.frColumns = ['position', 'detail', 'quantity', 'singlePrice', 'totalPrice', 'editBtn'];
+    this.frColumnsFooter = ['position', 'detail', 'quantity', 'singlePrice', 'totalPrice'];
     this.userService.getUserList().subscribe(
       usersList => this.users = usersList
     )
@@ -73,10 +75,36 @@ export class FrAddEditComponent implements OnInit {
     )
   }
 
-  addFundingRequestItem() {
-    let itemForm = this.dialog.open(FrFormItemComponent, {
-      width: '80%'
-    });
+  getFrTotal() {
+    let total = 0;
+    this.items.map(
+      frItem => total += frItem.totalPrice
+    )
+    return total;
+  }
 
+  addFundingRequestItem(recordData? : FundingRequestItem) {
+    let isEditing = recordData ? true : false;
+    let itemForm = this.dialog.open(FrFormItemComponent, {
+      data: recordData || {}
+    });
+    itemForm.afterClosed().subscribe(
+      frItem => {
+        if(isEditing) {
+          recordData.updateData(frItem);
+        } else {
+          this.items.push(frItem);
+        }
+        console.log(this.items);
+        this.frItemTable.renderRows();
+      }
+    )
+  }
+
+  deleteFundingRequestItem(index: number) {
+    if(index > -1) {
+      this.items.splice(index, 1);
+      this.frItemTable.renderRows();
+    }
   }
 }
