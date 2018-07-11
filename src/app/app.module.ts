@@ -75,6 +75,9 @@ import { UsersService } from './user/user.service';
     AngularFireAuthModule,
     ReactiveFormsModule
   ],
+  entryComponents: [
+    FrFormItemComponent
+  ],
   providers: [
     AuthService,
     UsersService,

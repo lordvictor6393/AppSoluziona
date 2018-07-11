@@ -1,12 +1,9 @@
-<app-header></app-header>
-<hr>
-<div class="content">
-  <div class="row">
-    <div class="col-3">
-      <app-sidebar></app-sidebar>
-    </div>
-    <div class="col-9">
-      <router-outlet></router-outlet>
-    </div>
-  </div>
-</div>
+<mat-sidenav-container fullscreen>
+  <mat-sidenav opened [mode]="'side'">
+    <app-sidebar></app-sidebar>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <app-header></app-header>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

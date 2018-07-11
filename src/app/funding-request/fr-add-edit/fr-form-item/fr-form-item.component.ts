@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-fr-form-item',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FrFormItemComponent implements OnInit {
 
+  frItemForm: FormGroup;
   constructor() { }
 
   ngOnInit() {
+    this.frItemForm = new FormGroup({});
   }
 
 }

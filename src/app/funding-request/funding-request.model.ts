@@ -3,14 +3,14 @@ import { FundingRequestItem } from "./fr-add-edit/fr-form-item/funding-request-i
 export class FundingRequest {
     public id: string;
     public disclaimerId: string;
-    public createUser: string;
+    public createUserId: string;
     public clientId: string;
     public date: Date;
     public state: string;
-    public projectName: string;
+    public projectId: string;
     public detail: string;
     public observations: string;
-    public aproveUser: string;
+    public aproveUserId: string;
     public total: number;
     public items: FundingRequestItem[];
     public confimity: {
@@ -47,13 +47,13 @@ export class FundingRequest {
     ) {
         this.id = id;
         // this.disclaimerId = disclaimerId;
-        this.createUser = createUser;
+        this.createUserId = createUser;
         // this.clientId = clientId;
         // this.date = date;
         
         
         this.state = state;
-        this.projectName = projectName;
+        this.projectId = projectName;
         this.detail = detail;
         
         

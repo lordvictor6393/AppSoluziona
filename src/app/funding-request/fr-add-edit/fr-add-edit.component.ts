@@ -4,10 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService } from '../../user/user.service';
 import { FormGroup } from '@angular/forms';
 import { User } from '../../user/user.model';
-import { Subject } from 'rxjs';
-import { AuthService } from '../../auth/auth.service';
 import { ClientService } from '../../client/client.service';
 import { Client } from '../../client/client.model';
+import { MatDialog } from '@angular/material';
+import { FrFormItemComponent } from './fr-form-item/fr-form-item.component';
 
 @Component({
   selector: 'app-fr-add-edit',
@@ -40,7 +40,8 @@ export class FrAddEditComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private router: Router,
     private clientService: ClientService,
-    private userService: UsersService) { }
+    private userService: UsersService,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     this.fundingRequestForm = new FormGroup({
@@ -70,5 +71,12 @@ export class FrAddEditComponent implements OnInit {
     this.currentClient = this.clients.find(
       clientElement => clientElement.id === this.selectedClientId
     )
+  }
+
+  addFundingRequestItem() {
+    let itemForm = this.dialog.open(FrFormItemComponent, {
+      width: '80%'
+    });
+
   }
 }
