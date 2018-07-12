@@ -42,6 +42,7 @@ import { SigninComponent } from './auth/signin/signin.component';
 import { HomeComponent } from './home/home.component';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './user/user.service';
+import { ProjectService } from './project/project.service';
 
 
 @NgModule({
@@ -82,6 +83,7 @@ import { UsersService } from './user/user.service';
     AuthService,
     UsersService,
     ClientService,
+    ProjectService,
     FundingRequestService
   ],
   bootstrap: [AppComponent]

@@ -8,7 +8,6 @@ export class Project {
     public clientId: string;
     public contactDetails: any;
     public totalExpense: number;
-    public parentProjectId: string;
     public childProjectsIds: string[];
 
     constructor(
@@ -21,8 +20,7 @@ export class Project {
         clientId: string,
         contactDetails: any,
         totalExpense: number,
-        parentProjectId: string,
-        childProjectsIds: string[]
+        childProjectsIds?: string[]
     ) {
         this.id = id;
         this.name = name;
@@ -33,7 +31,6 @@ export class Project {
         this.clientId = clientId;
         this.contactDetails = contactDetails;
         this.totalExpense = totalExpense;
-        this.parentProjectId = parentProjectId;
         this.childProjectsIds = childProjectsIds;
     }
 
@@ -49,7 +46,6 @@ export class Project {
             data.clientId,
             data.contactDetails,
             data.totalExpense,
-            data.parentProjectId,
             data.childProjectsIds
         )
     }
@@ -65,7 +61,6 @@ export class Project {
             project.clientId,
             project.contactDetails,
             project.totalExpense,
-            project.parentProjectId,
             project.childProjectsIds
         )
     }
