@@ -83,26 +83,28 @@ export class FrAddEditComponent implements OnInit {
     return total;
   }
 
-  addFundingRequestItem(recordData? : FundingRequestItem) {
+  addFundingRequestItem(recordData?: FundingRequestItem) {
     let isEditing = recordData ? true : false;
     let itemForm = this.dialog.open(FrFormItemComponent, {
       data: recordData || {}
     });
     itemForm.afterClosed().subscribe(
       frItem => {
-        if(isEditing) {
-          recordData.updateData(frItem);
-        } else {
-          this.items.push(frItem);
+        if (frItem) {
+          if (isEditing) {
+            recordData.updateData(frItem);
+          } else {
+            this.items.push(frItem);
+          }
+          console.log(this.items);
+          this.frItemTable.renderRows();
         }
-        console.log(this.items);
-        this.frItemTable.renderRows();
       }
     )
   }
 
   deleteFundingRequestItem(index: number) {
-    if(index > -1) {
+    if (index > -1) {
       this.items.splice(index, 1);
       this.frItemTable.renderRows();
     }

@@ -15,6 +15,6 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-raised-button color="primary" (click)="addFrItem()"> Agregar </button>
+  <button mat-raised-button color="primary" (click)="addFrItem()"> {{isNew ? 'Agregar' : 'Guardar'}} </button>
   <button mat-button color="primary" mat-dialog-close> Cancelar </button>
 </mat-dialog-actions>
