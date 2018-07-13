@@ -14,6 +14,7 @@ export class PAddEditComponent implements OnInit {
   projectForm: FormGroup;
 
   memberGridColumns: string[];
+  addMemberMode: boolean = false;
   projectMembers: User[];
 
   constructor(private userService: UsersService) { }
