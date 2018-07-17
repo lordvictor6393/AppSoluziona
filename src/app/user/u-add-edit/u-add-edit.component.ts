@@ -12,9 +12,11 @@ import { UsersService } from '../user.service';
 export class UAddEditComponent implements OnInit {
 
   isNew: boolean = false;
-  userForm: FormGroup;
-  selectedUser: User;
   selectedUserId: string;
+
+  userForm: FormGroup;
+  dptosBolivia: string[];
+
   @ViewChild('userPassword') userPassword: ElementRef;
 
   constructor(private route: ActivatedRoute,
@@ -22,6 +24,7 @@ export class UAddEditComponent implements OnInit {
     private userService: UsersService) { }
 
   ngOnInit() {
+    this.dptosBolivia = ['La Paz', 'Oruro', 'Potosi', 'Cochabamba', 'Chuquisaca', 'Tarija', 'Santa Cruz', 'Beni', 'Pando'];
 
     this.userForm = new FormGroup({
       'name': new FormControl(null),
@@ -49,7 +52,6 @@ export class UAddEditComponent implements OnInit {
   loadUser() {
     this.userService.getUser(this.selectedUserId).subscribe(
       user => {
-        this.selectedUser = user;
         this.userForm.setValue({
           name: user.name,
           lastName: user.lastName,
@@ -64,19 +66,18 @@ export class UAddEditComponent implements OnInit {
     )
   }
 
-  onUserSubmit() {
-    let formValues = this.userForm.value;
-    let password = this.userPassword.nativeElement.value;
+  onSaveUser() {
+    let userData = this.userForm.value;
     if (this.isNew) {
-      this.userService.addUser(formValues, password);
+      let password = this.userPassword.nativeElement.value;
+      this.userService.addUser(userData, password);
     } else {
-      this.userService.updateUser(this.selectedUserId, formValues);
+      this.userService.updateUser(this.selectedUserId, userData);
     }
-    this.userForm.reset();
-    this.backToList();
+    this.backToUsersList();
   }
 
-  backToList() {
+  backToUsersList() {
     this.router.navigate(['/users']);
   }
 }

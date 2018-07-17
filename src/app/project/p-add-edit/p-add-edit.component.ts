@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormControl, FormArray } from '../../../../node_modules/@angular/forms';
+import { FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
 import { User } from '../../user/user.model';
 import { UsersService } from '../../user/user.service';
 import { MatTableDataSource, MatTable, MatSort } from '../../../../node_modules/@angular/material';
@@ -15,8 +15,8 @@ import { ProjectService } from '../project.service';
 })
 export class PAddEditComponent implements OnInit {
 
-  selectedProjectId: string;
   isNew: boolean = false;
+  selectedProjectId: string;
 
   users: User[] = [];
   clients: Client[] = [];
@@ -81,7 +81,6 @@ export class PAddEditComponent implements OnInit {
   loadProjectData() {
     this.projectService.getProject(this.selectedProjectId).subscribe(
       projData => {
-        console.log('project data', projData);
         this.projectForm.setValue({
           code: projData.code,
           name: projData.name,

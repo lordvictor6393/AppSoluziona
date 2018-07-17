@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { User } from '../user.model';
 import { UsersService } from '../user.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatTableDataSource, MatSort, MatTable } from '../../../../node_modules/@angular/material';
 
 @Component({
   selector: 'app-u-list',
@@ -11,18 +12,30 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class UListComponent implements OnInit {
 
   users: User[];
+  uListColumns: string[];
+  usersDataSource: MatTableDataSource<User> = new MatTableDataSource<User>();
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatTable) userTable: MatTable<User>;
 
   constructor(private userService: UsersService,
               private route: ActivatedRoute,
               private router: Router) { }
 
   ngOnInit() {
-    this.userService.getUserList()
-      .subscribe(
-        usersList => {
-          this.users = usersList;
-        }
-      )
+    this.uListColumns = [
+      'name',
+      'phone',
+      'ci',
+      'mail',
+      'editBtn'
+    ]
+    this.userService.getUserList().subscribe(
+      usersList => {
+        this.users = usersList;
+        this.usersDataSource.data = this.users;
+      }
+    );
+    this.usersDataSource.sort = this.sort;
   }
 
   onEditUser(userId: string) {
@@ -37,4 +50,7 @@ export class UListComponent implements OnInit {
     });
   }
 
+  onDeleteUser(userId: string) {
+    this.userService.deleteUser(userId);
+  }
 }

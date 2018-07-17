@@ -43,6 +43,7 @@ export class UsersService {
 
     addUser(userData, password) {
         let userId = '';
+        userData.isDeleted = false;
         this.afAuth.auth.createUserWithEmailAndPassword(userData.mail, password)
             .then(
                 response => {

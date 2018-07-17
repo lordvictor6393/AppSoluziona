@@ -9,6 +9,7 @@ export class Project {
     public budget: number;
     public clientId: string;
     public contactDetails: any;
+    // public status: string;
     // public totalExpense: number;
     // public childProjectsIds: string[];
 
@@ -21,6 +22,7 @@ export class Project {
         budget: number,
         clientId: string,
         contactDetails: any//,
+        // status: string,
         // totalExpense: number,
         // childProjectsIds?: string[]
     ) {
@@ -34,6 +36,7 @@ export class Project {
         this.budget = budget;
         this.clientId = clientId;
         this.contactDetails = contactDetails;
+        // this.status = status;
         // this.totalExpense = totalExpense;
         // this.childProjectsIds = childProjectsIds;
     }
@@ -49,6 +52,7 @@ export class Project {
             data.budget,
             data.clientId,
             data.contactDetails//,
+            // data.status,
             // data.totalExpense,
             // data.childProjectsIds
         )
@@ -64,6 +68,7 @@ export class Project {
             project.budget,
             project.clientId,
             project.contactDetails//,
+            // project.status,
             // project.totalExpense,
             // project.childProjectsIds
         )

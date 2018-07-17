@@ -1,88 +1,72 @@
-<div class="container">
-    <div class="row">
-      <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-        <form [formGroup]="userForm" (ngSubmit)="onUserSubmit()">
-          <div class="form-group">
-            <label for="name">Nombre:</label>
-            <input 
-              type="text"
-              id="name"
-              formControlName="name"
-              class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="lastName">Apellido:</label>
-            <input 
-              type="text"
-              id="lastName"
-              formControlName="lastName"
-              class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="ci">Cedula de identidad:</label>
-            <input 
-              type="text"
-              id="ci"
-              formControlName="ci"
-              class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="ciPlace">Expedido en:</label>
-            <input 
-              type="text"
-              id="ciPlace"
-              formControlName="ciPlace"
-              class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="mail">Correo:</label>
-            <input 
-              type="text"
-              id="mail"
-              formControlName="mail"
-              class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="phone">Telefono:</label>
-            <input 
-              type="text"
-              id="phone"
-              formControlName="phone"
-              class="form-control">
-          </div>
-          <hr>
-          <div class="form-group">
-            <label for="position">Cargo:</label>
-            <input 
-              type="text"
-              id="position"
-              formControlName="position"
-              class="form-control">
-          </div>
-          <hr>
-          <div class="form-group">
-            <label for="displayName">Nombre de usuario:</label>
-            <input 
-              type="text"
-              id="displayName"
-              formControlName="displayName"
-              class="form-control">
-          </div> 
-          <div class="form-group" *ngIf="isNew">
-            <label for="password">Contraseña:</label>
-            <input 
-              type="text"
-              id="password"
-              class="form-control"
-              #userPassword>
-          </div>         
-          <hr>
-          <button class="btn btn-primary">Guardar</button>
-          <button 
-            class="btn btn-secondary"
-            type="button" 
-            (click)="backToList()">Cancelar</button>
-        </form>
-      </div>
-    </div>
-  </div>
+<form [formGroup]="userForm">
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Datos personales
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+      <input matInput placeholder="Nombre" formControlName="name">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Apellido" formControlName="lastName">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Carnet" formControlName="ci">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-select placeholder="Expedido en" formControlName="ciPlace">
+        <mat-option *ngFor="let dpto of dptosBolivia" [value]="dpto">
+          {{dpto}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Datos de Contacto
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+      <input matInput placeholder="Correo" formControlName="mail">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Telefono" formControlName="phone">
+    </mat-form-field>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Datos de Empleado
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+      <input matInput placeholder="Cargo" formControlName="position">
+    </mat-form-field>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Configuración de cuenta
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+      <input matInput placeholder="User Name" formControlName="displayName">
+    </mat-form-field>
+    <br>
+    <mat-form-field *ngIf="isNew">
+      <input matInput placeholder="Contraseña" #userPassword>
+    </mat-form-field>
+  </mat-expansion-panel>
+  <br>
+  <button mat-raised-button color="primary" (click)="onSaveUser()">{{isNew ? 'Crear Usuario' : 'Actualizar Usuario'}}</button>
+  <button mat-button (click)="backToUsersList()" type="button">Cancelar</button>
+</form>

@@ -95,6 +95,7 @@
       <tr mat-row *matRowDef="let row; columns: memberGridColumns;"></tr>
     </table>
   </mat-expansion-panel>
+  <br>
   <button mat-raised-button color="primary" (click)="onSaveProject()">{{isNew ? 'Crear Proyecto' : 'Actualizar Proyecto'}}</button>
   <button mat-button (click)="backToProjectsList()" type="button">Cancelar</button>
 </form>
