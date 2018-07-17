@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestoreCollection, AngularFirestoreDocument, AngularFirestore } from "angularfire2/firestore";
+import { AngularFirestoreCollection, AngularFirestore } from "angularfire2/firestore";
 import { User } from "./user.model";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -7,29 +7,38 @@ import { AngularFireAuth } from "angularfire2/auth";
 
 @Injectable()
 export class UsersService {
-    private userRef: AngularFirestoreDocument;
+    private localUserList: User[] = [];
     private userCollectionRef: AngularFirestoreCollection<User>;
 
     constructor(private db: AngularFirestore,
-                private afAuth: AngularFireAuth) {
-        this.userCollectionRef = this.db.collection('users');
+        private afAuth: AngularFireAuth) {
+        this.userCollectionRef = this.db.collection('users', ref => ref.where('isDeleted', '==', false));
+        this.userCollectionRef.snapshotChanges().subscribe(
+            userList => {
+                this.localUserList = userList.map(User.getUserFromSnapshot);
+            }
+        );
     }
 
     getUserList(): Observable<User[]> {
         return this.userCollectionRef.snapshotChanges().pipe(
-            map(userList => userList.map(User.getUserFromSnapshot))
+            map( userList => userList.map(User.getUserFromSnapshot) )
         );
     }
 
     getUser(userId: string): Observable<User> {
-        this.userRef = this.db.doc('users/' + userId);
-        return this.userRef.valueChanges().pipe(
-            map(user => {
-                if(user) {
-                    return User.getUserFromValue(userId, user);
-                }
-            })
-        );
+        let userRef = this.db.doc('users/' + userId);
+        if (userRef) {
+            return userRef.valueChanges().pipe(
+                map(user => {
+                    if (user) {
+                        return User.getUserFromValue(userId, user);
+                    }
+                })
+            );
+        } else {
+            console.error('Not able to get user ' + userId + ' from db');
+        }
     }
 
     addUser(userData, password) {
@@ -43,7 +52,73 @@ export class UsersService {
             )
     }
 
-    updateUser(userData) {
-        this.userRef.update(userData);
+    updateUser(userId: string, userData) {
+        let userRef = this.db.doc('users/' + userId);
+        if (userRef) {
+            userRef.update(userData);
+        } else {
+            console.error('Cannot update user, not able to get user ' + userId);
+        }
+    }
+
+    deleteUser(userId: string) {
+        this.updateUser(userId, { isDeleted: true });
+    }
+
+    registerProject(userId: string, projId: string) {
+        let userRef = this.db.doc('users/' + userId);
+        let userInstance: User;
+        let userProjects: string[];
+        if (userRef) {
+            userInstance = this.localUserList.find(user => user.id == userId);
+            if (userInstance) {
+                userProjects = userInstance.projectIds;
+                if (userProjects.indexOf(projId) == -1) {
+                    userProjects.push(projId);
+                    userRef.update({ projectIds: userProjects });
+                    console.log('project registered successfully');
+                } else {
+                    console.log('project already registered');
+                }
+            } else {
+                console.error('Not able to find user in local users list');
+            }
+        } else {
+            console.error('Cannot register project, not able to get user ' + userId);
+        }
+    }
+
+    unregisterProject(userId: string, projId: string) {
+        let userRef = this.db.doc('users/' + userId);
+        let idx: number;
+        let userInstance: User;
+        let userProjects: string[];
+        if (userRef) {
+            userInstance = this.localUserList.find(user => user.id == userId);
+            if (userInstance) {
+                userProjects = userInstance.projectIds;
+                idx = userProjects.indexOf(projId);
+                if (idx !== -1) {
+                    userProjects.splice(idx, 1);
+                    userRef.update({ projectIds: userProjects });
+                    console.log('project registered successfully');
+                } else {
+                    console.log('project already registered');
+                }
+            } else {
+                console.error('Not able to find user in local users list');
+            }
+        } else {
+            console.error('Cannot register project, not able to get user ' + userId);
+        }
+    }
+
+    getCompleteUserName(userId: string) {
+        let userInstance = this.localUserList.find(user => user.id == userId);
+        if (userInstance) {
+            return userInstance.name + ' ' + userInstance.lastName;
+        } else {
+            console.error('Not able to find user in local users list');
+        }
     }
 }

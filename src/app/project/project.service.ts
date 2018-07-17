@@ -1,33 +1,80 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestoreDocument, AngularFirestoreCollection, AngularFirestore } from "angularfire2/firestore";
+import { AngularFirestoreCollection, AngularFirestore } from "angularfire2/firestore";
 import { Project } from "./project.model";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { UsersService } from "../user/user.service";
+import { User } from "../user/user.model";
+import { Client } from "../client/client.model";
+import { ClientService } from "../client/client.service";
 
 @Injectable()
 export class ProjectService {
-    private projectRef: AngularFirestoreDocument;
+    private users: User[];
+    private clients: Client[];
+    private localProjectList: Project[] = [];
     private projectsCollectionRef: AngularFirestoreCollection<Project>;
 
-    constructor(private db:AngularFirestore) {
-        this.projectsCollectionRef = this.db.collection('projects');
+    constructor(private db:AngularFirestore,
+        private userService: UsersService,
+        private clientService: ClientService) {
+        this.userService.getUserList().subscribe(userList => this.users = userList);
+        this.clientService.getClientList().subscribe(clientList => this.clients = clientList);
+        this.projectsCollectionRef = this.db.collection('projects', ref => ref.where('isDeleted', '==', false));
+        this.projectsCollectionRef.snapshotChanges().subscribe(
+            projectList => {
+                this.localProjectList = projectList.map(Project.getProjectFromSnapshot);
+            }
+        );
     }
 
     getProjectList(): Observable<Project[]> {
         return this.projectsCollectionRef.snapshotChanges().pipe(
-            map(projectsList => projectsList.map(Project.getProjectFromSnapshot))
+            map( projectList => projectList.map(Project.getProjectFromSnapshot) )
         );
     }
+
     getProject(projectId: string): Observable<Project> {
-        this.projectRef = this.db.doc('projects/' + projectId);
-        return this.projectRef.valueChanges().pipe(
-            map(project => Project.getProjectFromValue(projectId, project))
-        );
+        let projectRef = this.db.doc('projects/' + projectId);
+        if(projectRef) {
+            return projectRef.valueChanges().pipe(
+                map(project => {
+                    if(project) {
+                        return Project.getProjectFromValue(projectId, project);
+                    }
+                })
+            );
+        } else {
+            console.error('Not able to get project ' + projectId + ' from db');
+        }
     }
+
     addProject(projectData) {
+        projectData.isDeleted = false;
         this.projectsCollectionRef.add(projectData);
     }
-    updateProject(projectData) {
-        this.projectRef.update(projectData);
+
+    updateProject(projId, projectData) {
+        let members = projectData.membersIds;
+        let projectRef = this.db.doc('projects/' + projId);
+        if(this.users.length) {
+            members.forEach(memberId => {
+                this.userService.registerProject(memberId, projId);
+            });
+            if (projectRef) {
+                projectRef.update(projectData);
+            } else {
+                console.error('Cannot update project, not able to get project ' + projId);
+            }
+        } else {
+            console.error('project not saved/updated because users are not available.')
+        }
+    }
+    deleteProject(projId: string) {
+        this.updateProject(projId, { isDeleted: true });
+    }
+
+    generateProjectCode(): string {
+        return 'PR-' + (this.localProjectList.length + 1);
     }
 }

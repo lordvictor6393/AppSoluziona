@@ -6,16 +6,27 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <input matInput placeholder="Codigo" readonly [value]="'pr-01'">
+      <input matInput placeholder="Codigo" formControlName="code" readonly>
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput placeholder="Nombre">
+      <input matInput placeholder="Nombre" formControlName="name">
     </mat-form-field>
     <br>
     <mat-form-field>
-      <mat-select placeholder="Encargado">
+      <mat-select placeholder="Encargado" formControlName="leadId">
         <mat-option [value]="user.id" *ngFor="let user of users">{{user.name}} {{user.lastName}}</mat-option>
+      </mat-select>
+
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Presupuesto" formControlName="budget">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-select placeholder="Cliente" formControlName="clientId">
+        <mat-option [value]="client.id" *ngFor="let client of clients">{{client.name}}</mat-option>
       </mat-select>
     </mat-form-field>
   </mat-expansion-panel>
@@ -26,13 +37,15 @@
         Datos de Contacto
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <mat-form-field>
-      <input matInput placeholder="Nombre">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-      <input matInput placeholder="Telefono">
-    </mat-form-field>
+    <div formGroupName="contactDetails">
+      <mat-form-field>
+        <input matInput placeholder="Nombre" formControlName="contactName">
+      </mat-form-field>
+      <br>
+      <mat-form-field>
+        <input matInput placeholder="Telefono" formControlName="contactPhone">
+      </mat-form-field>
+    </div>
   </mat-expansion-panel>
 
   <mat-expansion-panel>
@@ -41,44 +54,47 @@
         Miembros
       </mat-panel-title>
       <mat-panel-description>
-        
+
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <table mat-table class="mat-elevation-z2 sz-item-table" [dataSource]="members" matSort>
+    Usuarios disponibles:
+    <mat-form-field>
+      <mat-select placeholder="Seleccionar recurso" [(value)]="userToBeAdded" #availableUsersCombo>
+        <mat-option *ngFor="let user of getAvailableUsers()" [value]="user">
+          {{user.name}} {{user.lastName}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="onAddMember()">Agregar</button>
+    <br>
+    <br>
+    <table *ngIf="users.length" mat-table class="mat-elevation-z2 sz-item-table" [dataSource]="projMembersDataSource" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
         <td mat-cell *matCellDef="let member"> {{member.name}} {{member.lastName}} </td>
-        <td mat-footer-cell *matFooterCellDef>
-          <mat-select placeholder="">
-              <mat-option [value]="user.id" *ngFor="let user of users">{{user.name}} {{user.lastName}}</mat-option>
-          </mat-select>
-        </td>
       </ng-container>
       <ng-container matColumnDef="ci">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Carnet </th>
         <td mat-cell *matCellDef="let member"> {{member.ci}} </td>
-        <td mat-footer-cell *matFooterCellDef> </td>
       </ng-container>
       <ng-container matColumnDef="phone">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Telefono </th>
         <td mat-cell *matCellDef="let member"> {{member.phone}} </td>
-        <td mat-footer-cell *matFooterCellDef> </td>
       </ng-container>
       <ng-container matColumnDef="mail">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Correo </th>
         <td mat-cell *matCellDef="let member"> {{member.mail}} </td>
-        <td mat-footer-cell *matFooterCellDef> </td>
       </ng-container>
       <ng-container matColumnDef="removeBtn">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
-        <td mat-cell *matCellDef="let member; let idx = index">
-          <button mat-button color="primary" (click)="removeMember(idx)"> Eliminar </button>
+        <td mat-cell *matCellDef="let member">
+          <button mat-button color="primary" (click)="onRemoveMember(member.id)"> Eliminar </button>
         </td>
-        <td mat-footer-cell *matFooterCellDef> </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="memberGridColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: memberGridColumns;"></tr>
-      <tr mat-footer-row *matFooterRowDef="memberGridColumns"></tr>
     </table>
   </mat-expansion-panel>
+  <button mat-raised-button color="primary" (click)="onSaveProject()">{{isNew ? 'Crear Proyecto' : 'Actualizar Proyecto'}}</button>
+  <button mat-button (click)="backToProjectsList()" type="button">Cancelar</button>
 </form>

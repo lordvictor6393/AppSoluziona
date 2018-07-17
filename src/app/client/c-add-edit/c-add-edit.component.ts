@@ -70,7 +70,7 @@ export class CAddEditComponent implements OnInit {
     if(this.isNew) {
       this.clientService.addClient(clientData);
     } else {
-      this.clientService.updateClient(clientData);
+      this.clientService.updateClient(this.selectedClientId, clientData);
     }
     this.clientForm.reset();
     this.backToList();

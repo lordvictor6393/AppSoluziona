@@ -70,7 +70,7 @@ export class UAddEditComponent implements OnInit {
     if (this.isNew) {
       this.userService.addUser(formValues, password);
     } else {
-      this.userService.updateUser(formValues);
+      this.userService.updateUser(this.selectedUserId, formValues);
     }
     this.userForm.reset();
     this.backToList();

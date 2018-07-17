@@ -1,4 +1,6 @@
 export class Project {
+    public isDeleted: boolean;
+
     public id: string;
     public code: string;
     public name: string;
@@ -7,8 +9,8 @@ export class Project {
     public budget: number;
     public clientId: string;
     public contactDetails: any;
-    public totalExpense: number;
-    public childProjectsIds: string[];
+    // public totalExpense: number;
+    // public childProjectsIds: string[];
 
     constructor(
         id: string,
@@ -18,10 +20,12 @@ export class Project {
         membersIds: string[],
         budget: number,
         clientId: string,
-        contactDetails: any,
-        totalExpense: number,
-        childProjectsIds?: string[]
+        contactDetails: any//,
+        // totalExpense: number,
+        // childProjectsIds?: string[]
     ) {
+        this.isDeleted = false;
+
         this.id = id;
         this.name = name;
         this.code = code;
@@ -30,8 +34,8 @@ export class Project {
         this.budget = budget;
         this.clientId = clientId;
         this.contactDetails = contactDetails;
-        this.totalExpense = totalExpense;
-        this.childProjectsIds = childProjectsIds;
+        // this.totalExpense = totalExpense;
+        // this.childProjectsIds = childProjectsIds;
     }
 
     static getProjectFromSnapshot(project): Project {
@@ -44,9 +48,9 @@ export class Project {
             data.membersIds,
             data.budget,
             data.clientId,
-            data.contactDetails,
-            data.totalExpense,
-            data.childProjectsIds
+            data.contactDetails//,
+            // data.totalExpense,
+            // data.childProjectsIds
         )
     }
 
@@ -59,9 +63,9 @@ export class Project {
             project.membersIds,
             project.budget,
             project.clientId,
-            project.contactDetails,
-            project.totalExpense,
-            project.childProjectsIds
+            project.contactDetails//,
+            // project.totalExpense,
+            // project.childProjectsIds
         )
     }
 }

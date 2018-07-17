@@ -1,4 +1,6 @@
 export class User {
+    public isDeleted: boolean;
+
     public id: string;
     public name: string;
     public lastName: string;
@@ -8,7 +10,7 @@ export class User {
     public phone: string;
     public displayName: string;
     public position: string;
-    // public projects: Project[];
+    public projectIds: string[];
     // public assignedCompanies: Companies[];
 
     constructor(
@@ -20,8 +22,11 @@ export class User {
         mail: string,
         phone: string,
         displayName: string,
-        position: string
+        position: string,
+        projectIds?: string[]
     ) {
+        this.isDeleted = false;
+
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -31,6 +36,7 @@ export class User {
         this.phone = phone;
         this.displayName = displayName;
         this.position = position;
+        this.projectIds = projectIds || [];
     }
 
     static getUserFromSnapshot(user): User {
@@ -44,7 +50,8 @@ export class User {
             data.mail,
             data.phone,
             data.displayName,
-            data.position
+            data.position,
+            data.projectIds
         )
     }
 
@@ -58,7 +65,8 @@ export class User {
             user.mail,
             user.phone,
             user.displayName,
-            user.position
+            user.position,
+            user.projectIds
         )
     }
 }
