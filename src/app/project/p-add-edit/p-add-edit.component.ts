@@ -7,6 +7,7 @@ import { Client } from '../../client/client.model';
 import { ClientService } from '../../client/client.service';
 import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router';
 import { ProjectService } from '../project.service';
+import { Project } from '../project.model';
 
 @Component({
   selector: 'app-p-add-edit',
@@ -17,6 +18,7 @@ export class PAddEditComponent implements OnInit {
 
   isNew: boolean = false;
   selectedProjectId: string;
+  initialProjectData: Project;
 
   users: User[] = [];
   clients: Client[] = [];
@@ -81,6 +83,7 @@ export class PAddEditComponent implements OnInit {
   loadProjectData() {
     this.projectService.getProject(this.selectedProjectId).subscribe(
       projData => {
+        this.initialProjectData = projData;
         this.projectForm.setValue({
           code: projData.code,
           name: projData.name,
@@ -163,7 +166,11 @@ export class PAddEditComponent implements OnInit {
       this.userIdsToBeUnregistered.forEach(
         userId => this.userService.unregisterProject(userId, this.selectedProjectId)
       );
+      if(this.initialProjectData.clientId != projData.clientId) {
+        this.clientService.unregisterProject(this.initialProjectData.clientId, this.selectedProjectId);
+      }
     }
+    this.clientService.registerProject(projData.clientId, this.selectedProjectId);
     this.backToProjectsList();
   }
 

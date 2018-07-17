@@ -77,4 +77,13 @@ export class ProjectService {
     generateProjectCode(): string {
         return 'PR-' + (this.localProjectList.length + 1);
     }
+
+    getProjectName(projId: string) {
+        let projectInstance = this.localProjectList.find(project => project.id == projId);
+        if(projectInstance) {
+            return projectInstance.name;
+        } else {
+            console.error('Not able to find project in local projects list');
+        }
+    }
 }

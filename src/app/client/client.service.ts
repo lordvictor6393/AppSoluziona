@@ -65,4 +65,38 @@ export class ClientService {
             console.error('Not able to find client in local clients list');
         }
     }
+
+    registerProject(clientId, projId) {
+        let idx: number;
+        let projIds: string[];
+        let clientRef = this.db.doc('clients/' + clientId);
+        let clientInstance = this.localClientList.find(client => client.id == clientId);
+        if(clientInstance) {
+            projIds = clientInstance.projectsIds;
+            idx = projIds.indexOf(projId);
+            if(idx == -1) {
+                projIds.push(projId);
+                clientRef.update({ projectsIds: projIds });
+            }
+        } else {
+            console.error('Not able to find client in local clients list');
+        }
+    }
+
+    unregisterProject(clientId, projId) {
+        let idx: number;
+        let projIds: string[];
+        let clientRef = this.db.doc('clients/' + clientId);
+        let clientInstance = this.localClientList.find(client => client.id == clientId);
+        if(clientInstance) {
+            projIds = clientInstance.projectsIds;
+            idx = projIds.indexOf(projId);
+            if(idx != -1) {
+                projIds.splice(idx, 1);
+                clientRef.update({ projectsIds: projIds });
+            }
+        } else {
+            console.error('Not able to find client in local clients list');
+        }
+    }
 }

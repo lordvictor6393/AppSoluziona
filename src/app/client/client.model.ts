@@ -1,6 +1,6 @@
-import { Project } from "../project/project.model";
-
 export class Client {
+    public isDeleted: boolean;
+
     public id: string;
     public name: string;
     public contactDetails: { name: string, phone: string};
@@ -10,12 +10,14 @@ export class Client {
         id: string,
         name: string,
         contactDetails: any,
-        projectsIds: string[]
+        projectsIds?: string[]
     ) {
+        this.isDeleted = false;
+        
         this.id = id;
         this.name = name;
         this.contactDetails = contactDetails;
-        this.projectsIds = projectsIds;
+        this.projectsIds = projectsIds || [];
     }
 
     static getClientFromSnapshot(client): Client {
