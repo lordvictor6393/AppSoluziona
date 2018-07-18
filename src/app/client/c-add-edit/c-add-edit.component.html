@@ -1,49 +1,39 @@
-<div class="container">
-  <div class="row">
-    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-      <form [formGroup]="clientForm" (ngSubmit)="onClientSubmit()">
-        <div class="form-group">
-          <label for="clientName">Nombre:</label>
-          <input 
-            type="text"
-            id="clientName"
-            formControlName="clientName"
-            class="form-control">
-        </div>
-        Datos de Contacto
-        <div formGroupName="contactInfo">
-          <div class="form-group">
-            <label for="contactName">Nombre:</label>
-            <input 
-              type="text"
-              id="contactName"
-              formControlName="contactName"
-              class="form-control">
-          </div>
-          <div class="form-group">
-              <label for="contactPhone">Telefono:</label>
-              <input 
-                type="text"
-                id="contactPhone"
-                formControlName="contactPhone"
-                class="form-control">
-            </div>
-        </div>
-        <div class="form-group">
-          <label for="clientProjects">Proyectos:</label>
-          <input 
-            type="text"
-            id="clientProjects"
-            formControlName="clientProjects"
-            class="form-control">
-        </div>
-        <hr>
-        <button class="btn btn-primary">Guardar</button>
-        <button 
-          class="btn btn-secondary"
-          type="button" 
-          (click)="backToList()">Cancelar</button>
-      </form>
+<form [formGroup]="clientForm">
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Informacion del Cliente
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+      <input matInput placeholder="Nombre" formControlName="name">
+    </mat-form-field>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Datos de contacto
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div formGroupName="contactDetails">
+      <mat-form-field>
+        <input matInput placeholder="Nombre" formControlName="name">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Telefono" formControlName="phone">
+      </mat-form-field>
     </div>
-  </div>
-</div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Proyectos
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-form-field>
+          <input matInput placeholder="Nombre" formControlName="name">
+        </mat-form-field>
+    </mat-expansion-panel>
+</form>
