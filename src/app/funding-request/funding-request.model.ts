@@ -1,4 +1,6 @@
 export class FundingRequest {
+    public isDeleted: boolean;
+
     public id: string;
     public code: string;
     public createUserId: string;
@@ -48,6 +50,8 @@ export class FundingRequest {
             deliverUserId: string
         }
     ) {
+        this.isDeleted = false;
+
         this.id = id;
         this.code = code;
         this.createUserId = createUserId;

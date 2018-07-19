@@ -35,6 +35,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialCmpsModule } from './shared/angular-material-cmps.module';
 
 // SERVICES
+import { ExpenseReportService } from './expense-report/expense-report.service';
 import { FundingRequestService } from './funding-request/funding-request.service';
 import { environment } from '../environments/environment';
 import { ClientService } from './client/client.service';
@@ -84,7 +85,8 @@ import { ProjectService } from './project/project.service';
     UsersService,
     ClientService,
     ProjectService,
-    FundingRequestService
+    FundingRequestService,
+    ExpenseReportService
   ],
   bootstrap: [AppComponent]
 })

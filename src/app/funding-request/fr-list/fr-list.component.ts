@@ -22,10 +22,10 @@ export class FrListComponent implements OnInit {
 
   ngOnInit() {
     this.frListColumns = [
-      'id',
+      'code',
       'detail',
       'createUser',
-      'projectName',
+      // 'projectName',
       'state',
       'editBtn'
     ];
