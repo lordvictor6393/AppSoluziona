@@ -19,7 +19,7 @@ export class CAddEditComponent implements OnInit {
   selectedClientId: string;
   initialClientData: Client;
 
-  projects: Project[];
+  projects: Project[] = [];
   clientForm: FormGroup;
 
   pGridColumns: string[];
@@ -64,10 +64,10 @@ export class CAddEditComponent implements OnInit {
       (client) => {
         this.initialClientData = client;
         this.clientForm.setValue({
-          clientName: client.name,
-          contactInfo:{
-            contactName: client.contactDetails.name,
-            contactPhone: client.contactDetails.phone
+          name: client.name,
+          contactDetails:{
+            name: client.contactDetails.name,
+            phone: client.contactDetails.phone
           }
         });
         this.clientProjects = client.projectsIds.map(
@@ -88,10 +88,10 @@ export class CAddEditComponent implements OnInit {
   onSaveClient() {
     let formValues = this.clientForm.value;
     let clientData = {
-      name: formValues.clientName,
+      name: formValues.name,
       contactDetails: {
-        name: formValues.contactInfo.contactName,
-        phone: formValues.contactInfo.contactPhone
+        name: formValues.contactDetails.name,
+        phone: formValues.contactDetails.phone
       },
     };
     if(this.isNew) {
@@ -99,10 +99,10 @@ export class CAddEditComponent implements OnInit {
     } else {
       this.clientService.updateClient(this.selectedClientId, clientData);
     }
-    this.backToList();
+    this.backToClientsList();
   }
 
-  backToList() {
+  backToClientsList() {
     this.router.navigate(['/clients']);
   }
 }

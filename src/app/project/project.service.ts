@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestoreCollection, AngularFirestore } from "angularfire2/firestore";
 import { Project } from "./project.model";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
 import { UsersService } from "../user/user.service";
 import { User } from "../user/user.model";
 import { Client } from "../client/client.model";
 import { ClientService } from "../client/client.service";
+import { Observable } from "../../../node_modules/rxjs";
+import { map } from "../../../node_modules/rxjs/operators";
 
 @Injectable()
 export class ProjectService {
@@ -51,7 +51,7 @@ export class ProjectService {
 
     addProject(projectData) {
         projectData.isDeleted = false;
-        this.projectsCollectionRef.add(projectData);
+        return this.projectsCollectionRef.add(projectData);
     }
 
     updateProject(projId, projectData) {

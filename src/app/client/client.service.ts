@@ -41,6 +41,7 @@ export class ClientService {
 
     addClient(clientData) {
         clientData.isDeleted = false;
+        clientData.projectsIds = clientData.projectsIds || [];
         this.clientsCollectionRef.add(clientData);
     }
 
@@ -72,11 +73,11 @@ export class ClientService {
         let clientRef = this.db.doc('clients/' + clientId);
         let clientInstance = this.localClientList.find(client => client.id == clientId);
         if(clientInstance) {
-            projIds = clientInstance.projectsIds;
+            projIds = clientInstance.projectsIds || [];
             idx = projIds.indexOf(projId);
             if(idx == -1) {
                 projIds.push(projId);
-                clientRef.update({ projectsIds: projIds });
+                clientRef.update({ projectsIds: projIds }).then(console.log).catch(console.log);
             }
         } else {
             console.error('Not able to find client in local clients list');

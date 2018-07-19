@@ -12,16 +12,16 @@ import { MatTableDataSource, MatSort } from '@angular/material';
 export class FrListComponent implements OnInit {
 
   requests: FundingRequest[];
-  frColumns: string[];
-  frDataSource: MatTableDataSource<FundingRequest>;
+  frListColumns: string[];
+  frDataSource: MatTableDataSource<FundingRequest> = new MatTableDataSource<FundingRequest>();
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private requestService: FundingRequestService,
+  constructor(private fundingRequestService: FundingRequestService,
     private route: ActivatedRoute,
     private router: Router) { }
 
   ngOnInit() {
-    this.frColumns = [
+    this.frListColumns = [
       'id',
       'detail',
       'createUser',
@@ -29,15 +29,30 @@ export class FrListComponent implements OnInit {
       'state',
       'editBtn'
     ];
-    this.requests = this.requestService.getFundingRequests();
-    this.frDataSource = new MatTableDataSource(this.requests);
+    this.fundingRequestService.getFrList().subscribe(
+      frList => {
+        this.requests = frList;
+        if(this.requests.length) {
+          this.frDataSource.data = this.requests;
+        }
+      }
+    );
     this.frDataSource.sort = this.sort;
   }
 
-  onEditFundingRequest(fr_id: string) {
-    this.router.navigate([fr_id], {
+  onEditFundingRequest(frId: string) {
+    this.router.navigate([frId], {
       relativeTo: this.route
     })
   }
 
+  onAddFundingRequest() {
+    this.router.navigate(['create'], {
+      relativeTo: this.route
+    });
+  }
+
+  onDeleteFundingRequest(frId: string) {
+    this.fundingRequestService.deleteFr(frId);
+  }
 }

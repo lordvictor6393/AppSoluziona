@@ -107,7 +107,7 @@ export class PAddEditComponent implements OnInit {
             return userInstance;
           }
         );
-        if(this.projectMembers.length) {
+        if (this.projectMembers.length) {
           this.projMembersDataSource.data = this.projectMembers;
           console.log('members data source', this.projMembersDataSource.data);
         }
@@ -137,15 +137,15 @@ export class PAddEditComponent implements OnInit {
     // this.membersTable.renderRows();
     this.projMembersDataSource.data = this.projectMembers;
     let idx = this.userIdsToBeUnregistered.indexOf(this.userToBeAdded.id);
-    if(idx !== -1) {
+    if (idx !== -1) {
       this.userIdsToBeUnregistered.splice(idx, 1);
     }
     this.userToBeAdded = null;
   }
 
   onRemoveMember(userId) {
-    let index =  this.projectMembers.findIndex(user => user.id == userId);
-    if(index != -1) {
+    let index = this.projectMembers.findIndex(user => user.id == userId);
+    if (index != -1) {
       this.projectMembers.splice(index, 1);
       this.userIdsToBeUnregistered.push(userId);
     } else {
@@ -159,22 +159,32 @@ export class PAddEditComponent implements OnInit {
     let projData = this.projectForm.value;
     projData.membersIds = this.projectMembers.map(pMember => pMember.id);
     console.log('project to be saved: ', projData);
-    if(this.isNew) {
-      this.projectService.addProject(projData);
+    if (this.isNew) {
+      this.projectService.addProject(projData).then(
+        projectRawData => {
+          this.clientService.registerProject(projData.clientId, projectRawData.id);
+          this.userIdsToBeUnregistered.forEach(
+            userId => this.userService.unregisterProject(userId, projectRawData.id)
+          );
+          projData.membersIds.forEach(memberId => {
+            this.userService.registerProject(memberId, projectRawData.id);
+          });
+        }
+      );
     } else {
       this.projectService.updateProject(this.selectedProjectId, projData);
       this.userIdsToBeUnregistered.forEach(
         userId => this.userService.unregisterProject(userId, this.selectedProjectId)
       );
-      if(this.initialProjectData.clientId != projData.clientId) {
+      if (this.initialProjectData.clientId != projData.clientId) {
         this.clientService.unregisterProject(this.initialProjectData.clientId, this.selectedProjectId);
       }
+      this.clientService.registerProject(projData.clientId, this.selectedProjectId);
     }
-    this.clientService.registerProject(projData.clientId, this.selectedProjectId);
     this.backToProjectsList();
   }
 
   backToProjectsList() {
-    this.router.navigate(['projects'])
+    this.router.navigate(['projects']);
   }
 }

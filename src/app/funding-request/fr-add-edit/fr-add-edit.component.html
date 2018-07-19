@@ -6,11 +6,11 @@
         Datos personales - Solicitante
       </mat-panel-title>
       <mat-panel-description>
-        <span *ngIf="currentUser">{{currentUser.name}} {{currentUser.lastName}}</span>
+        <!-- <span *ngIf="currentUser">{{currentUser.name}} {{currentUser.lastName}}</span> -->
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <mat-select placeholder="Usuario solicitante" [(value)]='selectedUserId' (selectionChange)="updateCurrentSelectedUser()">
+      <mat-select placeholder="Usuario solicitante" formControlName="createUserId" [(value)]='selectedUserId' (selectionChange)="updateCurrentSelectedUser()">
         <mat-option *ngFor="let user of users" [value]='user.id'>
           {{user.name}} {{user.lastName}}
         </mat-option>
@@ -19,19 +19,19 @@
     <br>
     <div *ngIf="selectedUserId">
       <mat-form-field>
-        <input matInput placeholder="Nombres y apellidos" [value]="currentUser.name + ' ' + currentUser.lastName" [readonly]="true">
+        <input matInput placeholder="Nombres y apellidos" [value]="selectedUser.name + ' ' + selectedUser.lastName" [readonly]="true">
       </mat-form-field>
       <br>
       <mat-form-field>
-        <input matInput placeholder="Cargo" [value]="currentUser.position" [readonly]="true">
+        <input matInput placeholder="Cargo" [value]="selectedUser.position" [readonly]="true">
       </mat-form-field>
       <br>
       <mat-form-field>
-        <input matInput placeholder="Carnet de Identidad" [value]="currentUser.ci" [readonly]="true">
+        <input matInput placeholder="Carnet de Identidad" [value]="selectedUser.ci" [readonly]="true">
       </mat-form-field>
       <br>
       <mat-form-field>
-        <input matInput placeholder="Expedido" [value]="currentUser.ciPlace" [readonly]="true">
+        <input matInput placeholder="Expedido" [value]="selectedUser.ciPlace" [readonly]="true">
       </mat-form-field>
     </div>
   </mat-expansion-panel>
@@ -46,7 +46,7 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <mat-select placeholder="Cliente" [(value)]='selectedClientId' (selectionChange)="updateCurrentSelectedClient()">
+      <mat-select placeholder="Cliente" formControlName="clientId">
         <mat-option *ngFor="let client of clients" [value]='client.id'>
           {{client.name}}
         </mat-option>
@@ -54,13 +54,13 @@
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput [matDatepicker]="frDate" placeholder="Fecha">
+      <input matInput [matDatepicker]="frDate" placeholder="Fecha" formControlName="date">
       <mat-datepicker-toggle matSuffix [for]="frDate"></mat-datepicker-toggle>
       <mat-datepicker #frDate></mat-datepicker>
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput placeholder="Motivo del gasto">
+      <input matInput placeholder="Motivo del gasto" formControlName="detail">
     </mat-form-field>
   </mat-expansion-panel>
   <mat-expansion-panel class="sz-details-panel" [expanded]=true>
@@ -72,7 +72,7 @@
         <!-- description -->
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <table mat-table class="mat-elevation-z2 sz-item-table" [dataSource]="items" matSort>
+    <table mat-table class="mat-elevation-z2 sz-item-table" [dataSource]="frItemsDataSource" matSort>
       <ng-container matColumnDef="position">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Item </th>
         <td mat-cell *matCellDef="let frItem; let idx = index"> {{idx + 1}} </td>
@@ -96,7 +96,9 @@
       <ng-container matColumnDef="totalPrice">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> precio Total </th>
         <td mat-cell *matCellDef="let frItem"> {{frItem.totalPrice}} </td>
-        <td mat-footer-cell *matFooterCellDef> {{ getFrTotal() }} </td>
+        <td mat-footer-cell *matFooterCellDef>
+          <input readonly [value]="getFrTotal()" style="border: none;" formControlName="total">
+        </td>
       </ng-container>
       <ng-container matColumnDef="editBtn">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
@@ -104,10 +106,11 @@
           <button mat-raised-button color="primary" (click)="addFundingRequestItem(frItem)"> Editar </button>
           <button mat-button color="primary" (click)="deleteFundingRequestItem(idx)"> Eliminar </button>
         </td>
+        <td mat-footer-cell *matFooterCellDef> </td>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="frColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: frColumns;"></tr>
-      <tr mat-footer-row *matFooterRowDef="frColumnsFooter"></tr>
+      <tr mat-header-row *matHeaderRowDef="frGridColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: frGridColumns;"></tr>
+      <tr mat-footer-row *matFooterRowDef="frGridColumns"></tr>
     </table>
     <br>
     <button mat-raised-button color="primary" (click)="addFundingRequestItem()">
@@ -124,15 +127,23 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <textarea matInput placeholder="Observaciones"></textarea>
+      <textarea matInput placeholder="Observaciones" formControlName="observations"></textarea>
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput placeholder="Solicitado por " [value]="'solicitante'" [readonly]="true">
+      <mat-select placeholder="Solicitado por" [(value)]='selectedUserId'>
+        <mat-option *ngFor="let user of users" [value]='user.id'>
+          {{user.name}} {{user.lastName}}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput placeholder="Autorizado por " [value]="'usuario autorizador'" [readonly]="true">
+      <mat-select placeholder="Autorizado por">
+        <mat-option *ngFor="let user of users" [value]='user.id'>
+          {{user.name}} {{user.lastName}}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
   </mat-expansion-panel>
   <mat-expansion-panel class="sz-details-panel">
@@ -145,19 +156,40 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <input matInput placeholder="No. de Solicitud " [value]="'sol 101'" [readonly]="true">
+      <input matInput placeholder="No. de Solicitud" formControlName="code" [readonly]="true">
     </mat-form-field>
     <br>
-    <mat-form-field>
-      <input matInput placeholder="Entregado en " [value]="'Efectivo'">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-      <input matInput placeholder="Entregado por " [value]="'solicitante'" [readonly]="true">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-      <input matInput placeholder="Recibido por " [value]="'Usuario Receptor'" [readonly]="true">
-    </mat-form-field>
+    <div formGroupName="accordance">
+      <mat-form-field>
+        <mat-select placeholder="Entregado en" formControlName="paymentType">
+            <mat-option *ngFor="let type of paymentTypes" [value]='type'>
+              {{type}}
+            </mat-option>
+          </mat-select>
+      </mat-form-field>
+      <br>
+      <mat-form-field>
+        <input matInput placeholder="Comprobante" formControlName="voucher">
+      </mat-form-field>
+      <br>
+      <mat-form-field>
+        <mat-select placeholder="Entregado por" formControlName="deliverUserId" [value]="selectedUserId">
+            <mat-option *ngFor="let user of users" [value]='user.id'>
+              {{user.name}} {{user.lastName}}
+            </mat-option>
+          </mat-select>
+      </mat-form-field>
+      <br>
+      <mat-form-field>
+        <mat-select placeholder="Recibido por" formControlName="receiverUserId">
+            <mat-option *ngFor="let user of users" [value]='user.id'>
+              {{user.name}} {{user.lastName}}
+            </mat-option>
+          </mat-select>
+      </mat-form-field>
+    </div>
   </mat-expansion-panel>
+  <br>
+  <button mat-raised-button color="primary" (click)="onSaveFr()">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
+  <button mat-button (click)="backToFrsList()" type="button">Cancelar</button>
 </form>

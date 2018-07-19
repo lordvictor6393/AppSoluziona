@@ -2,12 +2,16 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FundingRequestItem } from './fr-form-item/funding-request-item.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService } from '../../user/user.service';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { User } from '../../user/user.model';
 import { ClientService } from '../../client/client.service';
 import { Client } from '../../client/client.model';
-import { MatDialog, MatTable } from '@angular/material';
+import { MatDialog, MatTable, MatTableDataSource, MatSort } from '@angular/material';
 import { FrFormItemComponent } from './fr-form-item/fr-form-item.component';
+import { Project } from '../../project/project.model';
+import { FundingRequest } from '../funding-request.model';
+import { ProjectService } from '../../project/project.service';
+import { FundingRequestService } from '../funding-request.service';
 
 @Component({
   selector: 'app-fr-add-edit',
@@ -16,68 +20,119 @@ import { FrFormItemComponent } from './fr-form-item/fr-form-item.component';
 })
 export class FrAddEditComponent implements OnInit {
 
-  users: User[];
-  clients: Client[];
-  selectedUserId: string;
-  selectedClientId: string;
+  isNew: boolean = false;
+  selectedFrId: string;
+  initialFrData: FundingRequest;
+
+  users: User[] = [];
+  clients: Client[] = [];
+  projects: Project[] = [];
   fundingRequestForm: FormGroup;
-  currentUser: User;
-  // TODO remove if confirm that is not needed
-  currentClient: Client;
 
-  frColumns: string[];
-  frColumnsFooter: string[];
+  selectedUser: User;
+  selectedUserId: string;
+  paymentTypes = ['Efectivo', 'Cheque', 'Transferencia'];
+
+  frGridColumns: string[];
+  frItems: FundingRequestItem[] = [];
+  frItemsDataSource: MatTableDataSource<FundingRequestItem> = new MatTableDataSource<FundingRequestItem>();
+  @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) frItemTable: MatTable<FundingRequestItem>;
-
-  items: FundingRequestItem[] = [
-    new FundingRequestItem(
-      'Materiales',
-      2,
-      50,
-      100
-    )
-  ];
 
   constructor(private route: ActivatedRoute,
     private router: Router,
+    private fundingRequestService: FundingRequestService,
+    private projectService: ProjectService,
     private clientService: ClientService,
     private userService: UsersService,
     private dialog: MatDialog) { }
 
   ngOnInit() {
-    this.fundingRequestForm = new FormGroup({
-
-    });
-    this.initializeFundingRequestData();
-  }
-
-  initializeFundingRequestData() {
-    this.frColumns = ['position', 'detail', 'quantity', 'singlePrice', 'totalPrice', 'editBtn'];
-    this.frColumnsFooter = ['position', 'detail', 'quantity', 'singlePrice', 'totalPrice'];
     this.userService.getUserList().subscribe(
       usersList => this.users = usersList
-    )
+    );
     this.clientService.getClientList().subscribe(
       clientList => this.clients = clientList
-    )
+    );
+    this.projectService.getProjectList().subscribe(
+      projList => this.projects = projList
+    );
+    this.fundingRequestForm = new FormGroup({
+      code: new FormControl(null),
+      createUserId: new FormControl(null),
+      clientId: new FormControl(null),
+      date: new FormControl(null),
+      detail: new FormControl(null),
+      observations: new FormControl(null),
+      total: new FormControl(null),
+      accordance: new FormGroup({
+        paymentType: new FormControl(null),
+        voucher: new FormControl(null),
+        receiverUserId: new FormControl(null),
+        deliverUserId: new FormControl(null)
+      })
+    });
+
+    this.route.params.subscribe(
+      params => {
+        this.selectedFrId = params.id;
+        if (this.selectedFrId) {
+          this.loadFundingRequestData()
+        } else {
+          this.isNew = true;
+          this.fundingRequestForm.patchValue({ code: this.fundingRequestService.generateFrCode() });
+          this.frItemsDataSource.data = [];
+        }
+  }
+    );
+
+    this.frItemsDataSource.sort = this.sort;
+    this.frGridColumns = ['position', 'detail', 'quantity', 'singlePrice', 'totalPrice', 'editBtn'];
   }
 
   updateCurrentSelectedUser() {
-    this.currentUser = this.users.find(
+    this.selectedUser = this.users.find(
       userElement => userElement.id === this.selectedUserId
     )
   }
 
-  // TODO remove if confirm that is not needed
-  updateCurrentSelectedClient() {
-    this.currentClient = this.clients.find(
-      clientElement => clientElement.id === this.selectedClientId
+  loadFundingRequestData() {
+    this.fundingRequestService.getFr(this.selectedFrId).subscribe(
+      frData => {
+        this.initialFrData = frData;
+        this.fundingRequestForm.setValue({
+          code: frData.code,
+          createUserId: frData.createUserId,
+          clientId: frData.clientId,
+          date: frData.date,
+          detail: frData.detail,
+          observations: frData.observations,
+          total: frData.total,
+          accordance: {
+            paymentType: frData.accordance.paymentType,
+            voucher: frData.accordance.voucher,
+            receiverUserId: frData.accordance.receiverUserId,
+            deliverUserId: frData.accordance.deliverUserId,
+          }
+        });
+        this.frItems = frData.items.map(
+          frItemData => new FundingRequestItem(
+            frItemData.detail,
+            frItemData.quantity,
+            frItemData.singlePrice,
+            frItemData.totalPrice
     )
+        );
+        if(this.frItems.length) {
+          this.frItemsDataSource.data = this.frItems;
+        }
+      }
+    );
   }
 
   getFrTotal() {
     let total = 0;
-    this.items.map(
+    this.frItems.map(
       frItem => total += frItem.totalPrice
     )
     return total;
@@ -94,10 +149,10 @@ export class FrAddEditComponent implements OnInit {
           if (isEditing) {
             recordData.updateData(frItem);
           } else {
-            this.items.push(frItem);
+            this.frItems.push(frItem);
           }
-          console.log(this.items);
-          this.frItemTable.renderRows();
+          // this.frItemTable.renderRows();
+          this.frItemsDataSource.data = this.frItems;
         }
       }
     )
@@ -105,8 +160,25 @@ export class FrAddEditComponent implements OnInit {
 
   deleteFundingRequestItem(index: number) {
     if (index > -1) {
-      this.items.splice(index, 1);
-      this.frItemTable.renderRows();
+      this.frItems.splice(index, 1);
+      // this.frItemTable.renderRows();
+      this.frItemsDataSource.data = this.frItems;
     }
+  }
+
+  onSaveFr() {
+    let frData = this.fundingRequestForm.value;
+    frData.items = this.frItems;
+    console.log('request to be saved: ', frData);
+    if(this.isNew) {
+      this.fundingRequestService.addFr(frData);
+    } else {
+      this.fundingRequestService.updateFr(this.selectedFrId, frData);
+    }
+    this.backToFrList();
+  }
+
+  backToFrList() {
+    this.router.navigate(['fundingRequests']);
   }
 }
