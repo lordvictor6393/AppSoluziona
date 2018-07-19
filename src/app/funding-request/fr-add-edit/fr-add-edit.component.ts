@@ -64,7 +64,6 @@ export class FrAddEditComponent implements OnInit {
       date: new FormControl(null),
       detail: new FormControl(null),
       observations: new FormControl(null),
-      total: new FormControl(null),
       accordance: new FormGroup({
         paymentType: new FormControl(null),
         voucher: new FormControl(null),
@@ -107,7 +106,6 @@ export class FrAddEditComponent implements OnInit {
           date: frData.date,
           detail: frData.detail,
           observations: frData.observations,
-          total: frData.total,
           accordance: {
             paymentType: frData.accordance.paymentType,
             voucher: frData.accordance.voucher,
@@ -168,7 +166,10 @@ export class FrAddEditComponent implements OnInit {
 
   onSaveFr() {
     let frData = this.fundingRequestForm.value;
-    frData.items = this.frItems;
+    frData.items = this.frItems.map(
+      frItem => frItem.getRawObject()
+    );
+    frData.total = this.getFrTotal();
     console.log('request to be saved: ', frData);
     if(this.isNew) {
       this.fundingRequestService.addFr(frData);

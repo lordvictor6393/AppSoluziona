@@ -96,9 +96,7 @@
       <ng-container matColumnDef="totalPrice">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> precio Total </th>
         <td mat-cell *matCellDef="let frItem"> {{frItem.totalPrice}} </td>
-        <td mat-footer-cell *matFooterCellDef>
-          <input readonly [value]="getFrTotal()" style="border: none;" formControlName="total">
-        </td>
+        <td mat-footer-cell *matFooterCellDef> {{getFrTotal()}} </td>
       </ng-container>
       <ng-container matColumnDef="editBtn">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
