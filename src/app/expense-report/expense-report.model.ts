@@ -12,10 +12,10 @@ export class ExpenseReport {
     public balance: number;
     public observations: string;
     public place: string;
-    public date: string;
+    public date: Date;
     public items: {
         detail: string,
-        date: string,
+        date: number,
         billNumber: string,
         voucherNumber: string,
         quantity: number,
@@ -41,10 +41,10 @@ export class ExpenseReport {
         balance: number,
         observations: string,
         place: string,
-        date: string,
+        date: Date,
         items: {
             detail: string,
-            date: string,
+            date: number,
             billNumber: string,
             voucherNumber: string,
             quantity: number,

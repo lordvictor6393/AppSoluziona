@@ -1,3 +1,34 @@
-<p>
-  er-form-item works!
-</p>
+<h2 mat-dialog-title> Agregar Item </h2>
+<mat-dialog-content>
+  <form [formGroup]="erItemForm">
+    <mat-form-field>
+      <input matInput placeholder="Detalle" formControlName="detail">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput [matDatepicker]="erItemDate" placeholder="Fecha" formControlName="date">
+      <mat-datepicker-toggle matSuffix [for]="erItemDate"></mat-datepicker-toggle>
+      <mat-datepicker #erItemDate></mat-datepicker>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Numero de Factura" formControlName="billNumber">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Numero de Recibo" formControlName="voucherNumber">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Cantidad" formControlName="quantity">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Precio Unitario" formControlName="singlePrice">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="addErItem()"> {{isNew ? 'Agregar' : 'Guardar'}} </button>
+  <button mat-button color="primary" mat-dialog-close> Cancelar </button>
+</mat-dialog-actions>

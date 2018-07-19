@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms'
+import { NgModule, LOCALE_ID } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import localeEs from '@angular/common/locales/es-BO';
 
 // COMPONENTS
 import { AppComponent } from './app.component';
@@ -44,7 +45,9 @@ import { HomeComponent } from './home/home.component';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './user/user.service';
 import { ProjectService } from './project/project.service';
+import { registerLocaleData } from '../../node_modules/@angular/common';
 
+registerLocaleData(localeEs, 'es-BO');
 
 @NgModule({
   declarations: [
@@ -78,7 +81,8 @@ import { ProjectService } from './project/project.service';
     ReactiveFormsModule
   ],
   entryComponents: [
-    FrFormItemComponent
+    FrFormItemComponent,
+    ErFormItemComponent
   ],
   providers: [
     AuthService,
@@ -86,7 +90,8 @@ import { ProjectService } from './project/project.service';
     ClientService,
     ProjectService,
     FundingRequestService,
-    ExpenseReportService
+    ExpenseReportService,
+    { provide: LOCALE_ID, useValue: "es-BO" }
   ],
   bootstrap: [AppComponent]
 })

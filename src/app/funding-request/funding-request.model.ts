@@ -5,7 +5,7 @@ export class FundingRequest {
     public code: string;
     public createUserId: string;
     public clientId: string;
-    public date: string;
+    public date: Date;
     public state: string;
     // public projectId: strin  g;
     public detail: string;
@@ -30,7 +30,7 @@ export class FundingRequest {
         code: string,
         createUserId: string,
         clientId: string,
-        date: string,
+        date: Date,
         state: string,
         // projectId: string,
         detail: string,

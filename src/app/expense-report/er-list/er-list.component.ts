@@ -3,6 +3,7 @@ import { ExpenseReportService } from '../expense-report.service';
 import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router';
 import { ExpenseReport } from '../expense-report.model';
 import { MatTableDataSource, MatSort } from '../../../../node_modules/@angular/material';
+import { UsersService } from '../../user/user.service';
 
 @Component({
   selector: 'app-er-list',
@@ -11,12 +12,13 @@ import { MatTableDataSource, MatSort } from '../../../../node_modules/@angular/m
 })
 export class ErListComponent implements OnInit {
 
-  requests: ExpenseReport[];
+  reports: ExpenseReport[];
   erListColumns: string[];
   erDataSource: MatTableDataSource<ExpenseReport> = new MatTableDataSource<ExpenseReport>();
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private expenseReportService: ExpenseReportService,
+    private userService: UsersService,
     private route: ActivatedRoute,
     private router: Router) { }
 
@@ -24,35 +26,37 @@ export class ErListComponent implements OnInit {
     this.erListColumns = [
       'code',
       // 'projectName',
-      'detail',
       'createUser',
+      'totalSpent',
+      'totalReceived',
+      'balance',
       'state',
       'editBtn'
     ];
     this.expenseReportService.getErList().subscribe(
-      frList => {
-        this.requests = frList;
-        if(this.requests.length) {
-          this.erDataSource.data = this.requests;
+      erList => {
+        this.reports = erList;
+        if(this.reports.length) {
+          this.erDataSource.data = this.reports;
         }
       }
     );
     this.erDataSource.sort = this.sort;
   }
 
-  onEditFundingRequest(frId: string) {
-    this.router.navigate([frId], {
+  onEditExpenseReport(erId: string) {
+    this.router.navigate([erId], {
       relativeTo: this.route
     })
   }
 
-  onAddFundingRequest() {
+  onAddExpenseReport() {
     this.router.navigate(['create'], {
       relativeTo: this.route
     });
   }
 
-  onDeleteFundingRequest(frId: string) {
-    this.expenseReportService.deleteEr(frId);
+  onDeleteExpenseReport(erId: string) {
+    this.expenseReportService.deleteEr(erId);
   }
 }

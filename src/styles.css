@@ -17,3 +17,7 @@
 .sz-item-table, .sz-details-panel {
     width: 100%;
 }
+td {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}

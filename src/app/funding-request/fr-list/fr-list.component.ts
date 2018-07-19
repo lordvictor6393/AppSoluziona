@@ -3,6 +3,7 @@ import { FundingRequest } from '../funding-request.model';
 import { FundingRequestService } from '../funding-request.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource, MatSort } from '@angular/material';
+import { UsersService } from '../../user/user.service';
 
 @Component({
   selector: 'app-fr-list',
@@ -17,6 +18,7 @@ export class FrListComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private fundingRequestService: FundingRequestService,
+    private userService: UsersService,
     private route: ActivatedRoute,
     private router: Router) { }
 

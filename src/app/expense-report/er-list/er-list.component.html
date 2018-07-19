@@ -1,3 +1,41 @@
-<p>
-  er-list works!
-</p>
+<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="erDataSource">
+  <ng-container matColumnDef="code">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Solicitud </th>
+    <td mat-cell *matCellDef="let report"> {{report.code}} </td>
+  </ng-container>
+  <!-- <ng-container matColumnDef="projectName">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Proyecto </th>
+    <td mat-cell *matCellDef="let report"> {{report.projectName}} </td>
+  </ng-container> -->
+  <ng-container matColumnDef="createUser">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario </th>
+    <td mat-cell *matCellDef="let report"> {{userService.getCompleteUserName(report.createUserId)}} </td>
+  </ng-container>
+  <ng-container matColumnDef="totalSpent">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Gastado </th>
+    <td mat-cell *matCellDef="let report"> {{report.totalSpent}} </td>
+  </ng-container>
+  <ng-container matColumnDef="totalReceived">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Recibido </th>
+    <td mat-cell *matCellDef="let report"> {{report.totalReceived}} </td>
+  </ng-container>
+  <ng-container matColumnDef="balance">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Saldo </th>
+      <td mat-cell *matCellDef="let report"> {{report.balance}} </td>
+    </ng-container>
+  <ng-container matColumnDef="state">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+    <td mat-cell *matCellDef="let report"> {{report.state}} </td>
+  </ng-container>
+  <ng-container matColumnDef="editBtn">
+    <th mat-header-cell *matHeaderCellDef> </th>
+    <td mat-cell *matCellDef="let report">
+      <button mat-raised-button color="primary" (click)="onEditExpenseReport(report.id)">Editar</button>
+      <button mat-button color="primary" (click)="onDeleteExpenseReport(report.id)">Eliminar</button>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="erListColumns; sticky: true"></tr>
+  <tr mat-row *matRowDef="let row; columns: erListColumns;"></tr>
+</table>
+<br>
+<button mat-raised-button color="primary" (click)="onAddExpenseReport()"> Crear </button>
