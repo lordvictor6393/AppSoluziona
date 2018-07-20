@@ -3,25 +3,18 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable, of as ObservableOf } from 'rxjs';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { UsersService } from '../user/user.service';
-
-interface User {
-  uid: string,
-  email: string,
-  displayName?: string,
-  position?: string
-}
+import { switchMap, map } from 'rxjs/operators';
+import { User } from '../user/user.model';
 
 @Injectable()
 export class AuthService {
 
   loggedUserId: string;
   user: Observable<User>;
+  userPassword: string;
   
   constructor(private afAuth: AngularFireAuth,
               private db: AngularFirestore,
-              private usersService: UsersService,
               private router: Router) { 
     this.setLoggedUser();
   }
@@ -35,7 +28,9 @@ export class AuthService {
       switchMap(user => {
         if(user) {
           this.loggedUserId = user.uid;
-          return this.usersService.getUser(user.uid);
+          return this.db.doc('users/' + user.uid).valueChanges().pipe(
+            map(userData => User.getUserFromValue(user.uid, userData))
+          );
         } else {
           this.loggedUserId = '';
           return ObservableOf(null)
@@ -45,6 +40,7 @@ export class AuthService {
   } 
 
   signinUser(email: string, password: string) {
+    this.userPassword = password;
     return this.afAuth.auth.signInAndRetrieveDataWithEmailAndPassword(email, password);
   }
 

@@ -37,13 +37,6 @@ export class UAddEditComponent implements OnInit {
     private userService: UsersService) { }
 
   ngOnInit() {
-    this.projectService.getProjectList().subscribe(
-      projList => {
-        this.projects = projList;
-        if(this.projects.length && this.initialUserData) this.pGridDataSource.data = this.getUserProjects();
-      }
-    );
-
     this.pGridColumns = ['code', 'name', 'lead', 'client'];
     this.dptosBolivia = ['La Paz', 'Oruro', 'Potosi', 'Cochabamba', 'Chuquisaca', 'Tarija', 'Santa Cruz', 'Beni', 'Pando'];
 
@@ -92,7 +85,13 @@ export class UAddEditComponent implements OnInit {
           position: user.position
         });
       }
-    )
+    );
+    this.projectService.getProjectList().subscribe(
+      projList => {
+        this.projects = projList;
+        if(this.projects.length && this.initialUserData) this.pGridDataSource.data = this.getUserProjects();
+      }
+    );
   }
 
   onSaveUser() {

@@ -4,6 +4,7 @@ import { User } from "./user.model";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { AngularFireAuth } from "angularfire2/auth";
+import { AuthService } from "../auth/auth.service";
 
 @Injectable()
 export class UsersService {
@@ -11,7 +12,8 @@ export class UsersService {
     private userCollectionRef: AngularFirestoreCollection<User>;
 
     constructor(private db: AngularFirestore,
-        private afAuth: AngularFireAuth) {
+        private afAuth: AngularFireAuth,
+        private authService?: AuthService) {
         this.userCollectionRef = this.db.collection('users', ref => ref.where('isDeleted', '==', false));
         this.userCollectionRef.snapshotChanges().subscribe(
             userList => {
@@ -44,11 +46,19 @@ export class UsersService {
     addUser(userData, password) {
         let userId = '';
         userData.isDeleted = false;
+        let userMail = this.afAuth.auth.currentUser.email;
+        let userPass = this.authService.userPassword;
+
         this.afAuth.auth.createUserWithEmailAndPassword(userData.mail, password)
             .then(
                 response => {
                     userId = response.user.uid;
-                    this.userCollectionRef.doc(userId).set(userData);
+                    this.userCollectionRef.doc(userId).set(userData).then(
+                        response => {
+                            this.afAuth.auth.signOut();
+                            this.authService.signinUser(userMail, userPass);
+                        }
+                    );
                 }
             )
     }
