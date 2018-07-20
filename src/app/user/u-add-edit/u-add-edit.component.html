@@ -66,6 +66,32 @@
       <input matInput placeholder="Contraseña" #userPassword>
     </mat-form-field>
   </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      Proyectos
+    </mat-expansion-panel-header>
+    <table mat-table matSort [dataSource]="pGridDataSource" class="mat-elevation-z2 sz-item-table">
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Codigo </th>
+        <td mat-cell *matCellDef="let proj"> {{proj.code}} </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+        <td mat-cell *matCellDef="let proj"> {{proj.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="lead">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Encargado </th>
+        <td mat-cell *matCellDef="let proj"> {{userService.getCompleteUserName(proj.leadId)}} </td>
+      </ng-container>
+      <ng-container matColumnDef="client">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </th>
+        <td mat-cell *matCellDef="let proj"> {{clientService.getClientName(proj.clientId)}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="pGridColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: pGridColumns;"></tr>
+    </table>
+  </mat-expansion-panel>
   <br>
   <button mat-raised-button color="primary" (click)="onSaveUser()">{{isNew ? 'Crear Usuario' : 'Actualizar Usuario'}}</button>
   <button mat-button (click)="backToUsersList()" type="button">Cancelar</button>
