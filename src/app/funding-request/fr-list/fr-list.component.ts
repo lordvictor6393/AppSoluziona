@@ -4,6 +4,9 @@ import { FundingRequestService } from '../funding-request.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource, MatSort } from '@angular/material';
 import { UsersService } from '../../user/user.service';
+import { ProjectService } from '../../project/project.service';
+import { Project } from '../../project/project.model';
+import { User } from '../../user/user.model';
 
 @Component({
   selector: 'app-fr-list',
@@ -12,13 +15,24 @@ import { UsersService } from '../../user/user.service';
 })
 export class FrListComponent implements OnInit {
 
-  requests: FundingRequest[];
   frListColumns: string[];
+  requests: FundingRequest[];
   frDataSource: MatTableDataSource<FundingRequest> = new MatTableDataSource<FundingRequest>();
   @ViewChild(MatSort) sort: MatSort;
 
+  // Filters
+  filterByUserId: string;
+  filterByState: string;
+  filterByProjectId: string;
+  filterBySearchText: string;
+
+  users: User[];
+  projects: Project[];
+  states: string[] = ['Creado', 'Enviado', 'Recibido', 'Verificado', 'Rechazado', 'Aprovado'];
+
   constructor(private fundingRequestService: FundingRequestService,
     private userService: UsersService,
+    private projectService: ProjectService,
     private route: ActivatedRoute,
     private router: Router) { }
 
@@ -27,10 +41,16 @@ export class FrListComponent implements OnInit {
       'code',
       'detail',
       'createUser',
-      // 'projectName',
+      'projectName',
       'state',
       'editBtn'
     ];
+    this.userService.getUserList().subscribe(
+      userList => this.users = userList
+    );
+    this.projectService.getProjectList().subscribe(
+      projectList => this.projects = projectList
+    );
     this.fundingRequestService.getFrList().subscribe(
       frList => {
         this.requests = frList;
@@ -40,6 +60,29 @@ export class FrListComponent implements OnInit {
       }
     );
     this.frDataSource.sort = this.sort;
+    this.frDataSource.filterPredicate = (data: FundingRequest) => {
+      let match: boolean = true;
+      if(this.filterByUserId) match = match && (data.createUserId == this.filterByUserId);
+      if(this.filterByProjectId) match = match && (data.projectId == this.filterByProjectId);
+      if(this.filterByState) match = match && (data.state == this.filterByState);
+      if(this.filterBySearchText) match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test(data.detail));
+      return match;
+    }
+    // Transform the data into a lowercase string of all property values.
+    // var /** @type {?} */ accumulator = function (currentTerm, key) { return currentTerm + data[key]; };
+    // var /** @type {?} */ dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
+    // Transform the filter by converting it to lowercase and removing whitespace.
+    // var /** @type {?} */ transformedFilter = filter.trim().toLowerCase();
+    // return dataStr.indexOf(transformedFilter) != -1;
+  }
+
+  filterFrListData(value?: string) {
+    this.frDataSource.filter = value;
+  }
+
+  searchText(value: string) {
+    this.filterBySearchText = value;
+    this.frDataSource.filter = value;
   }
 
   onEditFundingRequest(frId: string) {

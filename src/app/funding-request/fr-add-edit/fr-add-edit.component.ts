@@ -61,6 +61,7 @@ export class FrAddEditComponent implements OnInit {
       code: new FormControl(null),
       createUserId: new FormControl(null),
       clientId: new FormControl(null),
+      projectId: new FormControl(null),
       date: new FormControl(null),
       detail: new FormControl(null),
       observations: new FormControl(null),
@@ -99,10 +100,13 @@ export class FrAddEditComponent implements OnInit {
     this.fundingRequestService.getFr(this.selectedFrId).subscribe(
       frData => {
         this.initialFrData = frData;
+        this.selectedUserId = frData.createUserId;
+        this.updateCurrentSelectedUser();
         this.fundingRequestForm.setValue({
           code: frData.code,
           createUserId: frData.createUserId,
           clientId: frData.clientId,
+          projectId: frData.projectId,
           date: frData.date,
           detail: frData.detail,
           observations: frData.observations,

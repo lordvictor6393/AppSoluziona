@@ -17,23 +17,21 @@
       </mat-select>
     </mat-form-field>
     <br>
-    <div *ngIf="selectedUserId">
       <mat-form-field>
-        <input matInput placeholder="Nombres y apellidos" [value]="selectedUser.name + ' ' + selectedUser.lastName" [readonly]="true">
+        <input matInput placeholder="Nombres y apellidos" [value]="selectedUser ? (selectedUser.name + ' ' + selectedUser.lastName) : ''" [readonly]="true">
       </mat-form-field>
       <br>
       <mat-form-field>
-        <input matInput placeholder="Cargo" [value]="selectedUser.position" [readonly]="true">
+        <input matInput placeholder="Cargo" [value]="selectedUser ? selectedUser.position : ''" [readonly]="true">
       </mat-form-field>
       <br>
       <mat-form-field>
-        <input matInput placeholder="Carnet de Identidad" [value]="selectedUser.ci" [readonly]="true">
+        <input matInput placeholder="Carnet de Identidad" [value]="selectedUser ? selectedUser.ci : ''" [readonly]="true">
       </mat-form-field>
       <br>
       <mat-form-field>
-        <input matInput placeholder="Expedido" [value]="selectedUser.ciPlace" [readonly]="true">
+        <input matInput placeholder="Expedido" [value]="selectedUser ? selectedUser.ciPlace : ''" [readonly]="true">
       </mat-form-field>
-    </div>
   </mat-expansion-panel>
 
   <mat-expansion-panel class="sz-details-panel" [expanded]=true>
@@ -45,6 +43,14 @@
         <!-- description -->
       </mat-panel-description>
     </mat-expansion-panel-header>
+    <mat-form-field>
+        <mat-select placeholder="Proyecto" formControlName="projectId">
+          <mat-option *ngFor="let project of projects" [value]='project.id'>
+            {{project.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br>
     <table mat-table class="mat-elevation-z2 sz-item-table" [dataSource]="erItemsDataSource" matSort>
       <ng-container matColumnDef="position">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Item </th>

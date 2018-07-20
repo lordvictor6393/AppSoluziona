@@ -17,23 +17,21 @@
       </mat-select>
     </mat-form-field>
     <br>
-    <div *ngIf="selectedUserId">
-      <mat-form-field>
-        <input matInput placeholder="Nombres y apellidos" [value]="selectedUser.name + ' ' + selectedUser.lastName" [readonly]="true">
-      </mat-form-field>
-      <br>
-      <mat-form-field>
-        <input matInput placeholder="Cargo" [value]="selectedUser.position" [readonly]="true">
-      </mat-form-field>
-      <br>
-      <mat-form-field>
-        <input matInput placeholder="Carnet de Identidad" [value]="selectedUser.ci" [readonly]="true">
-      </mat-form-field>
-      <br>
-      <mat-form-field>
-        <input matInput placeholder="Expedido" [value]="selectedUser.ciPlace" [readonly]="true">
-      </mat-form-field>
-    </div>
+    <mat-form-field>
+      <input matInput placeholder="Nombres y apellidos" [value]="selectedUser ? (selectedUser.name + ' ' + selectedUser.lastName) : ''" [readonly]="true">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Cargo" [value]="selectedUser ? selectedUser.position : ''" [readonly]="true">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Carnet de Identidad" [value]="selectedUser ? selectedUser.ci : ''" [readonly]="true">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Expedido" [value]="selectedUser ? selectedUser.ciPlace : ''" [readonly]="true">
+    </mat-form-field>
   </mat-expansion-panel>
 
   <mat-expansion-panel class="sz-details-panel">
@@ -42,13 +40,21 @@
         Detalle de Solicitud
       </mat-panel-title>
       <mat-panel-description>
-        <!-- description -->
+        {{fundingRequestForm.get('detail').value}}
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
       <mat-select placeholder="Cliente" formControlName="clientId">
         <mat-option *ngFor="let client of clients" [value]='client.id'>
           {{client.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <mat-select placeholder="Proyecto" formControlName="projectId">
+        <mat-option *ngFor="let project of projects" [value]='project.id'>
+          {{project.name}}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -160,10 +166,10 @@
     <div formGroupName="accordance">
       <mat-form-field>
         <mat-select placeholder="Entregado en" formControlName="paymentType">
-            <mat-option *ngFor="let type of paymentTypes" [value]='type'>
-              {{type}}
-            </mat-option>
-          </mat-select>
+          <mat-option *ngFor="let type of paymentTypes" [value]='type'>
+            {{type}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
       <br>
       <mat-form-field>
@@ -172,18 +178,18 @@
       <br>
       <mat-form-field>
         <mat-select placeholder="Entregado por" formControlName="deliverUserId" [value]="selectedUserId">
-            <mat-option *ngFor="let user of users" [value]='user.id'>
-              {{user.name}} {{user.lastName}}
-            </mat-option>
-          </mat-select>
+          <mat-option *ngFor="let user of users" [value]='user.id'>
+            {{user.name}} {{user.lastName}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
       <br>
       <mat-form-field>
         <mat-select placeholder="Recibido por" formControlName="receiverUserId">
-            <mat-option *ngFor="let user of users" [value]='user.id'>
-              {{user.name}} {{user.lastName}}
-            </mat-option>
-          </mat-select>
+          <mat-option *ngFor="let user of users" [value]='user.id'>
+            {{user.name}} {{user.lastName}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </div>
   </mat-expansion-panel>

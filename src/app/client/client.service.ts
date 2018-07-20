@@ -20,16 +20,16 @@ export class ClientService {
 
     getClientList(): Observable<Client[]> {
         return this.clientsCollectionRef.snapshotChanges().pipe(
-            map( clientList => clientList.map(Client.getClientFromSnapshot) )
+            map(clientList => clientList.map(Client.getClientFromSnapshot))
         );
     }
 
     getClient(clientId: string): Observable<Client> {
         let clientRef = this.db.doc('clients/' + clientId);
-        if(clientRef) {
+        if (clientRef) {
             return clientRef.valueChanges().pipe(
                 map(client => {
-                    if(client) {
+                    if (client) {
                         return Client.getClientFromValue(clientId, client);
                     }
                 })
@@ -59,12 +59,14 @@ export class ClientService {
     }
 
     getClientName(clientId: string) {
-        let clientInstance = this.localClientList.find(client => client.id == clientId);
-        if(clientInstance) {
-            return clientInstance.name;
-        } else {
-            console.error('Not able to find client in local clients list');
-        }
+        if (this.localClientList.length) {
+            let clientInstance = this.localClientList.find(client => client.id == clientId);
+            if (clientInstance) {
+                return clientInstance.name;
+            } else {
+                console.error('Not able to find client in local clients list');
+            }
+        } else return '';
     }
 
     registerProject(clientId, projId) {
@@ -72,10 +74,10 @@ export class ClientService {
         let projIds: string[];
         let clientRef = this.db.doc('clients/' + clientId);
         let clientInstance = this.localClientList.find(client => client.id == clientId);
-        if(clientInstance) {
+        if (clientInstance) {
             projIds = clientInstance.projectsIds || [];
             idx = projIds.indexOf(projId);
-            if(idx == -1) {
+            if (idx == -1) {
                 projIds.push(projId);
                 clientRef.update({ projectsIds: projIds }).then(console.log).catch(console.log);
             }
@@ -89,10 +91,10 @@ export class ClientService {
         let projIds: string[];
         let clientRef = this.db.doc('clients/' + clientId);
         let clientInstance = this.localClientList.find(client => client.id == clientId);
-        if(clientInstance) {
+        if (clientInstance) {
             projIds = clientInstance.projectsIds;
             idx = projIds.indexOf(projId);
-            if(idx != -1) {
+            if (idx != -1) {
                 projIds.splice(idx, 1);
                 clientRef.update({ projectsIds: projIds });
             }

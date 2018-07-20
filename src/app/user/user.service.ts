@@ -24,7 +24,7 @@ export class UsersService {
 
     getUserList(): Observable<User[]> {
         return this.userCollectionRef.snapshotChanges().pipe(
-            map( userList => userList.map(User.getUserFromSnapshot) )
+            map(userList => userList.map(User.getUserFromSnapshot))
         );
     }
 
@@ -125,11 +125,13 @@ export class UsersService {
     }
 
     getCompleteUserName(userId: string) {
-        let userInstance = this.localUserList.find(user => user.id == userId);
-        if (userInstance) {
-            return userInstance.name + ' ' + userInstance.lastName;
-        } else {
-            console.error('Not able to find user in local users list');
-        }
+        if (this.localUserList.length) {
+            let userInstance = this.localUserList.find(user => user.id == userId);
+            if (userInstance) {
+                return userInstance.name + ' ' + userInstance.lastName;
+            } else {
+                console.error('Not able to find user in local users list');
+            }
+        } else return '';
     }
 }

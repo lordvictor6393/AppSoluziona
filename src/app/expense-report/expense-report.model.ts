@@ -1,9 +1,10 @@
 export class ExpenseReport {
     public isDeleted: boolean;
+    public isSent: boolean;
 
     public id: string;
     public frId: string;
-    // public projectId: string;
+    public projectId: string;
     public code: string;
     public createUserId: string;
     public state: string;
@@ -32,7 +33,7 @@ export class ExpenseReport {
     constructor(
         id: string,
         frId: string,
-        // projectId: string,
+        projectId: string,
         code: string,
         createUserId: string,
         state: string,
@@ -41,7 +42,7 @@ export class ExpenseReport {
         balance: number,
         observations: string,
         place: string,
-        date: Date,
+        date: number,
         items: {
             detail: string,
             date: number,
@@ -56,13 +57,16 @@ export class ExpenseReport {
             voucher: string,
             receiverUserId: string
         },
-        aproveUserId?: string
+        aproveUserId: string,
+
+        isSent?: boolean
     ) {
         this.isDeleted = false;
+        this.isSent = isSent || false;
 
         this.id = id;
         this.frId = frId;
-        // this.projectId = projectId;
+        this.projectId = projectId;
         this.code = code;
         this.createUserId = createUserId;
         this.state = state;
@@ -71,7 +75,7 @@ export class ExpenseReport {
         this.balance = balance;
         this.observations = observations;
         this.place = place;
-        this.date = date;
+        this.date = new Date(date);
         this.items = items;
         this.accordance = accordance;
         this.aproveUserId = aproveUserId || '';
@@ -82,7 +86,7 @@ export class ExpenseReport {
         const data = erData.payload.doc.data();
         return new ExpenseReport(id,
             data.frId,
-            // data.projectId,
+            data.projectId,
             data.code,
             data.createUserId,
             data.state,
@@ -94,7 +98,8 @@ export class ExpenseReport {
             data.date,
             data.items,
             data.accordance,
-            data.aproveUserId
+            data.aproveUserId,
+            data.isSent
         );
     }
 
@@ -102,7 +107,7 @@ export class ExpenseReport {
         return new ExpenseReport(
             erId,
             erData.frId,
-            // erData.projectId,
+            erData.projectId,
             erData.code,
             erData.createUserId,
             erData.state,
@@ -114,7 +119,8 @@ export class ExpenseReport {
             erData.date,
             erData.items,
             erData.accordance,
-            erData.aproveUserId
+            erData.aproveUserId,
+            erData.isSent
         );
     }
 }

@@ -59,6 +59,7 @@ export class ErAddEditComponent implements OnInit {
     );
     this.expenseReportForm = new FormGroup({
       code: new FormControl(null),
+      projectId: new FormControl(null),
       createUserId: new FormControl(null),
       totalReceived: new FormControl(null),
       observations: new FormControl(null),
@@ -109,8 +110,11 @@ export class ErAddEditComponent implements OnInit {
     this.expenseReportService.getEr(this.selectedErId).subscribe(
       erData => {
         this.initialErData = erData;
+        this.selectedUserId = erData.createUserId;
+        this.updateCurrentSelectedUser();
         this.expenseReportForm.setValue({
           code: erData.code,
+          projectId: erData.projectId,
           createUserId: erData.createUserId,
           totalReceived: erData.totalReceived,
           observations: erData.observations,

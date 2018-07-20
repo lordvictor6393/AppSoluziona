@@ -41,12 +41,16 @@ export class FundingRequestService {
 
     addFr(frData) {
         frData.isDeleted = false;
+        frData.isSent = false;
+        frData.state = 'Creado';
+        frData.date = frData.date.getTime();
         this.frCollectionRef.add(frData);
     }
 
     updateFr(frId, frData) {
         let frRef = this.db.doc('fundingRequests/' + frId);
         if(frRef) {
+            frData.date = frData.date.getTime();
             frRef.update(frData);
         } else {
             console.log('Cannot update funding request, not able to get funding request ' + frId);

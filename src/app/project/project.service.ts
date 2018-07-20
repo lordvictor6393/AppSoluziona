@@ -15,7 +15,7 @@ export class ProjectService {
     private localProjectList: Project[] = [];
     private projectsCollectionRef: AngularFirestoreCollection<Project>;
 
-    constructor(private db:AngularFirestore,
+    constructor(private db: AngularFirestore,
         private userService: UsersService,
         private clientService: ClientService) {
         this.userService.getUserList().subscribe(userList => this.users = userList);
@@ -30,16 +30,16 @@ export class ProjectService {
 
     getProjectList(): Observable<Project[]> {
         return this.projectsCollectionRef.snapshotChanges().pipe(
-            map( projectList => projectList.map(Project.getProjectFromSnapshot) )
+            map(projectList => projectList.map(Project.getProjectFromSnapshot))
         );
     }
 
     getProject(projectId: string): Observable<Project> {
         let projectRef = this.db.doc('projects/' + projectId);
-        if(projectRef) {
+        if (projectRef) {
             return projectRef.valueChanges().pipe(
                 map(project => {
-                    if(project) {
+                    if (project) {
                         return Project.getProjectFromValue(projectId, project);
                     }
                 })
@@ -57,7 +57,7 @@ export class ProjectService {
     updateProject(projId, projectData) {
         let members = projectData.membersIds;
         let projectRef = this.db.doc('projects/' + projId);
-        if(this.users.length) {
+        if (this.users.length) {
             members.forEach(memberId => {
                 this.userService.registerProject(memberId, projId);
             });
@@ -79,11 +79,13 @@ export class ProjectService {
     }
 
     getProjectName(projId: string) {
-        let projectInstance = this.localProjectList.find(project => project.id == projId);
-        if(projectInstance) {
-            return projectInstance.name;
-        } else {
-            console.error('Not able to find project in local projects list');
-        }
+        if (this.localProjectList.length) {
+            let projectInstance = this.localProjectList.find(project => project.id == projId);
+            if (projectInstance) {
+                return projectInstance.name;
+            } else {
+                console.error('Not able to find project in local projects list');
+            }
+        } else return '';
     }
 }

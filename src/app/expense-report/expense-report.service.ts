@@ -41,12 +41,16 @@ export class ExpenseReportService {
 
     addEr(erData) {
         erData.isDeleted = false;
+        erData.isSent = false;
+        erData.state = 'Creado';
+        erData.date = erData.date.getTime();
         this.erCollectionRef.add(erData);
     }
 
     updateEr(erId, erData) {
         let erRef = this.db.doc('expenseReports/' + erId);
         if(erRef) {
+            erData.date = erData.date.getTime();
             erRef.update(erData);
         } else {
             console.log('Cannot update expense report, not able to get expense report ' + erId);

@@ -1,13 +1,14 @@
 export class FundingRequest {
     public isDeleted: boolean;
+    public isSent: boolean; 
 
     public id: string;
     public code: string;
     public createUserId: string;
     public clientId: string;
+    public projectId: string;
     public date: Date;
     public state: string;
-    // public projectId: strin  g;
     public detail: string;
     public observations: string;
     public aproveUserId: string;
@@ -30,9 +31,9 @@ export class FundingRequest {
         code: string,
         createUserId: string,
         clientId: string,
-        date: Date,
+        projectId: string,
+        date: number,
         state: string,
-        // projectId: string,
         detail: string,
         observations: string,
         aproveUserId: string,
@@ -48,17 +49,20 @@ export class FundingRequest {
             voucher: string,
             receiverUserId: string,
             deliverUserId: string
-        }
+        },
+
+        isSent?: boolean
     ) {
         this.isDeleted = false;
+        this.isSent = isSent || false;
 
         this.id = id;
         this.code = code;
         this.createUserId = createUserId;
         this.clientId = clientId;
-        this.date = date;   
+        this.projectId = projectId;
+        this.date = new Date(date);   
         this.state = state;
-        // this.projectId = projectId;
         this.detail = detail;
         this.observations = observations;
         this.aproveUserId = aproveUserId;
@@ -74,6 +78,7 @@ export class FundingRequest {
             data.code,
             data.createUserId,
             data.clientId,
+            data.projectId,
             data.date,
             data.state,
             data.detail,
@@ -81,7 +86,8 @@ export class FundingRequest {
             data.aproveUserId,
             data.total,
             data.items,
-            data.accordance
+            data.accordance,
+            data.isSent
         );
     }
 
@@ -91,6 +97,7 @@ export class FundingRequest {
             frData.code,
             frData.createUserId,
             frData.clientId,
+            frData.projectId,
             frData.date,
             frData.state,
             frData.detail,
@@ -98,7 +105,8 @@ export class FundingRequest {
             frData.aproveUserId,
             frData.total,
             frData.items,
-            frData.accordance
+            frData.accordance,
+            frData.isSent
         );
     }
 }
