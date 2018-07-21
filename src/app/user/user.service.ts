@@ -46,6 +46,7 @@ export class UsersService {
     addUser(userData, password) {
         let userId = '';
         userData.isDeleted = false;
+        userData.roles = { common: true };
         let userMail = this.afAuth.auth.currentUser.email;
         let userPass = this.authService.userPassword;
 

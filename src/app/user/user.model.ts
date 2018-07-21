@@ -1,3 +1,9 @@
+interface Roles {
+    common?: boolean;
+    accountant?: boolean;
+    chief?: boolean;
+}
+
 export class User {
     public isDeleted: boolean;
 
@@ -9,6 +15,7 @@ export class User {
     public mail: string;
     public phone: string;
     public displayName: string;
+    public roles: Roles;
     public position: string;
     public projectIds: string[];
     // public assignedCompanies: Companies[];
@@ -22,6 +29,7 @@ export class User {
         mail: string,
         phone: string,
         displayName: string,
+        roles: Roles,
         position: string,
         projectIds?: string[]
     ) {
@@ -35,6 +43,7 @@ export class User {
         this.mail = mail;
         this.phone = phone;
         this.displayName = displayName;
+        this.roles = roles || {};
         this.position = position;
         this.projectIds = projectIds || [];
     }
@@ -50,6 +59,7 @@ export class User {
             data.mail,
             data.phone,
             data.displayName,
+            data.roles,
             data.position,
             data.projectIds
         )
@@ -65,6 +75,7 @@ export class User {
             user.mail,
             user.phone,
             user.displayName,
+            user.roles,
             user.position,
             user.projectIds
         )

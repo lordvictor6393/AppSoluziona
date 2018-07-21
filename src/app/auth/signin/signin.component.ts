@@ -30,7 +30,7 @@ export class SigninComponent implements OnInit {
         (response) => {
           console.log(response);
           this.authService.setLoggedUser();
-          this.router.navigate(['']);
+          this.router.navigate(['/fundingRequests']);
         }
       ).catch(
         response => {

@@ -7,6 +7,7 @@ import { Project } from '../../project/project.model';
 import { ProjectService } from '../../project/project.service';
 import { MatTableDataSource, MatSort, MatTable } from '../../../../node_modules/@angular/material';
 import { ClientService } from '../../client/client.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-u-add-edit',
@@ -27,16 +28,24 @@ export class UAddEditComponent implements OnInit {
 
   userForm: FormGroup;
   dptosBolivia: string[];
+  selectedRole: string;
+  roles: {value: string, viewValue: string}[];
 
   @ViewChild('userPassword') userPassword: ElementRef;
 
   constructor(private route: ActivatedRoute,
+    private authService: AuthService,
     private router: Router,
     private projectService: ProjectService,
     private clientService: ClientService,
     private userService: UsersService) { }
 
   ngOnInit() {
+    this.roles = [
+      { value: 'common', viewValue: 'Usuario Basico' },
+      { value: 'accountant', viewValue: 'Usuario Avanzado' },
+      { value: 'chief', viewValue: 'Administrador' }
+    ]
     this.pGridColumns = ['code', 'name', 'lead', 'client'];
     this.dptosBolivia = ['La Paz', 'Oruro', 'Potosi', 'Cochabamba', 'Chuquisaca', 'Tarija', 'Santa Cruz', 'Beni', 'Pando'];
 
@@ -74,6 +83,7 @@ export class UAddEditComponent implements OnInit {
     this.userService.getUser(this.selectedUserId).subscribe(
       user => {
         this.initialUserData = user;
+        this.roles.forEach( role => { if(user.roles[role.value]) this.selectedRole = role.value; } );
         this.userForm.setValue({
           name: user.name,
           lastName: user.lastName,
@@ -98,11 +108,21 @@ export class UAddEditComponent implements OnInit {
     let userData = this.userForm.value;
     if (this.isNew) {
       let password = this.userPassword.nativeElement.value;
+      userData.roles = { common: true };
       this.userService.addUser(userData, password);
     } else {
+      userData.roles = {};
+      userData.roles[this.selectedRole] = true;
       this.userService.updateUser(this.selectedUserId, userData);
     }
     this.backToUsersList();
+  }
+
+  getRoleViewValue(roleValue) {
+    for(let role of this.roles) {
+      if(role.value == roleValue) return role.viewValue;
+    }
+    return '';
   }
 
   backToUsersList() {

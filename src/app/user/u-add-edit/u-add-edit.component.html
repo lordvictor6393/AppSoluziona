@@ -33,7 +33,7 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <input matInput placeholder="Correo" formControlName="mail">
+      <input matInput placeholder="Correo" formControlName="mail" readonly>
     </mat-form-field>
     <br>
     <mat-form-field>
@@ -48,8 +48,31 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <input matInput placeholder="Cargo" formControlName="position">
+      <input matInput placeholder="Cargo" formControlName="position" [readonly]="!authService.CanManageUsers()">
     </mat-form-field>
+    <br>
+    <div *ngIf="!isNew">
+      <table mat-table matSort [dataSource]="pGridDataSource" class="mat-elevation-z2 sz-item-table">
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Codigo </th>
+          <td mat-cell *matCellDef="let proj"> {{proj.code}} </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+          <td mat-cell *matCellDef="let proj"> {{proj.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lead">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Encargado </th>
+          <td mat-cell *matCellDef="let proj"> {{userService.getCompleteUserName(proj.leadId)}} </td>
+        </ng-container>
+        <ng-container matColumnDef="client">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </th>
+          <td mat-cell *matCellDef="let proj"> {{clientService.getClientName(proj.clientId)}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="pGridColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: pGridColumns;"></tr>
+      </table>
+    </div>
   </mat-expansion-panel>
 
   <mat-expansion-panel [expanded]="true">
@@ -62,35 +85,16 @@
       <input matInput placeholder="User Name" formControlName="displayName">
     </mat-form-field>
     <br>
+    <mat-form-field *ngIf="authService.CanManageUsers()">
+      <mat-select placeholder="Tipo de Usuario" [value]="selectedRole">
+        <mat-option *ngFor="let role of roles" [value]="role.value">
+          {{role.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     <mat-form-field *ngIf="isNew">
       <input matInput placeholder="Contraseña" #userPassword>
     </mat-form-field>
-  </mat-expansion-panel>
-
-  <mat-expansion-panel *ngIf="!isNew">
-    <mat-expansion-panel-header>
-      Proyectos
-    </mat-expansion-panel-header>
-    <table mat-table matSort [dataSource]="pGridDataSource" class="mat-elevation-z2 sz-item-table">
-      <ng-container matColumnDef="code">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Codigo </th>
-        <td mat-cell *matCellDef="let proj"> {{proj.code}} </td>
-      </ng-container>
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
-        <td mat-cell *matCellDef="let proj"> {{proj.name}} </td>
-      </ng-container>
-      <ng-container matColumnDef="lead">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Encargado </th>
-        <td mat-cell *matCellDef="let proj"> {{userService.getCompleteUserName(proj.leadId)}} </td>
-      </ng-container>
-      <ng-container matColumnDef="client">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </th>
-        <td mat-cell *matCellDef="let proj"> {{clientService.getClientName(proj.clientId)}} </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="pGridColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: pGridColumns;"></tr>
-    </table>
   </mat-expansion-panel>
   <br>
   <button mat-raised-button color="primary" (click)="onSaveUser()">{{isNew ? 'Crear Usuario' : 'Actualizar Usuario'}}</button>
