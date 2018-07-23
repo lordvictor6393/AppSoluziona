@@ -18,6 +18,7 @@ export class User {
     public roles: Roles;
     public position: string;
     public projectIds: string[];
+    public leadOf: string[];
     // public assignedCompanies: Companies[];
 
     constructor(
@@ -31,7 +32,8 @@ export class User {
         displayName: string,
         roles: Roles,
         position: string,
-        projectIds?: string[]
+        projectIds?: string[],
+        leadOf?: string[]
     ) {
         this.isDeleted = false;
 
@@ -46,6 +48,7 @@ export class User {
         this.roles = roles || {};
         this.position = position;
         this.projectIds = projectIds || [];
+        this.leadOf = leadOf || [];
     }
 
     static getUserFromSnapshot(user): User {
@@ -61,7 +64,8 @@ export class User {
             data.displayName,
             data.roles,
             data.position,
-            data.projectIds
+            data.projectIds,
+            data.leadOf
         )
     }
 
@@ -77,7 +81,8 @@ export class User {
             user.displayName,
             user.roles,
             user.position,
-            user.projectIds
+            user.projectIds,
+            user.leadOf
         )
     }
 }

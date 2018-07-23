@@ -12,15 +12,18 @@
   <a mat-list-item
     href="#"
     routerLinkActive="active"
-    routerLink="/projects">Proyectos</a>
+    routerLink="/projects"
+    *ngIf="authService.CanManageProjects()">Proyectos</a>
   <mat-divider></mat-divider>
   <a mat-list-item
     href="#"
     routerLinkActive="active"
-    routerLink="/users">Usuarios</a>
+    routerLink="/users"
+    *ngIf="authService.CanManageUsers()">Usuarios</a>
   <mat-divider></mat-divider>
   <a mat-list-item
     href="#"
     routerLinkActive="active"
-    routerLink="/clients">Clientes</a>
+    routerLink="/clients"
+    *ngIf="authService.CanManageClients()">Clientes</a>
 </mat-nav-list>

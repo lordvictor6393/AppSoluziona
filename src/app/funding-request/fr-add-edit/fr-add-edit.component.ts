@@ -168,6 +168,11 @@ export class FrAddEditComponent implements OnInit {
     }
   }
 
+  onSendFr() {
+    this.fundingRequestService.sendFr(this.selectedFrId);
+    this.backToFrList();
+  }
+
   onSaveFr() {
     let frData = this.fundingRequestForm.value;
     frData.items = this.frItems.map(

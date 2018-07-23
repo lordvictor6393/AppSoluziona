@@ -14,7 +14,7 @@
     </mat-form-field>
     <br>
     <mat-form-field>
-      <mat-select placeholder="Encargado" formControlName="leadId">
+      <mat-select placeholder="Encargado" formControlName="leadId" (selectionChange)="addLeadMember()">
         <mat-option [value]="user.id" *ngFor="let user of users">{{user.name}} {{user.lastName}}</mat-option>
       </mat-select>
 
@@ -65,7 +65,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="onAddMember()">Agregar</button>
+    <button mat-raised-button color="primary" (click)="onAddMember()" [disabled]="!userToBeAdded">Agregar</button>
     <br>
     <br>
     <table *ngIf="users.length" mat-table class="mat-elevation-z2 sz-item-table" [dataSource]="projMembersDataSource" matSort>
@@ -75,7 +75,7 @@
       </ng-container>
       <ng-container matColumnDef="ci">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Carnet </th>
-        <td mat-cell *matCellDef="let member"> {{member.ci}} </td>
+        <td mat-cell *matCellDef="let member"> {{member.ci}} {{ciPlaceAbbr[member.ciPlace]}}</td>
       </ng-container>
       <ng-container matColumnDef="phone">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Telefono </th>

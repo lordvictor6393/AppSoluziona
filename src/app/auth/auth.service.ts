@@ -85,14 +85,6 @@ export class AuthService {
     return this.checkAuthorization(allowed);
   }
 
-  CanManageProjectFrEr() {
-    const allowed = [
-      this.rolesEnum.ACCOUNTANT,
-      this.rolesEnum.CHIEF
-    ];
-    return this.checkAuthorization(allowed);
-  }
-
   CanManageAllFrEr() {
     const allowed = [
       this.rolesEnum.ACCOUNTANT,
@@ -122,5 +114,12 @@ export class AuthService {
       this.rolesEnum.CHIEF
     ];
     return this.checkAuthorization(allowed);
+  }
+
+  CanApproveFr(frId: string) {
+    if(this.loggedUserInstance) {
+      return this.loggedUserInstance.leadOf.indexOf(frId) !== -1;
+    }
+    return false;
   }
 }

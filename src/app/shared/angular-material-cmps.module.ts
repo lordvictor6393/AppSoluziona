@@ -16,6 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const angularMaterialModules: any[] = [
     MatTabsModule,
@@ -34,7 +35,8 @@ const angularMaterialModules: any[] = [
     MatDividerModule,
     MatToolbarModule,
     MatSortModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSnackBarModule
 ];
 
 @NgModule({

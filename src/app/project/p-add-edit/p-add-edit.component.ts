@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormControl } from '../../../../node_modules/@angular/forms';
 import { User } from '../../user/user.model';
 import { UsersService } from '../../user/user.service';
-import { MatTableDataSource, MatTable, MatSort } from '../../../../node_modules/@angular/material';
+import { MatTableDataSource, MatTable, MatSort, MatSnackBar } from '../../../../node_modules/@angular/material';
 import { Client } from '../../client/client.model';
 import { ClientService } from '../../client/client.service';
 import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router';
@@ -23,6 +23,7 @@ export class PAddEditComponent implements OnInit {
   users: User[] = [];
   clients: Client[] = [];
   projectForm: FormGroup;
+  ciPlaceAbbr;
 
   userToBeAdded: User;
   memberGridColumns: string[];
@@ -37,9 +38,21 @@ export class PAddEditComponent implements OnInit {
     private clientService: ClientService,
     private projectService: ProjectService,
     private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
     private router: Router) { }
 
   ngOnInit() {
+    this.ciPlaceAbbr = {
+      'La Paz': 'LP',
+      'Oruro': 'OR',
+      'Potosi': 'PT',
+      'Cochabamba': 'CB',
+      'Chuquisaca': 'CH',
+      'Tarija': 'TJ',
+      'Santa Cruz': 'SC',
+      'Beni': 'BN',
+      'Pando': 'PA'
+    };
     this.userService.getUserList().subscribe(
       userList => {
         this.users = userList;
@@ -132,27 +145,46 @@ export class PAddEditComponent implements OnInit {
     ) : false;
   }
 
-  onAddMember() {
-    this.projectMembers.push(this.userToBeAdded);
-    // this.membersTable.renderRows();
-    this.projMembersDataSource.data = this.projectMembers;
-    let idx = this.userIdsToBeUnregistered.indexOf(this.userToBeAdded.id);
-    if (idx !== -1) {
-      this.userIdsToBeUnregistered.splice(idx, 1);
+  addLeadMember() {
+    const me = this;
+    let leadId = me.projectForm.get('leadId').value;
+    if (leadId) {
+      me.userToBeAdded = this.users.find(user => user.id == leadId);
+      me.onAddMember();
     }
-    this.userToBeAdded = null;
+  }
+
+  onAddMember() {
+    const me = this;
+    if (me.userToBeAdded.id) {
+      if (me.projectMembers.findIndex(member => member.id == me.userToBeAdded.id) == -1) {
+        me.projectMembers.push(me.userToBeAdded);
+        // me.membersTable.renderRows();
+        me.projMembersDataSource.data = me.projectMembers;
+        let idx = me.userIdsToBeUnregistered.indexOf(me.userToBeAdded.id);
+        if (idx !== -1) {
+          me.userIdsToBeUnregistered.splice(idx, 1);
+        }
+      }
+      me.userToBeAdded = null;
+    }
   }
 
   onRemoveMember(userId) {
-    let index = this.projectMembers.findIndex(user => user.id == userId);
-    if (index != -1) {
-      this.projectMembers.splice(index, 1);
-      this.userIdsToBeUnregistered.push(userId);
+    const me = this;
+    if (me.projectForm.get('leadId').value != userId) {
+      let index = me.projectMembers.findIndex(user => user.id == userId);
+      if (index != -1) {
+        me.projectMembers.splice(index, 1);
+        me.userIdsToBeUnregistered.push(userId);
+      } else {
+        console.error('Cannot find user.')
+      }
+      // me.membersTable.renderRows();
+      me.projMembersDataSource.data = me.projectMembers;
     } else {
-      console.error('Cannot find user.')
+      me.snackBar.open('No se puede eliminar al encargado del proyecto.', 'ok', { duration: 4000 });
     }
-    // this.membersTable.renderRows();
-    this.projMembersDataSource.data = this.projectMembers;
   }
 
   onSaveProject() {
@@ -163,15 +195,16 @@ export class PAddEditComponent implements OnInit {
       this.projectService.addProject(projData).then(
         projectRawData => {
           this.clientService.registerProject(projData.clientId, projectRawData.id);
-          this.userIdsToBeUnregistered.forEach(
-            userId => this.userService.unregisterProject(userId, projectRawData.id)
-          );
+          this.userService.registerProject(projData.leadId, this.selectedProjectId, true);
           projData.membersIds.forEach(memberId => {
             this.userService.registerProject(memberId, projectRawData.id);
           });
         }
       );
     } else {
+      if (this.initialProjectData.leadId != projData.leadId) {
+        this.userService.unregisterProject(this.initialProjectData.leadId, this.selectedProjectId, true);
+      }
       this.projectService.updateProject(this.selectedProjectId, projData);
       this.userIdsToBeUnregistered.forEach(
         userId => this.userService.unregisterProject(userId, this.selectedProjectId)

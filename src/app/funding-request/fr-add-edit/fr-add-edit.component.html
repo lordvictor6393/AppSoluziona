@@ -194,6 +194,11 @@
     </div>
   </mat-expansion-panel>
   <br>
-  <button mat-raised-button color="primary" (click)="onSaveFr()">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
-  <button mat-button (click)="backToFrsList()" type="button">Cancelar</button>
+  <div class="sz-action-btns">
+  <h4 *ngIf="!isNew &&initialFrData && initialFrData.isSent">Su solicitud ya fue enviada</h4>
+  <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Enviar Solicitud</button>
+  <div style="flex: 1;"></div>
+  <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="isNew || (initialFrData && !initialFrData.isSent)">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
+  <button mat-button (click)="backToFrList()" type="button">Cancelar</button>
+  </div>
 </form>

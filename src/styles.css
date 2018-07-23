@@ -21,7 +21,7 @@ td {
     padding-left: 5px !important;
     padding-right: 5px !important;
 }
-.sz-filters-section {
+.sz-filters-section, .sz-action-btns {
     display: flex;
 }
 .sz-filters-section mat-form-field {

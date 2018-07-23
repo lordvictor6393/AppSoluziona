@@ -58,6 +58,7 @@ export class ProjectService {
         let members = projectData.membersIds;
         let projectRef = this.db.doc('projects/' + projId);
         if (this.users.length) {
+            this.userService.registerProject(projectData.leadId, projId, true);
             members.forEach(memberId => {
                 this.userService.registerProject(memberId, projId);
             });
