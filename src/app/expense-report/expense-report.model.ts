@@ -28,7 +28,7 @@ export class ExpenseReport {
         voucher: string,
         receiverUserId: string
     };
-    public aproveUserId: string;
+    public approveUserId: string;
 
     constructor(
         id: string,
@@ -57,7 +57,7 @@ export class ExpenseReport {
             voucher: string,
             receiverUserId: string
         },
-        aproveUserId: string,
+        approveUserId: string,
 
         isSent?: boolean
     ) {
@@ -78,7 +78,7 @@ export class ExpenseReport {
         this.date = new Date(date);
         this.items = items;
         this.accordance = accordance;
-        this.aproveUserId = aproveUserId || '';
+        this.approveUserId = approveUserId || '';
     }
 
     static getErFromSnapshot(erData): ExpenseReport {
@@ -98,7 +98,7 @@ export class ExpenseReport {
             data.date,
             data.items,
             data.accordance,
-            data.aproveUserId,
+            data.approveUserId,
             data.isSent
         );
     }
@@ -119,7 +119,7 @@ export class ExpenseReport {
             erData.date,
             erData.items,
             erData.accordance,
-            erData.aproveUserId,
+            erData.approveUserId,
             erData.isSent
         );
     }

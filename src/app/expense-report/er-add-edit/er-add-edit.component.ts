@@ -70,7 +70,7 @@ export class ErAddEditComponent implements OnInit {
         voucher: new FormControl(null),
         receiverUserId: new FormControl(null),
       }),
-      aproveUserId: new FormControl(null),
+      approveUserId: new FormControl(null),
     });
 
     this.route.params.subscribe(
@@ -125,7 +125,7 @@ export class ErAddEditComponent implements OnInit {
             voucher: erData.accordance.voucher,
             receiverUserId: erData.accordance.receiverUserId
           },
-          aproveUserId: erData.aproveUserId
+          approveUserId: erData.approveUserId
         });
 
         this.erItems = erData.items.map(

@@ -1,3 +1,4 @@
+import * as SZ from '../globalConstants';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Observable, of as ObservableOf } from 'rxjs';
@@ -5,14 +6,10 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { Router } from '@angular/router';
 import { switchMap, map } from 'rxjs/operators';
 import { User } from '../user/user.model';
+import { FundingRequest } from '../funding-request/funding-request.model';
 
 @Injectable()
 export class AuthService {
-  private rolesEnum = {
-    COMMON: 'common',
-    ACCOUNTANT: 'accountant',
-    CHIEF: 'chief'
-  }
 
   loggedUserId: string;
   user: Observable<User>;
@@ -69,56 +66,58 @@ export class AuthService {
 
   CanEditProfile(): boolean {
     const allowed = [
-      this.rolesEnum.COMMON, 
-      this.rolesEnum.ACCOUNTANT,
-      this.rolesEnum.CHIEF
-    ];
-    return this.checkAuthorization(allowed);
-  }
-
-  CanManageOwnFrEr() {
-    const allowed = [
-      this.rolesEnum.COMMON, 
-      this.rolesEnum.ACCOUNTANT,
-      this.rolesEnum.CHIEF
+      SZ.COMMON, 
+      SZ.ACCOUNTANT,
+      SZ.CHIEF
     ];
     return this.checkAuthorization(allowed);
   }
 
   CanManageAllFrEr() {
     const allowed = [
-      this.rolesEnum.ACCOUNTANT,
-      this.rolesEnum.CHIEF
+      SZ.ACCOUNTANT,
+      SZ.CHIEF
     ];
     return this.checkAuthorization(allowed);
   }
 
+  CanReadProjects() {
+    const allowed = [
+      SZ.ACCOUNTANT,
+      SZ.CHIEF
+    ];
+    return this.checkAuthorization(allowed);
+  }
+  
   CanManageProjects() {
-    const allowed = [this.rolesEnum.CHIEF];
+    const allowed = [SZ.CHIEF];
     return this.checkAuthorization(allowed);
   }
 
   CanManageClients() {
-    const allowed = [this.rolesEnum.CHIEF];
+    const allowed = [SZ.CHIEF];
     return this.checkAuthorization(allowed);
   }
 
   CanManageUsers() {
-    const allowed = [this.rolesEnum.CHIEF];
+    const allowed = [SZ.CHIEF];
     return this.checkAuthorization(allowed);
   }
 
   CanAccessReports() {
     const allowed = [
-      this.rolesEnum.ACCOUNTANT,
-      this.rolesEnum.CHIEF
+      SZ.ACCOUNTANT,
+      SZ.CHIEF
     ];
     return this.checkAuthorization(allowed);
   }
 
-  CanApproveFr(frId: string) {
+  CanApproveFr(fr: FundingRequest) {
     if(this.loggedUserInstance) {
-      return this.loggedUserInstance.leadOf.indexOf(frId) !== -1;
+      let userIsAdmin = this.CanManageAllFrEr();
+      let userIsLead = this.loggedUserInstance.leadOf.indexOf(fr.projectId) !== -1;
+
+      return (userIsLead && fr.state == SZ.SENT) || (userIsAdmin && (fr.state == SZ.SENT || fr.state == SZ.VERIFIED));
     }
     return false;
   }

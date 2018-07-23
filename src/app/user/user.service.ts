@@ -29,7 +29,26 @@ export class UsersService {
 
     getUserList(): Observable<User[]> {
         return this.userCollectionRef.snapshotChanges().pipe(
-            map(userList => userList.map(User.getUserFromSnapshot))
+            map(userList => userList.map(User.getUserFromSnapshot)),
+            map(userList => {
+                let filterdList = [];
+                if (!this.authService.CanManageAllFrEr() && !this.authService.CanManageProjects()) {
+                    filterdList = userList.filter(
+                        user => {
+                            let loggedIsLead = false;
+                            let loggedUser = this.authService.loggedUserInstance;
+                            loggedUser.leadOf.forEach(
+                                projId => {
+                                    loggedIsLead = loggedIsLead || user.projectIds.indexOf(projId) !== -1;
+                                }
+                            );
+                            return loggedIsLead;
+                        }
+                    );
+                    return filterdList;
+                }
+                return userList;
+            })
         );
     }
 

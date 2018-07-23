@@ -86,12 +86,13 @@
     </mat-form-field>
     <br>
     <mat-form-field *ngIf="authService.CanManageUsers()">
-      <mat-select placeholder="Tipo de Usuario" [value]="selectedRole">
+      <mat-select placeholder="Tipo de Usuario" [(value)]="selectedRole">
         <mat-option *ngFor="let role of roles" [value]="role.value">
           {{role.viewValue}}
         </mat-option>
       </mat-select>
     </mat-form-field>
+    <br>
     <mat-form-field *ngIf="isNew">
       <input matInput placeholder="Contraseña" #userPassword>
     </mat-form-field>

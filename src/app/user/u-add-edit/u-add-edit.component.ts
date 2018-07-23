@@ -106,13 +106,12 @@ export class UAddEditComponent implements OnInit {
 
   onSaveUser() {
     let userData = this.userForm.value;
+    userData.roles = {};
+    userData.roles[this.selectedRole] = true;
     if (this.isNew) {
       let password = this.userPassword.nativeElement.value;
-      userData.roles = { common: true };
       this.userService.addUser(userData, password);
     } else {
-      userData.roles = {};
-      userData.roles[this.selectedRole] = true;
       this.userService.updateUser(this.selectedUserId, userData);
     }
     this.backToUsersList();

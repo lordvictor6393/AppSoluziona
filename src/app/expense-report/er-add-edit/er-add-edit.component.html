@@ -156,7 +156,7 @@
     </mat-form-field>
     <br>
     <mat-form-field>
-      <mat-select placeholder="Autorizado por" formControlName="aproveUserId">
+      <mat-select placeholder="Autorizado por" formControlName="approveUserId">
         <mat-option *ngFor="let user of users" [value]='user.id'>
           {{user.name}} {{user.lastName}}
         </mat-option>

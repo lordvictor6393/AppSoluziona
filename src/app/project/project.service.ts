@@ -7,6 +7,7 @@ import { Client } from "../client/client.model";
 import { ClientService } from "../client/client.service";
 import { Observable } from "../../../node_modules/rxjs";
 import { map } from "../../../node_modules/rxjs/operators";
+import { AuthService } from "../auth/auth.service";
 
 @Injectable()
 export class ProjectService {
@@ -17,6 +18,7 @@ export class ProjectService {
 
     constructor(private db: AngularFirestore,
         private userService: UsersService,
+        private authService: AuthService,
         private clientService: ClientService) {
         this.userService.getUserList().subscribe(userList => this.users = userList);
         this.clientService.getClientList().subscribe(clientList => this.clients = clientList);
@@ -30,7 +32,21 @@ export class ProjectService {
 
     getProjectList(): Observable<Project[]> {
         return this.projectsCollectionRef.snapshotChanges().pipe(
-            map(projectList => projectList.map(Project.getProjectFromSnapshot))
+            map(projectList => projectList.map(Project.getProjectFromSnapshot)),
+            map(projectList => {
+                let filteredList = [];
+                if(!this.authService.CanReadProjects()) {
+                    filteredList = projectList.filter(
+                        project => {
+                            let user = this.authService.loggedUserInstance;
+                            if(user) return user.projectIds.indexOf(project.id) !== -1;
+                            else return false;
+                        }
+                    );
+                    return filteredList;
+                }
+                return projectList;
+            })
         );
     }
 

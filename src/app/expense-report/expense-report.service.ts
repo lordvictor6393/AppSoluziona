@@ -1,3 +1,4 @@
+import * as SZ from '../globalConstants';
 import { Injectable } from "../../../node_modules/@angular/core";
 import { ExpenseReport } from "./expense-report.model";
 import { AngularFirestoreCollection, AngularFirestore } from "../../../node_modules/angularfire2/firestore";
@@ -42,7 +43,7 @@ export class ExpenseReportService {
     addEr(erData) {
         erData.isDeleted = false;
         erData.isSent = false;
-        erData.state = 'Creado';
+        erData.state = SZ.CREATED;
         erData.date = erData.date.getTime();
         this.erCollectionRef.add(erData);
     }

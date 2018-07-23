@@ -1,3 +1,4 @@
+import * as SZ from '../../globalConstants';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ExpenseReportService } from '../expense-report.service';
 import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router';
@@ -28,7 +29,7 @@ export class ErListComponent implements OnInit {
 
   users: User[];
   projects: Project[];
-  states: string[] = ['Creado', 'Enviado', 'Recibido', 'Verificado', 'Rechazado', 'Aprovado'];
+  states: string[] = [SZ.CREATED, SZ.SENT, SZ.VERIFIED, SZ.REJECTED, SZ.APPROVED];
   
   constructor(private expenseReportService: ExpenseReportService,
     private userService: UsersService,

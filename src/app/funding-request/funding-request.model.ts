@@ -1,3 +1,24 @@
+interface dbFrItem {
+    detail: string,
+    quantity: number,
+    singlePrice: number,
+    totalPrice: number
+}
+
+interface dbAccordance {
+    paymentType: string,
+    voucher: string,
+    receiverUserId: string,
+    deliverUserId: string
+}
+
+interface dbFrActivity {
+    action: string,
+    userId: string,
+    date: number,
+    reason?: string
+}
+
 export class FundingRequest {
     public isDeleted: boolean;
     public isSent: boolean; 
@@ -11,20 +32,11 @@ export class FundingRequest {
     public state: string;
     public detail: string;
     public observations: string;
-    public aproveUserId: string;
+    public approveUserId: string;
     public total: number;
-    public items: {
-        detail: string,
-        quantity: number,
-        singlePrice: number,
-        totalPrice: number
-    }[];
-    public accordance: {
-        paymentType: string,
-        voucher: string,
-        receiverUserId: string,
-        deliverUserId: string
-    };
+    public items: dbFrItem[];
+    public accordance: dbAccordance;
+    public activity: dbFrActivity[];
 
     constructor (
         id: string,
@@ -36,22 +48,13 @@ export class FundingRequest {
         state: string,
         detail: string,
         observations: string,
-        aproveUserId: string,
+        approveUserId: string,
         total: number,
-        items: {
-            detail: string,
-            quantity: number,
-            singlePrice: number,
-            totalPrice: number
-        }[],
-        accordance: {
-            paymentType: string,
-            voucher: string,
-            receiverUserId: string,
-            deliverUserId: string
-        },
+        items: dbFrItem[],
+        accordance: dbAccordance,
 
-        isSent?: boolean
+        isSent?: boolean,
+        activity?: dbFrActivity[]
     ) {
         this.isDeleted = false;
         this.isSent = isSent || false;
@@ -65,10 +68,11 @@ export class FundingRequest {
         this.state = state;
         this.detail = detail;
         this.observations = observations;
-        this.aproveUserId = aproveUserId;
+        this.approveUserId = approveUserId;
         this.total = total;
         this.items = items;
         this.accordance = accordance;
+        this.activity = activity || [];
     }
 
     static getFrFromSnapshot(frData): FundingRequest {
@@ -83,11 +87,12 @@ export class FundingRequest {
             data.state,
             data.detail,
             data.observations,
-            data.aproveUserId,
+            data.approveUserId,
             data.total,
             data.items,
             data.accordance,
-            data.isSent
+            data.isSent,
+            data.activity
         );
     }
 
@@ -102,11 +107,12 @@ export class FundingRequest {
             frData.state,
             frData.detail,
             frData.observations,
-            frData.aproveUserId,
+            frData.approveUserId,
             frData.total,
             frData.items,
             frData.accordance,
-            frData.isSent
+            frData.isSent,
+            frData.activity
         );
     }
 }

@@ -18,7 +18,8 @@
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput placeholder="Nombres y apellidos" [value]="selectedUser ? (selectedUser.name + ' ' + selectedUser.lastName) : ''" [readonly]="true">
+      <input matInput placeholder="Nombres y apellidos" [value]="selectedUser ? (selectedUser.name + ' ' + selectedUser.lastName) : ''"
+        [readonly]="true">
     </mat-form-field>
     <br>
     <mat-form-field>
@@ -68,6 +69,27 @@
     <mat-form-field>
       <input matInput placeholder="Motivo del gasto" formControlName="detail">
     </mat-form-field>
+    <br>
+    <table *ngIf="initialFrData" mat-table class="mat-elevation-z2 sz-item-table" [dataSource]="initialFrData.activity">
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Accion </th>
+        <td mat-cell *matCellDef="let record"> {{record.action}} </td>
+      </ng-container>
+      <ng-container matColumnDef="user">
+        <th mat-header-cell *matHeaderCellDef> Usuario </th>
+        <td mat-cell *matCellDef="let record"> {{userService.getCompleteUserName(record.userId)}} </td>
+      </ng-container>
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Fecha </th>
+        <td mat-cell *matCellDef="let record"> {{record.date | date:'medium'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="reason">
+        <th mat-header-cell *matHeaderCellDef> Motivo </th>
+        <td mat-cell *matCellDef="let record"> {{record.reason || ''}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['action', 'user', 'date', 'reason']; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['action', 'user', 'date', 'reason'];"></tr>
+    </table>
   </mat-expansion-panel>
   <mat-expansion-panel class="sz-details-panel" [expanded]=true>
     <mat-expansion-panel-header>
@@ -120,36 +142,12 @@
     <button mat-raised-button color="primary" (click)="addFundingRequestItem()">
       Añadir
     </button>
-  </mat-expansion-panel>
-  <mat-expansion-panel class="sz-details-panel">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Observaciones
-      </mat-panel-title>
-      <mat-panel-description>
-        <!-- description -->
-      </mat-panel-description>
-    </mat-expansion-panel-header>
+    <br>
     <mat-form-field>
       <textarea matInput placeholder="Observaciones" formControlName="observations"></textarea>
     </mat-form-field>
-    <br>
-    <mat-form-field>
-      <mat-select placeholder="Solicitado por" [(value)]='selectedUserId'>
-        <mat-option *ngFor="let user of users" [value]='user.id'>
-          {{user.name}} {{user.lastName}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-      <mat-select placeholder="Autorizado por">
-        <mat-option *ngFor="let user of users" [value]='user.id'>
-          {{user.name}} {{user.lastName}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
   </mat-expansion-panel>
+
   <mat-expansion-panel class="sz-details-panel">
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -195,10 +193,13 @@
   </mat-expansion-panel>
   <br>
   <div class="sz-action-btns">
-  <h4 *ngIf="!isNew &&initialFrData && initialFrData.isSent">Su solicitud ya fue enviada</h4>
-  <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Enviar Solicitud</button>
-  <div style="flex: 1;"></div>
-  <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="isNew || (initialFrData && !initialFrData.isSent)">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
-  <button mat-button (click)="backToFrList()" type="button">Cancelar</button>
+    <h4 *ngIf="!isNew &&initialFrData && initialFrData.isSent">Su solicitud ya fue enviada</h4>
+    <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Enviar Solicitud</button>
+    <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="initialFrData && initialFrData.isSent && authService.CanApproveFr()">Aprobar</button>
+      <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="request.isSent && authService.CanApproveFr()">Rechazar</button>
+      <button *ngIf="!request.isSent" mat-button color="primary" type="button" (click)="onDeleteFundingRequest(request.id)">Eliminar</button>
+    <div style="flex: 1;"></div>
+    <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="isNew || (initialFrData && !initialFrData.isSent)">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
+    <button mat-button (click)="backToFrList()" type="button">Cancelar</button>
   </div>
 </form>

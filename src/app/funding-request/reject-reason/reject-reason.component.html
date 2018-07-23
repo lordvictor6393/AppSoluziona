@@ -1,0 +1,12 @@
+<h2 mat-dialog-title> Rechazo de Solicitud </h2>
+<mat-dialog-content>
+  <form [formGroup]="reasonForm">
+    <mat-form-field>
+      <input matInput placeholder="Motivo" formControlName="reason">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="warn" (click)="returnRejectReason()"> Rechazar </button>
+  <button mat-stroked-button color="primary" mat-dialog-close> Cancelar </button>
+</mat-dialog-actions>

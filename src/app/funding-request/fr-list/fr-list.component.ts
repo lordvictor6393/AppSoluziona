@@ -1,12 +1,15 @@
+import * as SZ from '../../globalConstants';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FundingRequest } from '../funding-request.model';
 import { FundingRequestService } from '../funding-request.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatTableDataSource, MatSort } from '@angular/material';
+import { MatTableDataSource, MatSort, MatDialog } from '@angular/material';
 import { UsersService } from '../../user/user.service';
 import { ProjectService } from '../../project/project.service';
 import { Project } from '../../project/project.model';
 import { User } from '../../user/user.model';
+import { AuthService } from '../../auth/auth.service';
+import { RejectReasonComponent } from '../reject-reason/reject-reason.component';
 
 @Component({
   selector: 'app-fr-list',
@@ -28,11 +31,13 @@ export class FrListComponent implements OnInit {
 
   users: User[];
   projects: Project[];
-  states: string[] = ['Creado', 'Enviado', 'Recibido', 'Verificado', 'Rechazado', 'Aprovado'];
+  states: string[] = [SZ.CREATED, SZ.SENT, SZ.VERIFIED, SZ.REJECTED, SZ.APPROVED];
 
   constructor(private fundingRequestService: FundingRequestService,
     private userService: UsersService,
     private projectService: ProjectService,
+    private authService: AuthService,
+    private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router) { }
 
@@ -54,7 +59,7 @@ export class FrListComponent implements OnInit {
     this.fundingRequestService.getFrList().subscribe(
       frList => {
         this.requests = frList;
-        if(this.requests.length) {
+        if (this.requests.length) {
           this.frDataSource.data = this.requests;
         }
       }
@@ -62,10 +67,10 @@ export class FrListComponent implements OnInit {
     this.frDataSource.sort = this.sort;
     this.frDataSource.filterPredicate = (data: FundingRequest) => {
       let match: boolean = true;
-      if(this.filterByUserId) match = match && (data.createUserId == this.filterByUserId);
-      if(this.filterByProjectId) match = match && (data.projectId == this.filterByProjectId);
-      if(this.filterByState) match = match && (data.state == this.filterByState);
-      if(this.filterBySearchText) match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test(data.detail));
+      if (this.filterByUserId) match = match && (data.createUserId == this.filterByUserId);
+      if (this.filterByProjectId) match = match && (data.projectId == this.filterByProjectId);
+      if (this.filterByState) match = match && (data.state == this.filterByState);
+      if (this.filterBySearchText) match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test(data.detail));
       return match;
     }
     // Transform the data into a lowercase string of all property values.
@@ -89,6 +94,61 @@ export class FrListComponent implements OnInit {
     this.router.navigate([frId], {
       relativeTo: this.route
     })
+  }
+
+  onSendFundingRequest(fr: FundingRequest) {
+    let user = this.authService.loggedUserInstance;
+    let activity = fr.activity || [];
+    if (user && !fr.isSent) {
+      activity.push({
+        action: SZ.SENT,
+        userId: this.authService.getLoggedUserId(),
+        date: new Date().getTime()
+      });
+      this.fundingRequestService.sendFr(fr.id, activity);
+    }
+  }
+
+  onApproveFundingRequest(fr: FundingRequest) {
+    let user = this.authService.loggedUserInstance;
+    let activity = fr.activity || [];
+    if (user && fr.isSent) {
+      if (user.leadOf.indexOf(fr.projectId)) {
+        activity.push({
+          action: SZ.VERIFIED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.fundingRequestService.verifyFr(fr.id, activity);
+      } else if (this.authService.CanManageAllFrEr()) {
+        activity.push({
+          action: SZ.APPROVED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.fundingRequestService.approveFr(fr.id, activity);
+      }
+    }
+  }
+
+  onRejectFundingRequest(fr: FundingRequest) {
+    let user = this.authService.loggedUserInstance;
+    let activity = fr.activity || [];
+    if (user && fr.isSent) {
+      this.dialog.open(RejectReasonComponent).afterClosed().subscribe(
+        reason => {
+          if(reason) {
+            activity.push({
+              action: SZ.REJECTED,
+              userId: this.authService.getLoggedUserId(),
+              date: new Date().getTime(),
+              reason: reason
+            });
+            this.fundingRequestService.rejectFr(fr.id, activity);
+          }
+        }
+      );
+    }
   }
 
   onAddFundingRequest() {

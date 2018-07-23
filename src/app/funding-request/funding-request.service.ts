@@ -1,3 +1,4 @@
+import * as SZ from '../globalConstants';
 import { FundingRequest } from "./funding-request.model";
 import { AngularFirestore, AngularFirestoreCollection } from "../../../node_modules/angularfire2/firestore";
 import { Observable } from "../../../node_modules/rxjs";
@@ -79,8 +80,13 @@ export class FundingRequestService {
         const me = this;
         frData.isDeleted = false;
         frData.isSent = false;
-        frData.state = 'Creado';
+        frData.state = SZ.CREATED;
         frData.date = frData.date.getTime();
+        frData.activity = [{
+            action: SZ.CREATED,
+            userId: frData.createUserId,
+            date: frData.date
+        }]
         me.frCollectionRef.add(frData);
     }
 
@@ -95,9 +101,38 @@ export class FundingRequestService {
         }
     }
 
-    sendFr(frId: string) {
+    sendFr(frId: string, frActivity) {
         const me = this;
-        me.updateFr(frId, { isSent: true, state: 'Enviado' });
+        me.updateFr(frId, { 
+            isSent: true, 
+            state: SZ.SENT,
+            activity: frActivity
+         });
+    }
+
+    verifyFr(frId: string, frActivity) {
+        const me = this;
+        me.updateFr(frId, {
+            state: SZ.VERIFIED,
+            activity: frActivity
+        });
+    }
+
+    approveFr(frId: string, frActivity) {
+        const me = this;
+        me.updateFr(frId, {
+            state: SZ.APPROVED,
+            approveUserId: me.authService.getLoggedUserId,
+            activity: frActivity
+        });
+    }
+
+    rejectFr(frId: string, frActivity) {
+        const me = this;
+        me.updateFr(frId, {
+            state: SZ.REJECTED,
+            activity: frActivity
+        });
     }
 
     deleteFr(frId: string) {

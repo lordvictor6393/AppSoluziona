@@ -1,3 +1,4 @@
+import * as SZ from '../../globalConstants';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FundingRequestItem } from './fr-form-item/funding-request-item.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,6 +13,8 @@ import { Project } from '../../project/project.model';
 import { FundingRequest } from '../funding-request.model';
 import { ProjectService } from '../../project/project.service';
 import { FundingRequestService } from '../funding-request.service';
+import { AuthService } from '../../auth/auth.service';
+import { RejectReasonComponent } from '../reject-reason/reject-reason.component';
 
 @Component({
   selector: 'app-fr-add-edit',
@@ -45,6 +48,7 @@ export class FrAddEditComponent implements OnInit {
     private projectService: ProjectService,
     private clientService: ClientService,
     private userService: UsersService,
+    private authService: AuthService,
     private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -169,8 +173,58 @@ export class FrAddEditComponent implements OnInit {
   }
 
   onSendFr() {
-    this.fundingRequestService.sendFr(this.selectedFrId);
+    let user = this.authService.loggedUserInstance;
+    let activity = this.initialFrData.activity || [];
+    if (user && !this.initialFrData.isSent) {
+      activity.push({
+        action: SZ.SENT,
+        userId: this.authService.getLoggedUserId(),
+        date: new Date().getTime()
+      });
+      this.fundingRequestService.sendFr(this.initialFrData.id, activity);
+    }
     this.backToFrList();
+  }
+  onApproveFr() {
+    let user = this.authService.loggedUserInstance;
+    let activity = this.initialFrData.activity || [];
+    if (user && this.initialFrData.isSent) {
+      if (user.leadOf.indexOf(this.initialFrData.projectId)) {
+        activity.push({
+          action: SZ.VERIFIED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.fundingRequestService.verifyFr(this.initialFrData.id, activity);
+      } else if (this.authService.CanManageAllFrEr()) {
+        activity.push({
+          action: SZ.APPROVED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.fundingRequestService.approveFr(this.initialFrData.id, activity);
+      }
+    }
+  }
+
+  onRejectFr() {
+    let user = this.authService.loggedUserInstance;
+    let activity = this.initialFrData.activity || [];
+    if (user && this.initialFrData.isSent) {
+      this.dialog.open(RejectReasonComponent).afterClosed().subscribe(
+        reason => {
+          if(reason) {
+            activity.push({
+              action: SZ.REJECTED,
+              userId: this.authService.getLoggedUserId(),
+              date: new Date().getTime(),
+              reason: reason
+            });
+            this.fundingRequestService.rejectFr(this.initialFrData.id, activity);
+          }
+        }
+      );
+    }
   }
 
   onSaveFr() {

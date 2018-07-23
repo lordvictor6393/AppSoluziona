@@ -45,7 +45,9 @@ import { HomeComponent } from './home/home.component';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './user/user.service';
 import { ProjectService } from './project/project.service';
+
 import { registerLocaleData } from '../../node_modules/@angular/common';
+import { RejectReasonComponent } from './funding-request/reject-reason/reject-reason.component';
 
 registerLocaleData(localeEs, 'es-BO');
 
@@ -67,7 +69,8 @@ registerLocaleData(localeEs, 'es-BO');
     HeaderComponent,
     SidebarComponent,
     SigninComponent,
-    HomeComponent
+    HomeComponent,
+    RejectReasonComponent
   ],
   imports: [
     BrowserModule,
@@ -82,7 +85,8 @@ registerLocaleData(localeEs, 'es-BO');
   ],
   entryComponents: [
     FrFormItemComponent,
-    ErFormItemComponent
+    ErFormItemComponent,
+    RejectReasonComponent
   ],
   providers: [
     AuthService,
