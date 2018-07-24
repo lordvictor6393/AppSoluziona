@@ -1,3 +1,4 @@
+import * as SZ from '../../globalConstants';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ExpenseReport } from '../expense-report.model';
 import { User } from '../../user/user.model';
@@ -12,6 +13,8 @@ import { ClientService } from '../../client/client.service';
 import { UsersService } from '../../user/user.service';
 import { ErFormItemComponent } from './er-form-item/er-form-item.component';
 import { ExpenseReportItem } from './er-form-item/expense-report-item.model';
+import { AuthService } from '../../auth/auth.service';
+import { RejectReasonComponent } from '../../funding-request/reject-reason/reject-reason.component';
 
 @Component({
   selector: 'app-er-add-edit',
@@ -45,6 +48,7 @@ export class ErAddEditComponent implements OnInit {
     private projectService: ProjectService,
     private clientService: ClientService,
     private userService: UsersService,
+    private authService: AuthService,
     private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -59,7 +63,6 @@ export class ErAddEditComponent implements OnInit {
     );
     this.expenseReportForm = new FormGroup({
       code: new FormControl(null),
-      projectId: new FormControl(null),
       createUserId: new FormControl(null),
       totalReceived: new FormControl(null),
       observations: new FormControl(null),
@@ -69,8 +72,7 @@ export class ErAddEditComponent implements OnInit {
         serviceOrder: new FormControl(null),
         voucher: new FormControl(null),
         receiverUserId: new FormControl(null),
-      }),
-      approveUserId: new FormControl(null),
+      })
     });
 
     this.route.params.subscribe(
@@ -114,7 +116,6 @@ export class ErAddEditComponent implements OnInit {
         this.updateCurrentSelectedUser();
         this.expenseReportForm.setValue({
           code: erData.code,
-          projectId: erData.projectId,
           createUserId: erData.createUserId,
           totalReceived: erData.totalReceived,
           observations: erData.observations,
@@ -124,8 +125,7 @@ export class ErAddEditComponent implements OnInit {
             serviceOrder: erData.accordance.serviceOrder,
             voucher: erData.accordance.voucher,
             receiverUserId: erData.accordance.receiverUserId
-          },
-          approveUserId: erData.approveUserId
+          }
         });
 
         this.erItems = erData.items.map(
@@ -179,6 +179,62 @@ export class ErAddEditComponent implements OnInit {
       this.erItems.splice(index, 1);
       // this.frItemTable.renderRows();
       this.erItemsDataSource.data = this.erItems;
+    }
+  }
+
+  onSendEr() {
+    let user = this.authService.loggedUserInstance;
+    let activity = this.initialErData.activity || [];
+    if (user && !this.initialErData.isSent) {
+      activity.push({
+        action: SZ.SENT,
+        userId: this.authService.getLoggedUserId(),
+        date: new Date().getTime()
+      });
+      this.expenseReportService.sendEr(this.initialErData.id, activity);
+    }
+    this.backToErList();
+  }
+  
+  onApproveEr() {
+    let user = this.authService.loggedUserInstance;
+    let activity = this.initialErData.activity || [];
+    if (user && this.initialErData.isSent) {
+      if (user.leadOf.indexOf(this.initialErData.projectId)) {
+        activity.push({
+          action: SZ.VERIFIED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.expenseReportService.verifyEr(this.initialErData.id, activity);
+      } else if (this.authService.CanManageAllFrEr()) {
+        activity.push({
+          action: SZ.APPROVED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.expenseReportService.approveEr(this.initialErData.id, activity);
+      }
+    }
+  }
+
+  onRejectEr() {
+    let user = this.authService.loggedUserInstance;
+    let activity = this.initialErData.activity || [];
+    if (user && this.initialErData.isSent) {
+      this.dialog.open(RejectReasonComponent).afterClosed().subscribe(
+        reason => {
+          if(reason) {
+            activity.push({
+              action: SZ.REJECTED,
+              userId: this.authService.getLoggedUserId(),
+              date: new Date().getTime(),
+              reason: reason
+            });
+            this.expenseReportService.rejectEr(this.initialErData.id, activity);
+          }
+        }
+      );
     }
   }
 

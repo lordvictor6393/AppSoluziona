@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { switchMap, map } from 'rxjs/operators';
 import { User } from '../user/user.model';
 import { FundingRequest } from '../funding-request/funding-request.model';
+import { ExpenseReport } from '../expense-report/expense-report.model';
 
 @Injectable()
 export class AuthService {
@@ -118,6 +119,16 @@ export class AuthService {
       let userIsLead = this.loggedUserInstance.leadOf.indexOf(fr.projectId) !== -1;
 
       return (userIsLead && fr.state == SZ.SENT) || (userIsAdmin && (fr.state == SZ.SENT || fr.state == SZ.VERIFIED));
+    }
+    return false;
+  }
+
+  CanApproveEr(er: ExpenseReport) {
+    if(this.loggedUserInstance) {
+      let userIsAdmin = this.CanManageAllFrEr();
+      let userIsLead = this.loggedUserInstance.leadOf.indexOf(er.projectId) !== -1;
+
+      return (userIsLead && er.state == SZ.SENT) || (userIsAdmin && (er.state == SZ.SENT || er.state == SZ.VERIFIED));
     }
     return false;
   }

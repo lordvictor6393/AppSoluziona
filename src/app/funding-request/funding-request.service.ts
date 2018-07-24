@@ -86,7 +86,7 @@ export class FundingRequestService {
             action: SZ.CREATED,
             userId: frData.createUserId,
             date: frData.date
-        }]
+        }];
         me.frCollectionRef.add(frData);
     }
 

@@ -1,3 +1,26 @@
+interface dbErItem {
+    detail: string,
+    date: number,
+    billNumber: string,
+    voucherNumber: string,
+    quantity: number,
+    singlePrice: number,
+    totalPrice: number
+}
+
+interface dbAccordance {
+    serviceOrder: string,
+    voucher: string,
+    receiverUserId: string
+}
+
+interface dbErActivity {
+    action: string,
+    userId: string,
+    date: number,
+    reason?: string
+}
+
 export class ExpenseReport {
     public isDeleted: boolean;
     public isSent: boolean;
@@ -14,21 +37,10 @@ export class ExpenseReport {
     public observations: string;
     public place: string;
     public date: Date;
-    public items: {
-        detail: string,
-        date: number,
-        billNumber: string,
-        voucherNumber: string,
-        quantity: number,
-        singlePrice: number,
-        totalPrice: number
-    }[];
-    public accordance: {
-        serviceOrder: string,
-        voucher: string,
-        receiverUserId: string
-    };
+    public items: dbErItem[];
+    public accordance: dbAccordance;
     public approveUserId: string;
+    public activity: dbErActivity[];
 
     constructor(
         id: string,
@@ -43,23 +55,12 @@ export class ExpenseReport {
         observations: string,
         place: string,
         date: number,
-        items: {
-            detail: string,
-            date: number,
-            billNumber: string,
-            voucherNumber: string,
-            quantity: number,
-            singlePrice: number,
-            totalPrice: number
-        }[],
-        accordance: {
-            serviceOrder: string,
-            voucher: string,
-            receiverUserId: string
-        },
+        items: dbErItem[],
+        accordance: dbAccordance,
         approveUserId: string,
 
-        isSent?: boolean
+        isSent?: boolean,
+        activity?: dbErActivity[]
     ) {
         this.isDeleted = false;
         this.isSent = isSent || false;
@@ -79,6 +80,7 @@ export class ExpenseReport {
         this.items = items;
         this.accordance = accordance;
         this.approveUserId = approveUserId || '';
+        this.activity = activity || [];
     }
 
     static getErFromSnapshot(erData): ExpenseReport {
@@ -99,7 +101,8 @@ export class ExpenseReport {
             data.items,
             data.accordance,
             data.approveUserId,
-            data.isSent
+            data.isSent,
+            data.activity
         );
     }
 
@@ -120,7 +123,8 @@ export class ExpenseReport {
             erData.items,
             erData.accordance,
             erData.approveUserId,
-            erData.isSent
+            erData.isSent,
+            erData.activity
         );
     }
 }

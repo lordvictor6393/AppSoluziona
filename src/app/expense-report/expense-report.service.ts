@@ -4,13 +4,15 @@ import { ExpenseReport } from "./expense-report.model";
 import { AngularFirestoreCollection, AngularFirestore } from "../../../node_modules/angularfire2/firestore";
 import { Observable } from "../../../node_modules/rxjs";
 import { map } from "../../../node_modules/rxjs/operators";
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class ExpenseReportService {
     private localErList: ExpenseReport[] = [];
     private erCollectionRef: AngularFirestoreCollection<ExpenseReport>;
 
-    constructor(private db: AngularFirestore) {
+    constructor(private authService: AuthService,
+        private db: AngularFirestore) {
         this.erCollectionRef = this.db.collection('expenseReports', ref => ref.where('isDeleted', '==', false));
         this.erCollectionRef.snapshotChanges().subscribe(
             frList => {
@@ -19,10 +21,42 @@ export class ExpenseReportService {
         );
     }
 
+    getListRestrictions() {
+        const me = this;
+        let user = this.authService.loggedUserInstance;
+        if (user) {
+            if (me.authService.CanManageAllFrEr() || user.leadOf.length) {
+                return ref => ref.where('isDeleted', '==', false);
+            } else {
+                return ref => ref
+                    .where('isDeleted', '==', false)
+                    .where('createUserId', '==', me.authService.loggedUserId);
+            }
+        }
+    }
+
     getErList(): Observable<ExpenseReport[]> {
-        return this.erCollectionRef.snapshotChanges().pipe(
-            map( frList => frList.map(ExpenseReport.getErFromSnapshot) )
-        );
+        const me = this;
+        let user = this.authService.loggedUserInstance;
+        if (user) {
+            return me.db.collection('expenseReports', me.getListRestrictions()).snapshotChanges().pipe(
+                map(erList => erList.map(ExpenseReport.getErFromSnapshot)),
+                map(erList => {
+                    let filteredList = erList.filter(
+                        er => {
+                            if(me.authService.CanManageAllFrEr()) return true;
+                            if(user.leadOf.length) {
+                                return  user.id == er.createUserId || 
+                                        (user.leadOf.indexOf(er.projectId) !== -1 
+                                         && er.isSent)
+                            }
+                            return true;
+                        }
+                    )
+                    return filteredList;
+                })
+            );
+        }
     }
 
     getEr(erId: string): Observable<ExpenseReport> {
@@ -45,17 +79,56 @@ export class ExpenseReportService {
         erData.isSent = false;
         erData.state = SZ.CREATED;
         erData.date = erData.date.getTime();
+        erData.activity = [{
+            action: SZ.CREATED,
+            userId: erData.createUserId,
+            date: erData.date
+        }];
         this.erCollectionRef.add(erData);
     }
 
     updateEr(erId, erData) {
         let erRef = this.db.doc('expenseReports/' + erId);
         if(erRef) {
-            erData.date = erData.date.getTime();
+            if(erData.data) erData.date = erData.date.getTime();
             erRef.update(erData);
         } else {
             console.log('Cannot update expense report, not able to get expense report ' + erId);
         }
+    }
+
+    sendEr(erId: string, erActivity) {
+        const me = this;
+        me.updateEr(erId, { 
+            isSent: true, 
+            state: SZ.SENT,
+            activity: erActivity
+         });
+    }
+
+    verifyEr(erId: string, erActivity) {
+        const me = this;
+        me.updateEr(erId, {
+            state: SZ.VERIFIED,
+            activity: erActivity
+        });
+    }
+
+    approveEr(erId: string, erActivity) {
+        const me = this;
+        me.updateEr(erId, {
+            state: SZ.APPROVED,
+            approveUserId: me.authService.getLoggedUserId,
+            activity: erActivity
+        });
+    }
+
+    rejectEr(erId: string, erActivity) {
+        const me = this;
+        me.updateEr(erId, {
+            state: SZ.REJECTED,
+            activity: erActivity
+        });
     }
 
     deleteEr(erId: string) {

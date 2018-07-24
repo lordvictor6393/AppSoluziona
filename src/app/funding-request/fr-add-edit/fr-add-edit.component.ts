@@ -91,7 +91,14 @@ export class FrAddEditComponent implements OnInit {
     );
 
     this.frItemsDataSource.sort = this.sort;
-    this.frGridColumns = ['position', 'detail', 'quantity', 'singlePrice', 'totalPrice', 'editBtn'];
+    this.frGridColumns = [
+      'position',
+      'detail',
+      'quantity',
+      'singlePrice',
+      'totalPrice',
+      'editBtn'
+    ];
   }
 
   updateCurrentSelectedUser() {
@@ -185,6 +192,7 @@ export class FrAddEditComponent implements OnInit {
     }
     this.backToFrList();
   }
+  
   onApproveFr() {
     let user = this.authService.loggedUserInstance;
     let activity = this.initialFrData.activity || [];

@@ -3,11 +3,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ExpenseReportService } from '../expense-report.service';
 import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router';
 import { ExpenseReport } from '../expense-report.model';
-import { MatTableDataSource, MatSort } from '../../../../node_modules/@angular/material';
+import { MatTableDataSource, MatSort, MatDialog } from '../../../../node_modules/@angular/material';
 import { UsersService } from '../../user/user.service';
 import { User } from '../../user/user.model';
 import { Project } from '../../project/project.model';
 import { ProjectService } from '../../project/project.service';
+import { AuthService } from '../../auth/auth.service';
+import { RejectReasonComponent } from '../../funding-request/reject-reason/reject-reason.component';
 
 @Component({
   selector: 'app-er-list',
@@ -34,6 +36,8 @@ export class ErListComponent implements OnInit {
   constructor(private expenseReportService: ExpenseReportService,
     private userService: UsersService,
     private projectService: ProjectService,
+    private authService: AuthService,
+    private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router) { }
 
@@ -88,6 +92,61 @@ export class ErListComponent implements OnInit {
     this.router.navigate([erId], {
       relativeTo: this.route
     })
+  }
+
+  onSendExpenseReport(er: ExpenseReport) {
+    let user = this.authService.loggedUserInstance;
+    let activity = er.activity || [];
+    if (user && !er.isSent) {
+      activity.push({
+        action: SZ.SENT,
+        userId: this.authService.getLoggedUserId(),
+        date: new Date().getTime()
+      });
+      this.expenseReportService.sendEr(er.id, activity);
+    }
+  }
+
+  onApproveFundingRequest(er: ExpenseReport) {
+    let user = this.authService.loggedUserInstance;
+    let activity = er.activity || [];
+    if (user && er.isSent) {
+      if (user.leadOf.indexOf(er.projectId)) {
+        activity.push({
+          action: SZ.VERIFIED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.expenseReportService.verifyEr(er.id, activity);
+      } else if (this.authService.CanManageAllFrEr()) {
+        activity.push({
+          action: SZ.APPROVED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.expenseReportService.approveEr(er.id, activity);
+      }
+    }
+  }
+
+  onRejectFundingRequest(er: ExpenseReport) {
+    let user = this.authService.loggedUserInstance;
+    let activity = er.activity || [];
+    if (user && er.isSent) {
+      this.dialog.open(RejectReasonComponent).afterClosed().subscribe(
+        reason => {
+          if(reason) {
+            activity.push({
+              action: SZ.REJECTED,
+              userId: this.authService.getLoggedUserId(),
+              date: new Date().getTime(),
+              reason: reason
+            });
+            this.expenseReportService.rejectEr(er.id, activity);
+          }
+        }
+      );
+    }
   }
 
   onAddExpenseReport() {

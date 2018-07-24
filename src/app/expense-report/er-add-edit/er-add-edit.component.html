@@ -17,21 +17,63 @@
       </mat-select>
     </mat-form-field>
     <br>
-      <mat-form-field>
-        <input matInput placeholder="Nombres y apellidos" [value]="selectedUser ? (selectedUser.name + ' ' + selectedUser.lastName) : ''" [readonly]="true">
-      </mat-form-field>
-      <br>
-      <mat-form-field>
-        <input matInput placeholder="Cargo" [value]="selectedUser ? selectedUser.position : ''" [readonly]="true">
-      </mat-form-field>
-      <br>
-      <mat-form-field>
-        <input matInput placeholder="Carnet de Identidad" [value]="selectedUser ? selectedUser.ci : ''" [readonly]="true">
-      </mat-form-field>
-      <br>
-      <mat-form-field>
-        <input matInput placeholder="Expedido" [value]="selectedUser ? selectedUser.ciPlace : ''" [readonly]="true">
-      </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Nombres y apellidos" [value]="selectedUser ? (selectedUser.name + ' ' + selectedUser.lastName) : ''"
+        [readonly]="true">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Cargo" [value]="selectedUser ? selectedUser.position : ''" [readonly]="true">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Carnet de Identidad" [value]="selectedUser ? selectedUser.ci : ''" [readonly]="true">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput placeholder="Expedido" [value]="selectedUser ? selectedUser.ciPlace : ''" [readonly]="true">
+    </mat-form-field>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel class="sz-details-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Detalle de Descargo
+      </mat-panel-title>
+      <mat-panel-description>
+        <!-- description -->
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+      <input matInput placeholder="Lugar" formControlName="place">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput [matDatepicker]="erDate" placeholder="Fecha" formControlName="date">
+      <mat-datepicker-toggle matSuffix [for]="erDate"></mat-datepicker-toggle>
+      <mat-datepicker #erDate></mat-datepicker>
+    </mat-form-field>
+    <br>
+    <table *ngIf="initialErData" mat-table class="mat-elevation-z2 sz-item-table" [dataSource]="initialErData.activity">
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Accion </th>
+        <td mat-cell *matCellDef="let record"> {{record.action}} </td>
+      </ng-container>
+      <ng-container matColumnDef="user">
+        <th mat-header-cell *matHeaderCellDef> Usuario </th>
+        <td mat-cell *matCellDef="let record"> {{userService.getCompleteUserName(record.userId)}} </td>
+      </ng-container>
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Fecha </th>
+        <td mat-cell *matCellDef="let record"> {{record.date | date:'medium'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="reason">
+        <th mat-header-cell *matHeaderCellDef> Motivo </th>
+        <td mat-cell *matCellDef="let record"> {{record.reason || ''}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['action', 'user', 'date', 'reason']; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['action', 'user', 'date', 'reason'];"></tr>
+    </table>
   </mat-expansion-panel>
 
   <mat-expansion-panel class="sz-details-panel" [expanded]=true>
@@ -43,14 +85,6 @@
         <!-- description -->
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <mat-form-field>
-        <mat-select placeholder="Proyecto" formControlName="projectId">
-          <mat-option *ngFor="let project of projects" [value]='project.id'>
-            {{project.name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <br>
     <table mat-table class="mat-elevation-z2 sz-item-table" [dataSource]="erItemsDataSource" matSort>
       <ng-container matColumnDef="position">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Item </th>
@@ -89,7 +123,7 @@
       </ng-container>
       <ng-container matColumnDef="totalPrice">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> precio Total </th>
-        <td mat-cell *matCellDef="let erItem"> {{erItem.totalPrice  | currency:'BOB':'symbol':'1.2-2':'es-BO'}} </td>
+        <td mat-cell *matCellDef="let erItem"> {{erItem.totalPrice | currency:'BOB':'symbol':'1.2-2':'es-BO'}} </td>
         <td mat-footer-cell *matFooterCellDef> {{getErTotal() | currency:'BOB':'symbol':'1.2-2':'es-BO'}} </td>
       </ng-container>
       <ng-container matColumnDef="editBtn">
@@ -108,37 +142,9 @@
     <button mat-raised-button color="primary" (click)="addExpenseReportItem()">
       Añadir
     </button>
-  </mat-expansion-panel>
-
-  <mat-expansion-panel class="sz-details-panel">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Observaciones
-      </mat-panel-title>
-      <mat-panel-description>
-        <!-- description -->
-      </mat-panel-description>
-    </mat-expansion-panel-header>
+    <br>
     <mat-form-field>
       <textarea matInput placeholder="Observaciones" formControlName="observations"></textarea>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-      <input matInput placeholder="Lugar" formControlName="place">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-      <input matInput [matDatepicker]="erDate" placeholder="Fecha" formControlName="date">
-      <mat-datepicker-toggle matSuffix [for]="erDate"></mat-datepicker-toggle>
-      <mat-datepicker #erDate></mat-datepicker>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-      <mat-select placeholder="Solicitado por" [(value)]='selectedUserId'>
-        <mat-option *ngFor="let user of users" [value]='user.id'>
-          {{user.name}} {{user.lastName}}
-        </mat-option>
-      </mat-select>
     </mat-form-field>
   </mat-expansion-panel>
 
@@ -152,15 +158,7 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <input matInput placeholder="Numero de solicitud" formControlName="code" [readonly]="true">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-      <mat-select placeholder="Autorizado por" formControlName="approveUserId">
-        <mat-option *ngFor="let user of users" [value]='user.id'>
-          {{user.name}} {{user.lastName}}
-        </mat-option>
-      </mat-select>
+      <input matInput placeholder="Numero de Descargo" formControlName="code" [readonly]="true">
     </mat-form-field>
     <br>
     <div formGroupName="accordance">
@@ -182,6 +180,14 @@
     </div>
   </mat-expansion-panel>
   <br>
-  <button mat-raised-button color="primary" (click)="onSaveEr()">{{isNew ? 'Crear Formulario de Descargo' : 'Actualizar Formulario de Descargo'}}</button>
-  <button mat-button (click)="backTeErsList()" type="button">Cancelar</button>
+  <div class="sz-action-btns">
+    <h4 *ngIf="!isNew && initialErData && initialErData.isSent">Su descargo ya fue enviado</h4>
+    <button mat-raised-button color="primary" type="button" (click)="onSendEr()" *ngIf="!isNew && initialErData && !initialErData.isSent">Enviar Descargo</button>
+    <button mat-raised-button color="primary" type="button" (click)="onApproveEr()" *ngIf="initialErData && initialErData.isSent && authService.CanApproveEr()">Aprobar</button>
+    <button mat-raised-button color="warn" type="button" (click)="onRejectEr()" *ngIf="initialErData && initialErData.isSent && authService.CanApproveEr()">Rechazar</button>
+    <button *ngIf="initialErData && !initialErData.isSent" mat-button color="primary" type="button" (click)="deleteExpenseReportItem(initialErData ? initialErData.id : '')">Eliminar</button>
+    <div style="flex: 1;"></div>
+    <button mat-raised-button color="primary" (click)="onSaveEr()" *ngIf="isNew || (initialErData && !initialErData.isSent)">{{isNew ? 'Crear Descargo' : 'Actualizar Descargo'}}</button>
+    <button mat-button (click)="backToErList()" type="button">Cancelar</button>
+  </div>
 </form>

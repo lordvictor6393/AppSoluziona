@@ -91,6 +91,7 @@
       <tr mat-row *matRowDef="let row; columns: ['action', 'user', 'date', 'reason'];"></tr>
     </table>
   </mat-expansion-panel>
+
   <mat-expansion-panel class="sz-details-panel" [expanded]=true>
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -193,11 +194,11 @@
   </mat-expansion-panel>
   <br>
   <div class="sz-action-btns">
-    <h4 *ngIf="!isNew &&initialFrData && initialFrData.isSent">Su solicitud ya fue enviada</h4>
+    <h4 *ngIf="!isNew && initialFrData && initialFrData.isSent">Su solicitud ya fue enviada</h4>
     <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Enviar Solicitud</button>
     <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="initialFrData && initialFrData.isSent && authService.CanApproveFr()">Aprobar</button>
-      <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="request.isSent && authService.CanApproveFr()">Rechazar</button>
-      <button *ngIf="!request.isSent" mat-button color="primary" type="button" (click)="onDeleteFundingRequest(request.id)">Eliminar</button>
+    <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="initialFrData && initialFrData.isSent && authService.CanApproveFr()">Rechazar</button>
+    <button *ngIf="initialFrData && !initialFrData.isSent" mat-button color="primary" type="button" (click)="onDeleteFundingRequest(initialFrData ? initialFrData.id : '')">Eliminar</button>
     <div style="flex: 1;"></div>
     <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="isNew || (initialFrData && !initialFrData.isSent)">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
     <button mat-button (click)="backToFrList()" type="button">Cancelar</button>

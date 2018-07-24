@@ -68,7 +68,7 @@ export class FundingRequest {
         this.state = state;
         this.detail = detail;
         this.observations = observations;
-        this.approveUserId = approveUserId;
+        this.approveUserId = approveUserId || '';
         this.total = total;
         this.items = items;
         this.accordance = accordance;
