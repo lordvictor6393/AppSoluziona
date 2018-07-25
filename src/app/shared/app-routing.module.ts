@@ -42,7 +42,7 @@ const appRoutes: Routes = [{
         path: 'expenseReports',
         component: ErListComponent
     }, {
-        path: 'expenseReports/create',
+        path: 'expenseReports/create/:frId',
         component: ErAddEditComponent
     }, {
         path: 'expenseReports/:id',

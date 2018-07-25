@@ -57,7 +57,8 @@
       <button mat-raised-button color="primary" type="button" (click)="onSendFundingRequest(request)" *ngIf="!request.isSent">Enviar</button>
       <button mat-raised-button color="primary" type="button" (click)="onApproveFundingRequest(request)" *ngIf="request.isSent && authService.CanApproveFr(request)">Aprobar</button>
       <button mat-raised-button color="warn" type="button" (click)="onRejectFundingRequest(request)" *ngIf="request.isSent && authService.CanApproveFr(request)">Rechazar</button>
-      <button *ngIf="!request.isSent" mat-button color="primary" type="button" (click)="onDeleteFundingRequest(request.id)">Eliminar</button>
+      <button mat-raised-button color="primary" type="button" (click)="onCreateExpenseReport(request.id)" *ngIf="fundingRequestService.isFrApproved(request)">Crear Formulario de Descargo</button>
+      <button mat-button color="warn" type="button" (click)="onDeleteFundingRequest(request.id)" *ngIf="!request.isSent">Eliminar</button>
     </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="frListColumns; sticky: true"></tr>

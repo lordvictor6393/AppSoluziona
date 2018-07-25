@@ -48,6 +48,7 @@ import { ProjectService } from './project/project.service';
 
 import { registerLocaleData } from '../../node_modules/@angular/common';
 import { RejectReasonComponent } from './funding-request/reject-reason/reject-reason.component';
+import { FrSelectorComponent } from './expense-report/er-list/fr-selector/fr-selector.component';
 
 registerLocaleData(localeEs, 'es-BO');
 
@@ -70,7 +71,8 @@ registerLocaleData(localeEs, 'es-BO');
     SidebarComponent,
     SigninComponent,
     HomeComponent,
-    RejectReasonComponent
+    RejectReasonComponent,
+    FrSelectorComponent
   ],
   imports: [
     BrowserModule,
@@ -86,7 +88,8 @@ registerLocaleData(localeEs, 'es-BO');
   entryComponents: [
     FrFormItemComponent,
     ErFormItemComponent,
-    RejectReasonComponent
+    RejectReasonComponent,
+    FrSelectorComponent
   ],
   providers: [
     AuthService,

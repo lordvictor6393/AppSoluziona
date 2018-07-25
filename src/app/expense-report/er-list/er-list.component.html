@@ -64,11 +64,11 @@
       <button mat-raised-button color="primary" type="button" (click)="onSendExpenseReport(report)" *ngIf="!report.isSent">Enviar</button>
       <button mat-raised-button color="primary" type="button" (click)="onApproveExpenseReport(report)" *ngIf="report.isSent && authService.CanApproveEr(report)">Aprobar</button>
       <button mat-raised-button color="warn" type="button" (click)="onRejectExpenseReport(report)" *ngIf="report.isSent && authService.CanApproveEr(report)">Rechazar</button>
-      <button *ngIf="!report.isSent" mat-button color="primary" type="button" (click)="onDeleteExpenseReport(report.id)">Eliminar</button>
+      <button mat-button color="warn" type="button" (click)="onDeleteExpenseReport(report.id)" *ngIf="!report.isSent">Eliminar</button>
     </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="erListColumns; sticky: true"></tr>
   <tr mat-row *matRowDef="let row; columns: erListColumns;"></tr>
 </table>
 <br>
-<button mat-raised-button color="primary" (click)="onAddExpenseReport()"> Crear </button>
+<button mat-raised-button color="primary" (click)="onSelectFundingRequest()"> Crear </button>

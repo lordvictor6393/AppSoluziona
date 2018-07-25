@@ -250,6 +250,14 @@ export class FrAddEditComponent implements OnInit {
     this.backToFrList();
   }
 
+  onCreateEr() {
+    this.router.navigate(['expenseReports','create', this.selectedFrId]);
+  }
+
+  onDeleteFr() {
+    this.fundingRequestService.deleteFr(this.selectedFrId);
+  }
+
   backToFrList() {
     this.router.navigate(['fundingRequests']);
   }

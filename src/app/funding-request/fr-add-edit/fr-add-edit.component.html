@@ -149,7 +149,7 @@
     </mat-form-field>
   </mat-expansion-panel>
 
-  <mat-expansion-panel class="sz-details-panel">
+  <mat-expansion-panel class="sz-details-panel" *ngIf="authService.CanManageAllFrEr() && initialFrData && initialFrData.isSent">
     <mat-expansion-panel-header>
       <mat-panel-title>
         Conformidad de la Solicitud
@@ -196,9 +196,10 @@
   <div class="sz-action-btns">
     <h4 *ngIf="!isNew && initialFrData && initialFrData.isSent">Su solicitud ya fue enviada</h4>
     <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Enviar Solicitud</button>
-    <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="initialFrData && initialFrData.isSent && authService.CanApproveFr()">Aprobar</button>
-    <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="initialFrData && initialFrData.isSent && authService.CanApproveFr()">Rechazar</button>
-    <button *ngIf="initialFrData && !initialFrData.isSent" mat-button color="primary" type="button" (click)="onDeleteFundingRequest(initialFrData ? initialFrData.id : '')">Eliminar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="initialFrData && initialFrData.isSent && authService.CanApproveFr(selectedFrId)">Aprobar</button>
+    <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="initialFrData && initialFrData.isSent && authService.CanApproveFr(selectedFrId)">Rechazar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onCreateEr()" *ngIf="initialFrData && fundingRequestService.isFrApproved(initialFrData)">Crear Formulario de Descargo</button>
+    <button mat-button color="warn" type="button" (click)="onDeleteFr()" *ngIf="initialFrData && !initialFrData.isSent">Eliminar</button>
     <div style="flex: 1;"></div>
     <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="isNew || (initialFrData && !initialFrData.isSent)">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
     <button mat-button (click)="backToFrList()" type="button">Cancelar</button>

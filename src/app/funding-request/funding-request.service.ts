@@ -2,7 +2,7 @@ import * as SZ from '../globalConstants';
 import { FundingRequest } from "./funding-request.model";
 import { AngularFirestore, AngularFirestoreCollection } from "../../../node_modules/angularfire2/firestore";
 import { Observable } from "../../../node_modules/rxjs";
-import { map, filter } from "../../../node_modules/rxjs/operators";
+import { map } from "../../../node_modules/rxjs/operators";
 import { Injectable } from "../../../node_modules/@angular/core";
 import { AuthService } from "../auth/auth.service";
 
@@ -36,7 +36,7 @@ export class FundingRequestService {
         }
     }
 
-    getFrList(): Observable<FundingRequest[]> {
+    getFrList(onlySended?: boolean): Observable<FundingRequest[]> {
         const me = this;
         let user = this.authService.loggedUserInstance;
         if (user) {
@@ -54,6 +54,9 @@ export class FundingRequestService {
                             return true;
                         }
                     )
+                    if(onlySended) {
+                        return filteredList.filter(fr => fr.isSent && this.isFrApproved(fr));
+                    }
                     return filteredList;
                 })
             );
@@ -143,5 +146,8 @@ export class FundingRequestService {
     generateFrCode(): string {
         const me = this;
         return 'SOL-' + (me.localFrList.length + 1);
+    }
+    isFrApproved(fr: FundingRequest) {
+        return fr.state == SZ.APPROVED;
     }
 }

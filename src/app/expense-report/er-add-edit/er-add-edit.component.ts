@@ -15,6 +15,8 @@ import { ErFormItemComponent } from './er-form-item/er-form-item.component';
 import { ExpenseReportItem } from './er-form-item/expense-report-item.model';
 import { AuthService } from '../../auth/auth.service';
 import { RejectReasonComponent } from '../../funding-request/reject-reason/reject-reason.component';
+import { FundingRequestService } from '../../funding-request/funding-request.service';
+import { FundingRequest } from '../../funding-request/funding-request.model';
 
 @Component({
   selector: 'app-er-add-edit',
@@ -25,6 +27,8 @@ export class ErAddEditComponent implements OnInit {
 
   isNew: boolean = false;
   selectedErId: string;
+  selectedFrId: string;
+  selectedFr: FundingRequest;
   initialErData: ExpenseReport;
 
   users: User[] = [];
@@ -45,6 +49,7 @@ export class ErAddEditComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private router: Router,
     private expenseReportService: ExpenseReportService,
+    private fundingRequestService: FundingRequestService,
     private projectService: ProjectService,
     private clientService: ClientService,
     private userService: UsersService,
@@ -78,6 +83,12 @@ export class ErAddEditComponent implements OnInit {
     this.route.params.subscribe(
       params => {
         this.selectedErId = params.id;
+        this.selectedFrId = params.frId;
+        if(this.selectedFrId) {
+          this.fundingRequestService.getFr(this.selectedFrId).subscribe(
+            frInstance => this.selectedFr = frInstance
+          )
+        }
         if (this.selectedErId) {
           this.loadExpenseReportData()
         } else {
@@ -243,7 +254,11 @@ export class ErAddEditComponent implements OnInit {
     erData.items = this.erItems.map(
       erItem => erItem.getRawObject()
     );
+    erData.frId = this.selectedFrId;
+    erData.projectId = this.selectedFr.projectId;
     erData.totalSpent = this.getErTotal();
+    erData.totalReceived = this.selectedFr.total;
+    erData.balance = erData.totalReceived - erData.totalSpent;
     console.log('report to be saved: ', erData);
     if (this.isNew) {
       this.expenseReportService.addEr(erData);
@@ -251,6 +266,10 @@ export class ErAddEditComponent implements OnInit {
       this.expenseReportService.updateEr(this.selectedErId, erData);
     }
     this.backToErList();
+  }
+
+  onDeleteEr() {
+    this.expenseReportService.deleteEr(this.selectedErId);
   }
 
   backToErList() {

@@ -10,6 +10,7 @@ import { Project } from '../../project/project.model';
 import { ProjectService } from '../../project/project.service';
 import { AuthService } from '../../auth/auth.service';
 import { RejectReasonComponent } from '../../funding-request/reject-reason/reject-reason.component';
+import { FrSelectorComponent } from './fr-selector/fr-selector.component';
 
 @Component({
   selector: 'app-er-list',
@@ -149,8 +150,18 @@ export class ErListComponent implements OnInit {
     }
   }
 
-  onAddExpenseReport() {
-    this.router.navigate(['create'], {
+  onSelectFundingRequest() {
+    this.dialog.open(FrSelectorComponent).afterClosed().subscribe(
+      selectedFrId => {
+        if(selectedFrId) {
+          this.onAddExpenseReport(selectedFrId);
+        }
+      }
+    )
+  }
+
+  onAddExpenseReport(frId: string) {
+    this.router.navigate(['create', frId], {
       relativeTo: this.route
     });
   }

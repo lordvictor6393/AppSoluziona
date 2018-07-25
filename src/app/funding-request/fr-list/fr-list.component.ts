@@ -151,6 +151,10 @@ export class FrListComponent implements OnInit {
     }
   }
 
+  onCreateExpenseReport(frId: string) {
+    this.router.navigate(['expenseReports','create',frId]);
+  }
+
   onAddFundingRequest() {
     this.router.navigate(['create'], {
       relativeTo: this.route

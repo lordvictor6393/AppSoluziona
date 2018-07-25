@@ -17,6 +17,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatRadioModule } from '@angular/material/radio';
 
 const angularMaterialModules: any[] = [
     MatTabsModule,
@@ -36,7 +37,8 @@ const angularMaterialModules: any[] = [
     MatToolbarModule,
     MatSortModule,
     MatChipsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatRadioModule
 ];
 
 @NgModule({
