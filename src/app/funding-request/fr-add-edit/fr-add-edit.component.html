@@ -45,15 +45,11 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <mat-select placeholder="Cliente" formControlName="clientId">
-        <mat-option *ngFor="let client of clients" [value]='client.id'>
-          {{client.name}}
-        </mat-option>
-      </mat-select>
+        <input matInput placeholder="Cliente" [value]="clientService.getClientName(clientIdOfSelectedProject)" readonly>
     </mat-form-field>
     <br>
     <mat-form-field>
-      <mat-select placeholder="Proyecto" formControlName="projectId">
+      <mat-select placeholder="Proyecto" formControlName="projectId" (selectionChange)="updateClientName()">
         <mat-option *ngFor="let project of projects" [value]='project.id'>
           {{project.name}}
         </mat-option>

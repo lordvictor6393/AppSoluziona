@@ -132,7 +132,13 @@ export class ExpenseReportService {
     }
 
     deleteEr(erId: string) {
-        this.updateEr(erId, { isDeleted: true });
+        let erRef = this.db.doc('expenseReports/' + erId);
+        if(erRef) {
+            erRef.delete();
+        } else {
+            console.log('Cannot delete expense report, not able to get expense report ' + erId);
+        }
+        // this.updateEr(erId, { isDeleted: true });
     }
 
     generateErCode(): string {

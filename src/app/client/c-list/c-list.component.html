@@ -24,7 +24,7 @@
     <th mat-header-cell *matHeaderCellDef> </th>
     <td mat-cell *matCellDef="let client">
       <button mat-raised-button color="primary" (click)="onEditClient(client.id)">Editar</button>
-      <button mat-button color="primary" (click)="onDeleteClient(client.id)">Eliminar</button>
+      <button mat-button color="warn" (click)="onDeleteClient(client.id)">Eliminar</button>
     </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="cListColumns; sticky: true"></tr>

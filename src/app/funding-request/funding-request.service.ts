@@ -140,7 +140,13 @@ export class FundingRequestService {
 
     deleteFr(frId: string) {
         const me = this;
-        me.updateFr(frId, { isDeleted: true });
+        let frRef = me.db.doc('fundingRequests/' + frId);
+        if (frRef) {
+            frRef.delete();
+        } else {
+            console.log('Cannot remove funding request, not able to get funding request ' + frId);
+        }
+        // me.updateFr(frId, { isDeleted: true });
     }
 
     generateFrCode(): string {

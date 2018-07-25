@@ -34,6 +34,7 @@ export class FrAddEditComponent implements OnInit {
 
   selectedUser: User;
   selectedUserId: string;
+  clientIdOfSelectedProject: string = '';
   paymentTypes = ['Efectivo', 'Cheque', 'Transferencia'];
 
   frGridColumns: string[];
@@ -64,7 +65,6 @@ export class FrAddEditComponent implements OnInit {
     this.fundingRequestForm = new FormGroup({
       code: new FormControl(null),
       createUserId: new FormControl(null),
-      clientId: new FormControl(null),
       projectId: new FormControl(null),
       date: new FormControl(null),
       detail: new FormControl(null),
@@ -106,6 +106,14 @@ export class FrAddEditComponent implements OnInit {
       userElement => userElement.id === this.selectedUserId
     )
   }
+  
+  updateClientName() {
+    let projId = this.fundingRequestForm.get('projectId').value;
+    let project = this.projects.find(proj => proj.id == projId);
+    if(project) {
+      this.clientIdOfSelectedProject = project.clientId;
+    }
+  }
 
   loadFundingRequestData() {
     this.fundingRequestService.getFr(this.selectedFrId).subscribe(
@@ -116,7 +124,6 @@ export class FrAddEditComponent implements OnInit {
         this.fundingRequestForm.setValue({
           code: frData.code,
           createUserId: frData.createUserId,
-          clientId: frData.clientId,
           projectId: frData.projectId,
           date: frData.date,
           detail: frData.detail,
@@ -128,6 +135,7 @@ export class FrAddEditComponent implements OnInit {
             deliverUserId: frData.accordance.deliverUserId,
           }
         });
+        this.updateClientName();
         this.frItems = frData.items.map(
           frItemData => new FundingRequestItem(
             frItemData.detail,
@@ -241,6 +249,7 @@ export class FrAddEditComponent implements OnInit {
       frItem => frItem.getRawObject()
     );
     frData.total = this.getFrTotal();
+    frData.clientId = this.clientIdOfSelectedProject;
     console.log('request to be saved: ', frData);
     if(this.isNew) {
       this.fundingRequestService.addFr(frData);

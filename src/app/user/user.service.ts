@@ -98,7 +98,13 @@ export class UsersService {
     }
 
     deleteUser(userId: string) {
-        this.updateUser(userId, { isDeleted: true });
+        let userRef = this.db.doc('users/' + userId);
+        if (userRef) {
+            userRef.delete();
+        } else {
+            console.error('Cannot remove user, not able to get user ' + userId);
+        }
+        // this.updateUser(userId, { isDeleted: true });
     }
 
     registerProject(userId: string, projId: string, isLead?: boolean) {

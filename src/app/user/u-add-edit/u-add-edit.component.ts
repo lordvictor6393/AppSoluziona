@@ -124,6 +124,10 @@ export class UAddEditComponent implements OnInit {
     return '';
   }
 
+  onDeleteUser() {
+    this.userService.deleteUser(this.selectedUserId);
+  }
+
   backToUsersList() {
     this.router.navigate(['/users']);
   }

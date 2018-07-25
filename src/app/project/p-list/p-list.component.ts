@@ -55,7 +55,7 @@ export class PListComponent implements OnInit {
     });
   }
 
-  onDeleteProject(projId: string) {
-    this.projectService.deleteProject(projId);
+  onDeleteProject(project: Project) {
+    this.projectService.deleteProject(project);
   }
 }

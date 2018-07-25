@@ -87,8 +87,24 @@ export class ProjectService {
             console.error('project not saved/updated because users are not available.')
         }
     }
-    deleteProject(projId: string) {
-        this.updateProject(projId, { isDeleted: true });
+    deleteProject(project: Project) {
+        let members = project.membersIds;
+        let projectRef = this.db.doc('projects/' + project.id);
+        if (this.users.length && this.clients.length) {
+            this.clientService.unregisterProject(project.clientId, project.id);
+            this.userService.unregisterProject(project.leadId, project.id, true);
+            members.forEach(memberId => {
+                this.userService.unregisterProject(memberId, project.id);
+            });
+            if (projectRef) {
+                projectRef.delete();
+            } else {
+                console.error('Cannot remove project, not able to get project ' + project.id);
+            }
+        } else {
+            console.error('project not saved/updated because users are not available.')
+        }
+        // this.updateProject(projId, { isDeleted: true });
     }
 
     generateProjectCode(): string {

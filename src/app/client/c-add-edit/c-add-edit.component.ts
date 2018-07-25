@@ -102,6 +102,10 @@ export class CAddEditComponent implements OnInit {
     this.backToClientsList();
   }
 
+  onDeleteClient() {
+    this.clientService.deleteClient(this.selectedClientId);
+  }
+
   backToClientsList() {
     this.router.navigate(['/clients']);
   }

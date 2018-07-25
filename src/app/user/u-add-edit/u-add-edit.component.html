@@ -98,6 +98,10 @@
     </mat-form-field>
   </mat-expansion-panel>
   <br>
-  <button mat-raised-button color="primary" (click)="onSaveUser()">{{isNew ? 'Crear Usuario' : 'Actualizar Usuario'}}</button>
-  <button mat-button (click)="backToUsersList()" type="button">Cancelar</button>
+  <div class="sz-action-btns">
+    <button mat-raised-button color="primary" (click)="onSaveUser()">{{isNew ? 'Crear Usuario' : 'Actualizar Usuario'}}</button>
+    <button mat-button (click)="backToUsersList()" type="button">Cancelar</button>
+    <div style="flex: 1;"></div>
+    <button mat-button color="warn" (click)="onDeleteUser()">Eliminar</button>
+  </div>
 </form>

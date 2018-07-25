@@ -55,11 +55,17 @@ export class ClientService {
     }
 
     deleteClient(clientId: string) {
-        this.updateClient(clientId, { isDeleted: true });
+        let clientRef = this.db.doc('clients/' + clientId);
+        if (clientRef) {
+            clientRef.delete();
+        } else {
+            console.error('Cannot remove client, not able to get client ' + clientId);
+        }
+        // this.updateClient(clientId, { isDeleted: true });
     }
 
     getClientName(clientId: string) {
-        if (this.localClientList.length) {
+        if (this.localClientList.length && clientId) {
             let clientInstance = this.localClientList.find(client => client.id == clientId);
             if (clientInstance) {
                 return clientInstance.name;

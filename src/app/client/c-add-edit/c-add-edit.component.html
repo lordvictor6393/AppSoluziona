@@ -51,6 +51,10 @@
     </table>
   </mat-expansion-panel>
   <br>
-  <button mat-raised-button color="primary" (click)="onSaveClient()">{{isNew ? 'Crear Cliente' : 'Actualizar Cliente'}}</button>
-  <button mat-button (click)="backToClientsList()" type="button">Cancelar</button>
+  <div class="sz-action-btns">
+    <button mat-raised-button color="primary" (click)="onSaveClient()">{{isNew ? 'Crear Cliente' : 'Actualizar Cliente'}}</button>
+    <button mat-button (click)="backToClientsList()" type="button">Cancelar</button>
+    <div style="flex: 1;"></div>
+    <button mat-button color="warn" (click)="onDeleteClient()">Eliminar</button>
+  </div>
 </form>

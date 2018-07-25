@@ -96,6 +96,10 @@
     </table>
   </mat-expansion-panel>
   <br>
-  <button mat-raised-button color="primary" (click)="onSaveProject()">{{isNew ? 'Crear Proyecto' : 'Actualizar Proyecto'}}</button>
-  <button mat-button (click)="backToProjectsList()" type="button">Cancelar</button>
+  <div class="sz-action-btns">
+    <button mat-raised-button color="primary" (click)="onSaveProject()">{{isNew ? 'Crear Proyecto' : 'Actualizar Proyecto'}}</button>
+    <button mat-button (click)="backToProjectsList()" type="button">Cancelar</button>
+    <div style="flex: 1;"></div>
+    <button mat-button color="warn" (click)="onDeleteProject()">Eliminar</button>
+  </div>
 </form>

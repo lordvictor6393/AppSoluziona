@@ -217,6 +217,10 @@ export class PAddEditComponent implements OnInit {
     this.backToProjectsList();
   }
 
+  onDeleteProject() {
+    this.projectService.deleteProject(this.initialProjectData);
+  }
+
   backToProjectsList() {
     this.router.navigate(['projects']);
   }
