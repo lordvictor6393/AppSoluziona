@@ -1,8 +1,78 @@
-<div id="frPrintPreview" #frPrintPreview>
-  <div>{{fr.detail}}</div>
-  <div>
-    <span *ngFor="let item of fr.items" style="display: block; background-color: blue; padding: 5px;">{{item.detail}}</span>
-  </div>
-</div>
+<h2 mat-dialog-title> Vista previa </h2>
+<mat-dialog-content>
+  <kendo-pdf-export #frPrintPreview paperSize="Letter" margin="0.5in">
+    <div class="main-page" *ngIf="proj && user && client">
+      <div class="panel header">
+        <span class="logo">
+          SoluZiona
+        </span>
+        <span class="title">
+          SOLICITUD DE FONDOS
+          <br>EN AVANCE
+        </span>
+        <span class="codes">
+          <div class="project-code">{{proj.code}}</div>
+          <div class="funding-request-code">{{fr.code}}</div>
+        </span>
+      </div>
 
-<button mat-raised-button (click)="downloadPDF()">Exportar a PDF</button>
+      <div class="panel personal-data">
+        <div class="title">A. DATOS PERSONALES - SOLICITANTE</div>
+        <div class="data-table">
+          <div class="row">
+            <div class="cell label" style="width: 25%;">Nombre y Apellidos: </div>
+            <div class="cell" style="width: 40%;"> {{user.name + ' ' + user.lastName}} </div>
+            <div class="cell label" style="width: 15%;"> Cargo: </div>
+            <div class="cell" style="width: 20%;"> {{user.position}} </div>
+          </div>
+          <div class="row">
+            <div class="cell label" style="width: 25%;">Carnet de Identidad: </div>
+            <div class="cell" style="width: 40%;"> {{user.ci}} </div>
+            <div class="cell label" style="width: 15%;"> Expedido: </div>
+            <div class="cell" style="width: 20%;"> {{user.ciPlace}} </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel detail">
+        <div class="title">B. DETALLE DE SOLICITUD</div>
+        <div class="data-table">
+          <div class="row">
+            <div class="cell label" style="width: 25%;">Cliente: </div>
+            <div class="cell" style="width: 40%;"> {{client.name}} </div>
+            <div class="cell label" style="width: 15%;">Fecha: </div>
+            <div class="cell" style="width: 20%;"> {{fr.date | date:'mediumDate'}} </div>
+          </div>
+        </div>
+        <div class="data-table">
+            <div class="row">
+                <div class="cell label" style="width: 25%;">Motivo del Gasto: </div>
+                <div class="cell" style="width: 75%;"> {{fr.detail}} </div>
+              </div>
+        </div>
+        <hr>
+        <div class="data-table border">
+          <div class="row header-row">
+            <div class="cell justified" style="width: 10%;">Item</div>
+            <div class="cell" style="width: 35%;">Detalle</div>
+            <div class="cell justified" style="width: 15%;">Cantidad</div>
+            <div class="cell justified" style="width: 20%;">Precio Unitario</div>
+            <div class="cell justified" style="width: 20%;">Precio Total</div>
+          </div>
+          <div class="row" *ngFor="let item of fr.items; let idx = index">
+            <div class="cell justified" style="width: 10%;"> {{idx + 1}} </div>
+            <div class="cell" style="width: 35%;"> {{item.detail}} </div>
+            <div class="cell justified" style="width: 15%;"> {{item.quantity}} </div>
+            <div class="cell justified" style="width: 20%;"> {{item.singlePrice}} </div>
+            <div class="cell justified" style="width: 20%;"> {{item.totalPrice}} </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </kendo-pdf-export>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="frPrintPreview.saveAs('itWorksKendo.pdf')">Exportar a PDF</button>
+</mat-dialog-actions>

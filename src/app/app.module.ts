@@ -50,6 +50,8 @@ import { registerLocaleData } from '../../node_modules/@angular/common';
 import { RejectReasonComponent } from './funding-request/reject-reason/reject-reason.component';
 import { FrSelectorComponent } from './expense-report/er-list/fr-selector/fr-selector.component';
 import { FrPrintPreviewComponent } from './funding-request/fr-print-preview/fr-print-preview.component';
+import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
+
 
 registerLocaleData(localeEs, 'es-BO');
 
@@ -85,7 +87,8 @@ registerLocaleData(localeEs, 'es-BO');
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireAuthModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PDFExportModule
   ],
   entryComponents: [
     FrFormItemComponent,

@@ -88,7 +88,7 @@ export class FrAddEditComponent implements OnInit {
           this.fundingRequestForm.patchValue({ code: this.fundingRequestService.generateFrCode() });
           this.frItemsDataSource.data = [];
         }
-  }
+      }
     );
 
     this.frItemsDataSource.sort = this.sort;
@@ -107,11 +107,11 @@ export class FrAddEditComponent implements OnInit {
       userElement => userElement.id === this.selectedUserId
     )
   }
-  
+
   updateClientName() {
     let projId = this.fundingRequestForm.get('projectId').value;
     let project = this.projects.find(proj => proj.id == projId);
-    if(project) {
+    if (project) {
       this.clientIdOfSelectedProject = project.clientId;
     }
   }
@@ -143,11 +143,20 @@ export class FrAddEditComponent implements OnInit {
             frItemData.quantity,
             frItemData.singlePrice,
             frItemData.totalPrice
-    )
+          )
         );
-        if(this.frItems.length) {
+        if (this.frItems.length) {
           this.frItemsDataSource.data = this.frItems;
         }
+        /**
+         * 
+         * 
+         * 
+         * remove
+         * 
+         * 
+         */
+        this.showFrPreview();
       }
     );
   }
@@ -201,7 +210,7 @@ export class FrAddEditComponent implements OnInit {
     }
     this.backToFrList();
   }
-  
+
   onApproveFr() {
     let user = this.authService.loggedUserInstance;
     let activity = this.initialFrData.activity || [];
@@ -230,7 +239,7 @@ export class FrAddEditComponent implements OnInit {
     if (user && this.initialFrData.isSent) {
       this.dialog.open(RejectReasonComponent).afterClosed().subscribe(
         reason => {
-          if(reason) {
+          if (reason) {
             activity.push({
               action: SZ.REJECTED,
               userId: this.authService.getLoggedUserId(),
@@ -252,7 +261,7 @@ export class FrAddEditComponent implements OnInit {
     frData.total = this.getFrTotal();
     frData.clientId = this.clientIdOfSelectedProject;
     console.log('request to be saved: ', frData);
-    if(this.isNew) {
+    if (this.isNew) {
       this.fundingRequestService.addFr(frData);
     } else {
       this.fundingRequestService.updateFr(this.selectedFrId, frData);
@@ -261,7 +270,7 @@ export class FrAddEditComponent implements OnInit {
   }
 
   onCreateEr() {
-    this.router.navigate(['expenseReports','create', this.selectedFrId]);
+    this.router.navigate(['expenseReports', 'create', this.selectedFrId]);
   }
 
   onDeleteFr() {

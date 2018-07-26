@@ -1,0 +1,107 @@
+.main-page {
+    width: 540px;
+    height: 720px;
+    background-color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    .panel {
+        width: 540px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        border: 2px solid #000;
+        padding: 10px;
+        .title {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    }
+    .data-table {
+        width: 100%;
+        display: table;
+        font-size: 12px;
+        .row {
+            display: table-row;
+            .cell {
+                padding: 3px 5px;
+                display: table-cell;
+                font-weight: 600;
+                &.label {
+                    font-weight: 400;
+                    font-style: italic;
+                }
+                &.justified {
+                    text-align: center;
+                }
+            }
+        }
+        &.border {
+            border-radius: 5px;
+            border: 2px solid #000;
+            .row {
+                box-sizing: border-box;
+                border-bottom: 1px solid #000;
+                &:last-child {
+                    border-bottom: none;
+                }
+                &.header-row {
+                    line-height: 20px;
+                    text-align: center;
+                    border-bottom: 2px solid #000;
+                }
+                .cell {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+    .header {
+        height: 50px;
+        display: flex;
+        padding: 0;
+        .logo, .codes {
+            box-sizing: border-box;
+            width: 117px;
+            height: 46px;
+        }
+        .logo {
+            padding: 0px 10px;
+            color: rgb(180, 0, 0);
+            font: bold 20px/46px "Arial";
+            border-right: 1px solid #000;
+        }
+        .title {
+            flex: 1;
+            height: 46px;
+            padding: 3px 10px;
+            text-align: center;
+            box-sizing: border-box;
+            font: 600 15px/20px "Arial";
+        }
+        .codes {
+            border-left: 1px solid #000;
+        }
+        .project-code, .funding-request-code {
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .project-code {
+            height: 33px;
+            font: bold 15px/30px "Arial";
+            border-bottom: 1px solid #000;
+        }
+        .funding-request-code {
+            height: 15px;
+            font: bold 12px/15px "Arial";
+        }
+    }
+    .personal-data {
+        height: 85px;
+    }
+    .detail {
+        height: 400px;
+    }
+}
+
+
