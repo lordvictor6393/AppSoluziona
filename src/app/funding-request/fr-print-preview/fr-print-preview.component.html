@@ -1,0 +1,8 @@
+<div id="frPrintPreview" #frPrintPreview>
+  <div>{{fr.detail}}</div>
+  <div>
+    <span *ngFor="let item of fr.items" style="display: block; background-color: blue; padding: 5px;">{{item.detail}}</span>
+  </div>
+</div>
+
+<button mat-raised-button (click)="downloadPDF()">Exportar a PDF</button>

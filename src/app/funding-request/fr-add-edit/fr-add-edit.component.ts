@@ -15,6 +15,7 @@ import { ProjectService } from '../../project/project.service';
 import { FundingRequestService } from '../funding-request.service';
 import { AuthService } from '../../auth/auth.service';
 import { RejectReasonComponent } from '../reject-reason/reject-reason.component';
+import { FrPrintPreviewComponent } from '../fr-print-preview/fr-print-preview.component';
 
 @Component({
   selector: 'app-fr-add-edit',
@@ -269,5 +270,17 @@ export class FrAddEditComponent implements OnInit {
 
   backToFrList() {
     this.router.navigate(['fundingRequests']);
+  }
+
+  showFrPreview() {
+    let frData = this.fundingRequestForm.value;
+    frData.items = this.frItems.map(
+      frItem => frItem.getRawObject()
+    );
+    frData.total = this.getFrTotal();
+    frData.clientId = this.clientIdOfSelectedProject;
+    this.dialog.open(FrPrintPreviewComponent, {
+      data: frData
+    });
   }
 }
