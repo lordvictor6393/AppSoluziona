@@ -18,6 +18,7 @@ export class FrPrintPreviewComponent implements OnInit {
   user: User;
   proj: Project;
   client: Client;
+  emptyRows: Array<any>;
   
   constructor(private dialog: MatDialogRef<FrPrintPreviewComponent>,
     @Inject(MAT_DIALOG_DATA) private fr: FundingRequest,
@@ -35,5 +36,6 @@ export class FrPrintPreviewComponent implements OnInit {
     this.uService.getUser(this.fr.createUserId).subscribe(
       userData => this.user = userData
     );
+    this.emptyRows = Array(15 - this.fr.items.length);
   }
 }

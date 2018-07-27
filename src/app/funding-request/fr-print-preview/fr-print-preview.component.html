@@ -54,21 +54,58 @@
         <div class="data-table border">
           <div class="row header-row">
             <div class="cell justified" style="width: 10%;">Item</div>
-            <div class="cell" style="width: 35%;">Detalle</div>
+            <div class="cell" style="width: 45%;">Detalle</div>
             <div class="cell justified" style="width: 15%;">Cantidad</div>
-            <div class="cell justified" style="width: 20%;">Precio Unitario</div>
-            <div class="cell justified" style="width: 20%;">Precio Total</div>
+            <div class="cell justified" style="width: 15%;">Precio Unitario</div>
+            <div class="cell justified" style="width: 15%;">Precio Total</div>
           </div>
           <div class="row" *ngFor="let item of fr.items; let idx = index">
             <div class="cell justified" style="width: 10%;"> {{idx + 1}} </div>
-            <div class="cell" style="width: 35%;"> {{item.detail}} </div>
+            <div class="cell" style="width: 45%;"> {{item.detail}} </div>
             <div class="cell justified" style="width: 15%;"> {{item.quantity}} </div>
-            <div class="cell justified" style="width: 20%;"> {{item.singlePrice}} </div>
-            <div class="cell justified" style="width: 20%;"> {{item.totalPrice}} </div>
+            <div class="cell justified" style="width: 15%;"> {{item.singlePrice}} </div>
+            <div class="cell justified" style="width: 15%;"> {{item.totalPrice}} </div>
+          </div>
+          <div class="row" *ngFor="let item of emptyRows; let idx = index">
+            <div class="cell justified" style="width: 10%;"> {{idx + fr.items.length + 1}} </div>
+            <div class="cell" style="width: 45%;"> </div>
+            <div class="cell justified" style="width: 15%;"> </div>
+            <div class="cell justified" style="width: 15%;"> </div>
+            <div class="cell justified" style="width: 15%;"> </div>
+          </div>
+        </div>
+        <div class="data-table" style="margin-top: 5px">
+          <div class="row footer-row">
+            <div class="cell" style="width: 70%;"></div>
+            <div class="cell justified total-label" style="width: 15%;"> Total </div>
+            <div class="cell justified total-amount" style="width: 15%;"> {{fr.total}} </div>
+          </div>
+        </div>
+        <div class="data-table" style="margin-top: 10px">
+          <div class="row">
+            <div class="cell label" style="width: 20%;"> Observaciones: </div>
+            <div class="cell" style="width: 80%;"> {{fr.observations}} </div>
           </div>
         </div>
       </div>
 
+      <div class="panel accordance">
+        <div class="title">C. CONFORMIDAD DE LA SOLICITUD</div>
+        <div class="data-table">
+          <div class="row">
+            <div class="cell label" style="width: 20%;">No. de Solicitud: </div>
+            <div class="cell" style="width: 30%;"> {{fr.code}} </div>
+            <div class="cell label" style="width: 20%;"> Entregado en: </div>
+            <div class="cell" style="width: 30%;"> {{fr.accordance.paymentType}} </div>
+          </div>
+          <div class="row">
+            <div class="cell label" style="width: 20%;">Entregado por: </div>
+            <div class="cell" style="width: 30%;">  </div>
+            <div class="cell label" style="width: 20%;"> Recibido por: </div>
+            <div class="cell" style="width: 30%;"> </div>
+          </div>
+        </div>
+      </div>
     </div>
   </kendo-pdf-export>
 </mat-dialog-content>

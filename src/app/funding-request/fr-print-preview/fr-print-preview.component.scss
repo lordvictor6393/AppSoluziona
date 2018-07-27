@@ -6,10 +6,10 @@
     .panel {
         width: 540px;
         border-radius: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         box-sizing: border-box;
         border: 2px solid #000;
-        padding: 10px;
+        padding: 5px 10px;
         .title {
             display: block;
             font-size: 13px;
@@ -24,7 +24,7 @@
         .row {
             display: table-row;
             .cell {
-                padding: 3px 5px;
+                padding: 2px 5px;
                 display: table-cell;
                 font-weight: 600;
                 &.label {
@@ -38,20 +38,35 @@
         }
         &.border {
             border-radius: 5px;
+            box-sizing: border-box;
             border: 2px solid #000;
             .row {
                 box-sizing: border-box;
-                border-bottom: 1px solid #000;
                 &:last-child {
-                    border-bottom: none;
+                    .cell {
+                        border-bottom: none;
+                    }
                 }
                 &.header-row {
                     line-height: 20px;
                     text-align: center;
-                    border-bottom: 2px solid #000;
+                    .cell {
+                        line-height: 14px;
+                        vertical-align: middle;
+                        border-right: 2px solid #000;
+                        border-bottom: 2px solid #000;
+                        &:last-child {
+                            border-right: none;
+                        }
+                    }
                 }
                 .cell {
                     background-color: transparent;
+                    border-right: 1px solid #000;
+                    border-bottom: 1px solid #000;
+                    &:last-child {
+                        border-right: none;
+                    }
                 }
             }
         }
@@ -97,10 +112,19 @@
         }
     }
     .personal-data {
-        height: 85px;
+        height: 80px;
     }
     .detail {
-        height: 400px;
+        height: 500px;
+        .total-label {
+            border: 2px solid #000;
+            border-radius: 5px 0 0 5px;
+        }
+        .total-amount {
+            border: 2px solid #000;
+            border-left: none;
+            border-radius: 0 5px 5px 0;
+        }
     }
 }
 
