@@ -40,7 +40,7 @@ export class FrListComponent implements OnInit {
     private userService: UsersService,
     private clientService: ClientService,
     private projectService: ProjectService,
-    private authService: AuthService,
+    public authService: AuthService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router) { }

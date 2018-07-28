@@ -37,7 +37,7 @@ export class ErListComponent implements OnInit {
   constructor(private expenseReportService: ExpenseReportService,
     private userService: UsersService,
     private projectService: ProjectService,
-    private authService: AuthService,
+    public authService: AuthService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router) { }

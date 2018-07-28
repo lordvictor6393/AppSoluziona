@@ -46,11 +46,11 @@ export class FrAddEditComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private router: Router,
-    private fundingRequestService: FundingRequestService,
+    public fundingRequestService: FundingRequestService,
     private projectService: ProjectService,
-    private clientService: ClientService,
+    public clientService: ClientService,
     private userService: UsersService,
-    private authService: AuthService,
+    public authService: AuthService,
     private dialog: MatDialog) { }
 
   ngOnInit() {

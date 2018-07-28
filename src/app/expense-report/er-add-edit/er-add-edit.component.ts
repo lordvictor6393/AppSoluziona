@@ -54,7 +54,7 @@ export class ErAddEditComponent implements OnInit {
     private projectService: ProjectService,
     private clientService: ClientService,
     private userService: UsersService,
-    private authService: AuthService,
+    public authService: AuthService,
     private dialog: MatDialog) { }
 
   ngOnInit() {

@@ -34,7 +34,7 @@ export class UAddEditComponent implements OnInit {
   @ViewChild('userPassword') userPassword: ElementRef;
 
   constructor(private route: ActivatedRoute,
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router,
     private projectService: ProjectService,
     private clientService: ClientService,
