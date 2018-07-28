@@ -100,30 +100,33 @@
             <div class="cell" style="width: 80%;"> {{fr.observations}} </div>
           </div>
         </div>
-        <div class="data-table">
-          <div class="row">
-            <div class="cell label" style="width: 20%;">Solicitado por: </div>
-            <div class="cell" style="width: 30%;"> {{owner.name + ' ' + owner.lastName}} </div>
-            <div class="cell label" style="width: 20%;"> Autorizado por: </div>
-            <div class="cell" style="width: 30%;"> {{approver ? (approver.name + ' ' + approver.lastName) : ''}} </div>
-          </div>
-        </div>
       </div>
 
       <div class="panel accordance">
-        <div class="title">C. CONFORMIDAD DE LA SOLICITUD</div>
+        <div class="title">C. CONFORMIDAD DE LA RENDICIÓN</div>
         <div class="data-table">
           <div class="row">
-            <div class="cell label" style="width: 20%;">No. de Solicitud: </div>
-            <div class="cell" style="width: 30%;"> {{fr.code}} </div>
-            <div class="cell label" style="width: 20%;"> Entregado en: </div>
-            <div class="cell" style="width: 30%;"> {{fr.accordance.paymentType}} </div>
+            <div class="cell label" style="width: 35%;">Orden de Servicio: </div>
+            <div class="cell" style="width: 15%;"> </div>
+            <div class="cell label" style="width: 20%;"> Aceptado por: </div>
+            <div class="cell" style="width: 30%;"> </div>
           </div>
           <div class="row">
-            <div class="cell label" style="width: 20%;">Entregado por: </div>
-            <div class="cell" style="width: 30%;"> {{owner.name + ' ' + owner.lastName}}</div>
-            <div class="cell label" style="width: 20%;"> Recibido por: </div>
+            <div class="cell label" style="width: 35%;">Número de Solicitud: </div>
+            <div class="cell" style="width: 15%;"> {{fr.code}}</div>
+            <div class="cell label" style="width: 20%;"> Firma: </div>
             <div class="cell" style="width: 30%;"> </div>
+          </div>
+          <div class="row">
+            <div class="cell label" style="width: 35%;">Saldo: </div>
+            <div class="cell" style="width: 15%;"> {{er.balance}}</div>
+            <div class="cell label" style="width: 20%;"> Nombre y Apellido: </div>
+            <div class="cell" style="width: 30%;"> {{approver.name + ' ' + approver.lastName}} </div>
+          </div>
+          <div class="row">
+            <div class="cell label" style="width: 35%;">No. de Comprobante: </div>
+            <div class="cell" style="width: 15%;"> </div>
+            <div class="cell" style="width: 50%;"> </div>
           </div>
         </div>
       </div>
