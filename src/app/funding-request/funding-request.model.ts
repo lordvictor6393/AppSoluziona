@@ -1,27 +1,27 @@
-interface dbFrItem {
-    detail: string,
-    quantity: number,
-    singlePrice: number,
-    totalPrice: number
+interface DbFrItem {
+    detail: string;
+    quantity: number;
+    singlePrice: number;
+    totalPrice: number;
 }
 
-interface dbAccordance {
-    paymentType: string,
-    voucher: string,
-    receiverUserId: string,
-    deliverUserId: string
+interface DbAccordance {
+    paymentType: string;
+    voucher: string;
+    receiverUserId: string;
+    deliverUserId: string;
 }
 
-interface dbFrActivity {
-    action: string,
-    userId: string,
-    date: number,
-    reason?: string
+interface DbFrActivity {
+    action: string;
+    userId: string;
+    date: number;
+    reason?: string;
 }
 
 export class FundingRequest {
     public isDeleted: boolean;
-    public isSent: boolean; 
+    public isSent: boolean;
 
     public id: string;
     public code: string;
@@ -34,11 +34,11 @@ export class FundingRequest {
     public observations: string;
     public approveUserId: string;
     public total: number;
-    public items: dbFrItem[];
-    public accordance: dbAccordance;
-    public activity: dbFrActivity[];
+    public items: DbFrItem[];
+    public accordance: DbAccordance;
+    public activity: DbFrActivity[];
 
-    constructor (
+    constructor(
         id: string,
         code: string,
         createUserId: string,
@@ -50,11 +50,11 @@ export class FundingRequest {
         observations: string,
         approveUserId: string,
         total: number,
-        items: dbFrItem[],
-        accordance: dbAccordance,
+        items: DbFrItem[],
+        accordance: DbAccordance,
 
         isSent?: boolean,
-        activity?: dbFrActivity[]
+        activity?: DbFrActivity[]
     ) {
         this.isDeleted = false;
         this.isSent = isSent || false;
@@ -64,7 +64,7 @@ export class FundingRequest {
         this.createUserId = createUserId;
         this.clientId = clientId;
         this.projectId = projectId;
-        this.date = new Date(date);   
+        this.date = new Date(date);
         this.state = state;
         this.detail = detail;
         this.observations = observations;

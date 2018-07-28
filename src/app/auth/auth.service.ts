@@ -16,10 +16,10 @@ export class AuthService {
   user: Observable<User>;
   loggedUserInstance: User;
   userPassword: string;
-  
+
   constructor(private afAuth: AngularFireAuth,
-              private db: AngularFirestore,
-              private router: Router) { 
+    private db: AngularFirestore,
+    private router: Router) {
     this.setLoggedUser();
   }
 
@@ -30,20 +30,20 @@ export class AuthService {
   setLoggedUser() {
     this.user = this.afAuth.authState.pipe(
       switchMap(user => {
-        if(user) {
+        if (user) {
           this.loggedUserId = user.uid;
-          let user$ = this.db.doc('users/' + user.uid).valueChanges().pipe(
+          const user$ = this.db.doc('users/' + user.uid).valueChanges().pipe(
             map(userData => User.getUserFromValue(user.uid, userData))
           );
-          user$.subscribe( userInstance => this.loggedUserInstance = userInstance );
+          user$.subscribe(userInstance => this.loggedUserInstance = userInstance);
           return user$;
         } else {
           this.loggedUserId = '';
-          return ObservableOf(null)
+          return ObservableOf(null);
         }
       })
     );
-  } 
+  }
 
   signinUser(email: string, password: string) {
     this.userPassword = password;
@@ -56,9 +56,11 @@ export class AuthService {
   }
 
   private checkAuthorization(allowedRoles: string[]): boolean {
-    if(!this.loggedUserInstance) return false;
+    if (!this.loggedUserInstance) {
+      return false;
+    }
     for (const role of allowedRoles) {
-      if( this.loggedUserInstance.roles[role]) {
+      if (this.loggedUserInstance.roles[role]) {
         return true;
       }
     }
@@ -67,7 +69,7 @@ export class AuthService {
 
   CanEditProfile(): boolean {
     const allowed = [
-      SZ.COMMON, 
+      SZ.COMMON,
       SZ.ACCOUNTANT,
       SZ.CHIEF
     ];
@@ -89,7 +91,7 @@ export class AuthService {
     ];
     return this.checkAuthorization(allowed);
   }
-  
+
   CanManageProjects() {
     const allowed = [SZ.CHIEF];
     return this.checkAuthorization(allowed);
@@ -114,21 +116,21 @@ export class AuthService {
   }
 
   CanApproveFr(fr: FundingRequest) {
-    if(this.loggedUserInstance) {
-      let userIsAdmin = this.CanManageAllFrEr();
-      let userIsLead = this.loggedUserInstance.leadOf.indexOf(fr.projectId) !== -1;
+    if (this.loggedUserInstance) {
+      const userIsAdmin = this.CanManageAllFrEr();
+      const userIsLead = this.loggedUserInstance.leadOf.indexOf(fr.projectId) !== -1;
 
-      return (userIsLead && fr.state == SZ.SENT) || (userIsAdmin && (fr.state == SZ.SENT || fr.state == SZ.VERIFIED));
+      return (userIsLead && fr.state === SZ.SENT) || (userIsAdmin && (fr.state === SZ.SENT || fr.state === SZ.VERIFIED));
     }
     return false;
   }
 
   CanApproveEr(er: ExpenseReport) {
-    if(this.loggedUserInstance) {
-      let userIsAdmin = this.CanManageAllFrEr();
-      let userIsLead = this.loggedUserInstance.leadOf.indexOf(er.projectId) !== -1;
+    if (this.loggedUserInstance) {
+      const userIsAdmin = this.CanManageAllFrEr();
+      const userIsLead = this.loggedUserInstance.leadOf.indexOf(er.projectId) !== -1;
 
-      return (userIsLead && er.state == SZ.SENT) || (userIsAdmin && (er.state == SZ.SENT || er.state == SZ.VERIFIED));
+      return (userIsLead && er.state === SZ.SENT) || (userIsAdmin && (er.state === SZ.SENT || er.state === SZ.VERIFIED));
     }
     return false;
   }

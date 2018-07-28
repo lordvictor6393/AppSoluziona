@@ -1,9 +1,9 @@
 import * as SZ from '../globalConstants';
-import { Injectable } from "../../../node_modules/@angular/core";
-import { ExpenseReport } from "./expense-report.model";
-import { AngularFirestoreCollection, AngularFirestore } from "../../../node_modules/angularfire2/firestore";
-import { Observable } from "../../../node_modules/rxjs";
-import { map } from "../../../node_modules/rxjs/operators";
+import { Injectable } from '../../../node_modules/@angular/core';
+import { ExpenseReport } from './expense-report.model';
+import { AngularFirestoreCollection, AngularFirestore } from '../../../node_modules/angularfire2/firestore';
+import { Observable } from '../../../node_modules/rxjs';
+import { map } from '../../../node_modules/rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class ExpenseReportService {
 
     getListRestrictions() {
         const me = this;
-        let user = this.authService.loggedUserInstance;
+        const user = this.authService.loggedUserInstance;
         if (user) {
             if (me.authService.CanManageAllFrEr() || user.leadOf.length) {
                 return ref => ref.where('isDeleted', '==', false);
@@ -37,22 +37,24 @@ export class ExpenseReportService {
 
     getErList(): Observable<ExpenseReport[]> {
         const me = this;
-        let user = this.authService.loggedUserInstance;
+        const user = this.authService.loggedUserInstance;
         if (user) {
             return me.db.collection('expenseReports', me.getListRestrictions()).snapshotChanges().pipe(
                 map(erList => erList.map(ExpenseReport.getErFromSnapshot)),
                 map(erList => {
-                    let filteredList = erList.filter(
+                    const filteredList = erList.filter(
                         er => {
-                            if(me.authService.CanManageAllFrEr()) return true;
-                            if(user.leadOf.length) {
-                                return  user.id == er.createUserId || 
-                                        (user.leadOf.indexOf(er.projectId) !== -1 
-                                         && er.isSent)
+                            if (me.authService.CanManageAllFrEr()) {
+                                return true;
+                            }
+                            if (user.leadOf.length) {
+                                return user.id === er.createUserId ||
+                                    (user.leadOf.indexOf(er.projectId) !== -1
+                                        && er.isSent);
                             }
                             return true;
                         }
-                    )
+                    );
                     return filteredList;
                 })
             );
@@ -60,11 +62,11 @@ export class ExpenseReportService {
     }
 
     getEr(erId: string): Observable<ExpenseReport> {
-        let erRef = this.db.doc('expenseReports/' + erId);
-        if(erRef) {
+        const erRef = this.db.doc('expenseReports/' + erId);
+        if (erRef) {
             return erRef.valueChanges().pipe(
                 map(er => {
-                    if(er) {
+                    if (er) {
                         return ExpenseReport.getErFromValue(erId, er);
                     }
                 })
@@ -88,9 +90,11 @@ export class ExpenseReportService {
     }
 
     updateEr(erId, erData) {
-        let erRef = this.db.doc('expenseReports/' + erId);
-        if(erRef) {
-            if(erData.data) erData.date = erData.date.getTime();
+        const erRef = this.db.doc('expenseReports/' + erId);
+        if (erRef) {
+            if (erData.data) {
+                erData.date = erData.date.getTime();
+            }
             erRef.update(erData);
         } else {
             console.log('Cannot update expense report, not able to get expense report ' + erId);
@@ -99,11 +103,11 @@ export class ExpenseReportService {
 
     sendEr(erId: string, erActivity) {
         const me = this;
-        me.updateEr(erId, { 
-            isSent: true, 
+        me.updateEr(erId, {
+            isSent: true,
             state: SZ.SENT,
             activity: erActivity
-         });
+        });
     }
 
     verifyEr(erId: string, erActivity) {
@@ -132,8 +136,8 @@ export class ExpenseReportService {
     }
 
     deleteEr(erId: string) {
-        let erRef = this.db.doc('expenseReports/' + erId);
-        if(erRef) {
+        const erRef = this.db.doc('expenseReports/' + erId);
+        if (erRef) {
             erRef.delete();
         } else {
             console.log('Cannot delete expense report, not able to get expense report ' + erId);
@@ -141,7 +145,11 @@ export class ExpenseReportService {
         // this.updateEr(erId, { isDeleted: true });
     }
 
-    generateErCode(): string {
-        return 'DES-' + (this.localErList.length + 1);
+    generateErCode(frCode: string): string {
+        if (frCode) {
+            const codeNumber = frCode.split('-')[1];
+            return 'DES-' + codeNumber;
+        }
+        return '';
     }
 }

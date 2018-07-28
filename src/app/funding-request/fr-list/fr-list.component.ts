@@ -10,6 +10,8 @@ import { Project } from '../../project/project.model';
 import { User } from '../../user/user.model';
 import { AuthService } from '../../auth/auth.service';
 import { RejectReasonComponent } from '../reject-reason/reject-reason.component';
+import { Client } from '../../client/client.model';
+import { ClientService } from '../../client/client.service';
 
 @Component({
   selector: 'app-fr-list',
@@ -30,11 +32,13 @@ export class FrListComponent implements OnInit {
   filterBySearchText: string;
 
   users: User[];
+  clients: Client[];
   projects: Project[];
   states: string[] = [SZ.CREATED, SZ.SENT, SZ.VERIFIED, SZ.REJECTED, SZ.APPROVED];
 
   constructor(private fundingRequestService: FundingRequestService,
     private userService: UsersService,
+    private clientService: ClientService,
     private projectService: ProjectService,
     private authService: AuthService,
     private dialog: MatDialog,
@@ -53,6 +57,9 @@ export class FrListComponent implements OnInit {
     this.userService.getUserList().subscribe(
       userList => this.users = userList
     );
+    this.clientService.getClientList().subscribe(
+      clientList => this.clients = clientList
+    );
     this.projectService.getProjectList().subscribe(
       projectList => this.projects = projectList
     );
@@ -66,13 +73,21 @@ export class FrListComponent implements OnInit {
     );
     this.frDataSource.sort = this.sort;
     this.frDataSource.filterPredicate = (data: FundingRequest) => {
-      let match: boolean = true;
-      if (this.filterByUserId) match = match && (data.createUserId == this.filterByUserId);
-      if (this.filterByProjectId) match = match && (data.projectId == this.filterByProjectId);
-      if (this.filterByState) match = match && (data.state == this.filterByState);
-      if (this.filterBySearchText) match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test(data.detail));
+      let match = true;
+      if (this.filterByUserId) {
+        match = match && (data.createUserId === this.filterByUserId);
+      }
+      if (this.filterByProjectId) {
+        match = match && (data.projectId === this.filterByProjectId);
+      }
+      if (this.filterByState) {
+        match = match && (data.state === this.filterByState);
+      }
+      if (this.filterBySearchText) {
+        match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test(data.detail));
+      }
       return match;
-    }
+    };
     // Transform the data into a lowercase string of all property values.
     // var /** @type {?} */ accumulator = function (currentTerm, key) { return currentTerm + data[key]; };
     // var /** @type {?} */ dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
@@ -93,12 +108,12 @@ export class FrListComponent implements OnInit {
   onEditFundingRequest(frId: string) {
     this.router.navigate([frId], {
       relativeTo: this.route
-    })
+    });
   }
 
   onSendFundingRequest(fr: FundingRequest) {
-    let user = this.authService.loggedUserInstance;
-    let activity = fr.activity || [];
+    const user = this.authService.loggedUserInstance;
+    const activity = fr.activity || [];
     if (user && !fr.isSent) {
       activity.push({
         action: SZ.SENT,
@@ -110,8 +125,8 @@ export class FrListComponent implements OnInit {
   }
 
   onApproveFundingRequest(fr: FundingRequest) {
-    let user = this.authService.loggedUserInstance;
-    let activity = fr.activity || [];
+    const user = this.authService.loggedUserInstance;
+    const activity = fr.activity || [];
     if (user && fr.isSent) {
       if (user.leadOf.indexOf(fr.projectId)) {
         activity.push({
@@ -132,12 +147,12 @@ export class FrListComponent implements OnInit {
   }
 
   onRejectFundingRequest(fr: FundingRequest) {
-    let user = this.authService.loggedUserInstance;
-    let activity = fr.activity || [];
+    const user = this.authService.loggedUserInstance;
+    const activity = fr.activity || [];
     if (user && fr.isSent) {
       this.dialog.open(RejectReasonComponent).afterClosed().subscribe(
         reason => {
-          if(reason) {
+          if (reason) {
             activity.push({
               action: SZ.REJECTED,
               userId: this.authService.getLoggedUserId(),
@@ -152,7 +167,7 @@ export class FrListComponent implements OnInit {
   }
 
   onCreateExpenseReport(frId: string) {
-    this.router.navigate(['expenseReports','create',frId]);
+    this.router.navigate(['expenseReports', 'create', frId]);
   }
 
   onAddFundingRequest() {

@@ -7,17 +7,17 @@
           SoluZiona
         </span>
         <span class="title">
-          SOLICITUD DE FONDOS
+          DESCARGO DE FONDOS
           <br>EN AVANCE
         </span>
         <span class="codes">
           <div class="project-code">{{proj.code}}</div>
-          <div class="funding-request-code">{{fr.code}}</div>
+          <div class="funding-request-code">{{er.code}}</div>
         </span>
       </div>
 
       <div class="panel personal-data">
-        <div class="title">A. DATOS PERSONALES - SOLICITANTE</div>
+        <div class="title">A. DATOS PERSONALES</div>
         <div class="data-table">
           <div class="row">
             <div class="cell label" style="width: 25%;">Nombre y Apellidos: </div>
@@ -35,50 +35,63 @@
       </div>
 
       <div class="panel detail">
-        <div class="title">B. DETALLE DE SOLICITUD</div>
+        <div class="title">B. DETALLE DE GASTOS REALIZADOS</div>
         <div class="data-table">
           <div class="row">
-            <div class="cell label" style="width: 25%;">Cliente: </div>
-            <div class="cell" style="width: 40%;"> {{client.name}} </div>
+            <div class="cell label" style="width: 25%;">Proyecto: </div>
+            <div class="cell" style="width: 40%;"> {{proj.name}} </div>
             <div class="cell label" style="width: 15%;">Fecha: </div>
-            <div class="cell" style="width: 20%;"> {{fr.date | date:'mediumDate'}} </div>
-          </div>
-        </div>
-        <div class="data-table">
-          <div class="row">
-            <div class="cell label" style="width: 25%;">Motivo del Gasto: </div>
-            <div class="cell" style="width: 75%;"> {{fr.detail}} </div>
+            <div class="cell" style="width: 20%;"> {{er.date | date:'mediumDate'}} </div>
           </div>
         </div>
         <hr>
         <div class="data-table border">
           <div class="row header-row">
-            <div class="cell justified" style="width: 10%;">Item</div>
-            <div class="cell" style="width: 45%;">Detalle</div>
-            <div class="cell justified" style="width: 15%;">Cantidad</div>
-            <div class="cell justified" style="width: 15%;">Precio Unitario</div>
-            <div class="cell justified" style="width: 15%;">Precio Total</div>
+            <div class="cell" style="width: 6%;">Item</div>
+            <div class="cell" style="width: 34%;">Detalle</div>
+            <div class="cell" style="width: 10%;">Fecha</div>
+            <div class="cell" style="width: 10%;">No. de Factura</div>
+            <div class="cell" style="width: 10%;">No. de Recibo</div>
+            <div class="cell" style="width: 10%;">Cantidad</div>
+            <div class="cell" style="width: 10%;">Precio Unitario</div>
+            <div class="cell" style="width: 10%;">Precio Total</div>
           </div>
-          <div class="row" *ngFor="let item of fr.items; let idx = index">
-            <div class="cell justified" style="width: 10%;"> {{idx + 1}} </div>
-            <div class="cell" style="width: 45%;"> {{item.detail}} </div>
-            <div class="cell justified" style="width: 15%;"> {{item.quantity}} </div>
-            <div class="cell justified" style="width: 15%;"> {{item.singlePrice}} </div>
-            <div class="cell justified" style="width: 15%;"> {{item.totalPrice}} </div>
+          <div class="row" *ngFor="let item of er.items; let idx = index">
+            <div class="cell justified" style="width: 6%;"> {{idx + 1}} </div>
+            <div class="cell" style="width: 34%;"> {{item.detail}} </div>
+            <div class="cell justified" style="width: 10%;"> {{item.date | date: 'shortDate'}} </div>
+            <div class="cell justified" style="width: 10%;"> {{item.billNumber}} </div>
+            <div class="cell justified" style="width: 10%;"> {{item.voucherNumber}} </div>
+            <div class="cell justified" style="width: 10%;"> {{item.quantity}} </div>
+            <div class="cell justified" style="width: 10%;"> {{item.singlePrice}} </div>
+            <div class="cell justified" style="width: 10%;"> {{item.totalPrice}} </div>
           </div>
           <div class="row" *ngFor="let item of emptyRows; let idx = index">
-            <div class="cell justified" style="width: 10%;"> {{idx + fr.items.length + 1}} </div>
-            <div class="cell" style="width: 45%;"> </div>
-            <div class="cell justified" style="width: 15%;"> </div>
-            <div class="cell justified" style="width: 15%;"> </div>
-            <div class="cell justified" style="width: 15%;"> </div>
+            <div class="cell justified" style="width: 6%;"> {{idx + er.items.length + 1}} </div>
+            <div class="cell" style="width: 34%;"> </div>
+            <div class="cell justified" style="width: 10%;"> </div>
+            <div class="cell justified" style="width: 10%;"> </div>
+            <div class="cell justified" style="width: 10%;"> </div>
+            <div class="cell justified" style="width: 10%;"> </div>
+            <div class="cell justified" style="width: 10%;"> </div>
+            <div class="cell justified" style="width: 10%;"> </div>
           </div>
         </div>
-        <div class="data-table" style="margin-top: 5px">
+        <div class="data-table totals" style="margin-top: 5px">
           <div class="row footer-row">
-            <div class="cell" style="width: 70%;"></div>
-            <div class="cell justified total-label" style="width: 15%;"> Total </div>
-            <div class="cell justified total-amount" style="width: 15%;"> {{fr.total}} </div>
+            <div class="cell" style="width: 55%;"></div>
+            <div class="cell justified total-label" style="width: 30%;"> Total Gastos Realizados </div>
+            <div class="cell justified total-amount" style="width: 15%;"> {{er.totalSpent}} </div>
+          </div>
+          <div class="row footer-row">
+            <div class="cell" style="width: 55%;"></div>
+            <div class="cell justified total-label" style="width: 30%;"> Fondos Recibidos </div>
+            <div class="cell justified total-amount" style="width: 15%;"> {{er.totalReceived}} </div>
+          </div>
+          <div class="row footer-row">
+            <div class="cell" style="width: 55%;"></div>
+            <div class="cell justified total-label" style="width: 30%;"> Saldo </div>
+            <div class="cell justified total-amount" style="width: 15%;"> {{er.balance}} </div>
           </div>
         </div>
         <div class="data-table" style="margin-top: 10px">

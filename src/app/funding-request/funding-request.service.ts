@@ -1,10 +1,10 @@
 import * as SZ from '../globalConstants';
-import { FundingRequest } from "./funding-request.model";
-import { AngularFirestore, AngularFirestoreCollection } from "../../../node_modules/angularfire2/firestore";
-import { Observable } from "../../../node_modules/rxjs";
-import { map } from "../../../node_modules/rxjs/operators";
-import { Injectable } from "../../../node_modules/@angular/core";
-import { AuthService } from "../auth/auth.service";
+import { FundingRequest } from './funding-request.model';
+import { AngularFirestore, AngularFirestoreCollection } from '../../../node_modules/angularfire2/firestore';
+import { Observable } from '../../../node_modules/rxjs';
+import { map } from '../../../node_modules/rxjs/operators';
+import { Injectable } from '../../../node_modules/@angular/core';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class FundingRequestService {
@@ -24,7 +24,7 @@ export class FundingRequestService {
 
     getListRestrictions() {
         const me = this;
-        let user = this.authService.loggedUserInstance;
+        const user = this.authService.loggedUserInstance;
         if (user) {
             if (me.authService.CanManageAllFrEr() || user.leadOf.length) {
                 return ref => ref.where('isDeleted', '==', false);
@@ -38,23 +38,25 @@ export class FundingRequestService {
 
     getFrList(onlySended?: boolean): Observable<FundingRequest[]> {
         const me = this;
-        let user = this.authService.loggedUserInstance;
+        const user = this.authService.loggedUserInstance;
         if (user) {
             return me.db.collection('fundingRequests', me.getListRestrictions()).snapshotChanges().pipe(
                 map(frList => frList.map(FundingRequest.getFrFromSnapshot)),
                 map(frList => {
-                    let filteredList = frList.filter(
+                    const filteredList = frList.filter(
                         fr => {
-                            if(me.authService.CanManageAllFrEr()) return true;
-                            if(user.leadOf.length) {
-                                return  user.id == fr.createUserId || 
-                                        (user.leadOf.indexOf(fr.projectId) !== -1 
-                                         && fr.isSent)
+                            if (me.authService.CanManageAllFrEr()) {
+                                return true;
+                            }
+                            if (user.leadOf.length) {
+                                return user.id === fr.createUserId ||
+                                    (user.leadOf.indexOf(fr.projectId) !== -1
+                                        && fr.isSent);
                             }
                             return true;
                         }
-                    )
-                    if(onlySended) {
+                    );
+                    if (onlySended) {
                         return filteredList.filter(fr => fr.isSent && this.isFrApproved(fr));
                     }
                     return filteredList;
@@ -65,7 +67,7 @@ export class FundingRequestService {
 
     getFr(frId: string): Observable<FundingRequest> {
         const me = this;
-        let frRef = me.db.doc('fundingRequests/' + frId);
+        const frRef = me.db.doc('fundingRequests/' + frId);
         if (frRef) {
             return frRef.valueChanges().pipe(
                 map(fr => {
@@ -95,9 +97,11 @@ export class FundingRequestService {
 
     updateFr(frId, frData) {
         const me = this;
-        let frRef = me.db.doc('fundingRequests/' + frId);
+        const frRef = me.db.doc('fundingRequests/' + frId);
         if (frRef) {
-            if(frData.data) frData.date = frData.date.getTime();
+            if (frData.data) {
+                frData.date = frData.date.getTime();
+            }
             frRef.update(frData);
         } else {
             console.log('Cannot update funding request, not able to get funding request ' + frId);
@@ -106,11 +110,11 @@ export class FundingRequestService {
 
     sendFr(frId: string, frActivity) {
         const me = this;
-        me.updateFr(frId, { 
-            isSent: true, 
+        me.updateFr(frId, {
+            isSent: true,
             state: SZ.SENT,
             activity: frActivity
-         });
+        });
     }
 
     verifyFr(frId: string, frActivity) {
@@ -140,7 +144,7 @@ export class FundingRequestService {
 
     deleteFr(frId: string) {
         const me = this;
-        let frRef = me.db.doc('fundingRequests/' + frId);
+        const frRef = me.db.doc('fundingRequests/' + frId);
         if (frRef) {
             frRef.delete();
         } else {
@@ -154,6 +158,6 @@ export class FundingRequestService {
         return 'SOL-' + (me.localFrList.length + 1);
     }
     isFrApproved(fr: FundingRequest) {
-        return fr.state == SZ.APPROVED;
+        return fr.state === SZ.APPROVED;
     }
 }

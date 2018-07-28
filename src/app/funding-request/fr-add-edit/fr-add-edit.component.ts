@@ -20,11 +20,11 @@ import { FrPrintPreviewComponent } from '../fr-print-preview/fr-print-preview.co
 @Component({
   selector: 'app-fr-add-edit',
   templateUrl: './fr-add-edit.component.html',
-  styleUrls: ['./fr-add-edit.component.css']
+  styleUrls: ['./fr-add-edit.component.scss']
 })
 export class FrAddEditComponent implements OnInit {
 
-  isNew: boolean = false;
+  isNew = false;
   selectedFrId: string;
   initialFrData: FundingRequest;
 
@@ -35,7 +35,7 @@ export class FrAddEditComponent implements OnInit {
 
   selectedUser: User;
   selectedUserId: string;
-  clientIdOfSelectedProject: string = '';
+  clientIdOfSelectedProject = '';
   paymentTypes = ['Efectivo', 'Cheque', 'Transferencia'];
 
   frGridColumns: string[];
@@ -82,7 +82,7 @@ export class FrAddEditComponent implements OnInit {
       params => {
         this.selectedFrId = params.id;
         if (this.selectedFrId) {
-          this.loadFundingRequestData()
+          this.loadFundingRequestData();
         } else {
           this.isNew = true;
           this.fundingRequestForm.patchValue({ code: this.fundingRequestService.generateFrCode() });
@@ -105,12 +105,12 @@ export class FrAddEditComponent implements OnInit {
   updateCurrentSelectedUser() {
     this.selectedUser = this.users.find(
       userElement => userElement.id === this.selectedUserId
-    )
+    );
   }
 
   updateClientName() {
-    let projId = this.fundingRequestForm.get('projectId').value;
-    let project = this.projects.find(proj => proj.id == projId);
+    const projId = this.fundingRequestForm.get('projectId').value;
+    const project = this.projects.find(proj => proj.id === projId);
     if (project) {
       this.clientIdOfSelectedProject = project.clientId;
     }
@@ -148,15 +148,6 @@ export class FrAddEditComponent implements OnInit {
         if (this.frItems.length) {
           this.frItemsDataSource.data = this.frItems;
         }
-        /**
-         * 
-         * 
-         * 
-         * remove
-         * 
-         * 
-         */
-        this.showFrPreview();
       }
     );
   }
@@ -165,13 +156,13 @@ export class FrAddEditComponent implements OnInit {
     let total = 0;
     this.frItems.map(
       frItem => total += frItem.totalPrice
-    )
+    );
     return total;
   }
 
   addFundingRequestItem(recordData?: FundingRequestItem) {
-    let isEditing = recordData ? true : false;
-    let itemForm = this.dialog.open(FrFormItemComponent, {
+    const isEditing = recordData ? true : false;
+    const itemForm = this.dialog.open(FrFormItemComponent, {
       data: recordData || {}
     });
     itemForm.afterClosed().subscribe(
@@ -186,7 +177,7 @@ export class FrAddEditComponent implements OnInit {
           this.frItemsDataSource.data = this.frItems;
         }
       }
-    )
+    );
   }
 
   deleteFundingRequestItem(index: number) {
@@ -198,8 +189,8 @@ export class FrAddEditComponent implements OnInit {
   }
 
   onSendFr() {
-    let user = this.authService.loggedUserInstance;
-    let activity = this.initialFrData.activity || [];
+    const user = this.authService.loggedUserInstance;
+    const activity = this.initialFrData.activity || [];
     if (user && !this.initialFrData.isSent) {
       activity.push({
         action: SZ.SENT,
@@ -212,8 +203,8 @@ export class FrAddEditComponent implements OnInit {
   }
 
   onApproveFr() {
-    let user = this.authService.loggedUserInstance;
-    let activity = this.initialFrData.activity || [];
+    const user = this.authService.loggedUserInstance;
+    const activity = this.initialFrData.activity || [];
     if (user && this.initialFrData.isSent) {
       if (user.leadOf.indexOf(this.initialFrData.projectId)) {
         activity.push({
@@ -234,8 +225,8 @@ export class FrAddEditComponent implements OnInit {
   }
 
   onRejectFr() {
-    let user = this.authService.loggedUserInstance;
-    let activity = this.initialFrData.activity || [];
+    const user = this.authService.loggedUserInstance;
+    const activity = this.initialFrData.activity || [];
     if (user && this.initialFrData.isSent) {
       this.dialog.open(RejectReasonComponent).afterClosed().subscribe(
         reason => {
@@ -254,7 +245,7 @@ export class FrAddEditComponent implements OnInit {
   }
 
   onSaveFr() {
-    let frData = this.fundingRequestForm.value;
+    const frData = this.fundingRequestForm.value;
     frData.items = this.frItems.map(
       frItem => frItem.getRawObject()
     );
@@ -282,14 +273,19 @@ export class FrAddEditComponent implements OnInit {
   }
 
   showFrPreview() {
-    let frData = this.fundingRequestForm.value;
+    const frData = this.fundingRequestForm.value;
     frData.items = this.frItems.map(
       frItem => frItem.getRawObject()
     );
     frData.total = this.getFrTotal();
     frData.clientId = this.clientIdOfSelectedProject;
     this.dialog.open(FrPrintPreviewComponent, {
-      data: frData
+      data: {
+        fr: frData,
+        projects: this.projects,
+        clients: this.clients,
+        users: this.users
+      }
     });
   }
 }

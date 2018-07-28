@@ -1,5 +1,6 @@
-<h4>SOLICITUD DE FONDOS EN AVANCE</h4>
-<button mat-raised-button (click)="showFrPreview()">Vista previa</button>
+<div class="header">
+  <button mat-raised-button color="primary" (click)="showFrPreview()">Vista previa en PDF</button>
+</div>
 <form [formGroup]="fundingRequestForm">
   <mat-expansion-panel class="sz-details-panel">
     <mat-expansion-panel-header>
@@ -46,7 +47,7 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
-        <input matInput placeholder="Cliente" [value]="clientService.getClientName(clientIdOfSelectedProject)" readonly>
+      <input matInput placeholder="Cliente" [value]="clientService.getClientName(clientIdOfSelectedProject)" readonly>
     </mat-form-field>
     <br>
     <mat-form-field>

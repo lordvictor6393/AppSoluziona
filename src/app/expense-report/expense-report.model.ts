@@ -1,24 +1,24 @@
-interface dbErItem {
-    detail: string,
-    date: number,
-    billNumber: string,
-    voucherNumber: string,
-    quantity: number,
-    singlePrice: number,
-    totalPrice: number
+interface DbErItem {
+    detail: string;
+    date: number;
+    billNumber: string;
+    voucherNumber: string;
+    quantity: number;
+    singlePrice: number;
+    totalPrice: number;
 }
 
-interface dbAccordance {
-    serviceOrder: string,
-    voucher: string,
-    receiverUserId: string
+interface DbAccordance {
+    serviceOrder: string;
+    voucher: string;
+    receiverUserId: string;
 }
 
-interface dbErActivity {
-    action: string,
-    userId: string,
-    date: number,
-    reason?: string
+interface DbErActivity {
+    action: string;
+    userId: string;
+    date: number;
+    reason?: string;
 }
 
 export class ExpenseReport {
@@ -37,10 +37,10 @@ export class ExpenseReport {
     public observations: string;
     public place: string;
     public date: Date;
-    public items: dbErItem[];
-    public accordance: dbAccordance;
+    public items: DbErItem[];
+    public accordance: DbAccordance;
     public approveUserId: string;
-    public activity: dbErActivity[];
+    public activity: DbErActivity[];
 
     constructor(
         id: string,
@@ -55,12 +55,12 @@ export class ExpenseReport {
         observations: string,
         place: string,
         date: number,
-        items: dbErItem[],
-        accordance: dbAccordance,
+        items: DbErItem[],
+        accordance: DbAccordance,
         approveUserId: string,
 
         isSent?: boolean,
-        activity?: dbErActivity[]
+        activity?: DbErActivity[]
     ) {
         this.isDeleted = false;
         this.isSent = isSent || false;

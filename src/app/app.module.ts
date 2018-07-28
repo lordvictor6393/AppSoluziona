@@ -29,9 +29,9 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 // MODULES
 import { AppRoutingModule } from './shared/app-routing.module';
 import { AngularFireModule } from 'angularfire2';
-import { AngularFirestoreModule } from 'angularfire2/firestore'
-import { AngularFireStorageModule } from 'angularfire2/storage'
-import { AngularFireAuthModule } from 'angularfire2/auth'
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireStorageModule } from 'angularfire2/storage';
+import { AngularFireAuthModule } from 'angularfire2/auth';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialCmpsModule } from './shared/angular-material-cmps.module';
 
@@ -51,6 +51,7 @@ import { RejectReasonComponent } from './funding-request/reject-reason/reject-re
 import { FrSelectorComponent } from './expense-report/er-list/fr-selector/fr-selector.component';
 import { FrPrintPreviewComponent } from './funding-request/fr-print-preview/fr-print-preview.component';
 import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
+import { ErPrintPreviewComponent } from './expense-report/er-print-preview/er-print-preview.component';
 
 
 registerLocaleData(localeEs, 'es-BO');
@@ -76,7 +77,8 @@ registerLocaleData(localeEs, 'es-BO');
     HomeComponent,
     RejectReasonComponent,
     FrSelectorComponent,
-    FrPrintPreviewComponent
+    FrPrintPreviewComponent,
+    ErPrintPreviewComponent
   ],
   imports: [
     BrowserModule,
@@ -95,7 +97,8 @@ registerLocaleData(localeEs, 'es-BO');
     ErFormItemComponent,
     RejectReasonComponent,
     FrSelectorComponent,
-    FrPrintPreviewComponent
+    FrPrintPreviewComponent,
+    ErPrintPreviewComponent
   ],
   providers: [
     AuthService,
@@ -104,7 +107,7 @@ registerLocaleData(localeEs, 'es-BO');
     ProjectService,
     FundingRequestService,
     ExpenseReportService,
-    { provide: LOCALE_ID, useValue: "es-BO" }
+    { provide: LOCALE_ID, useValue: 'es-BO' }
   ],
   bootstrap: [AppComponent]
 })
