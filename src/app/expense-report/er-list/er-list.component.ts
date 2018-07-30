@@ -124,7 +124,7 @@ export class ErListComponent implements OnInit {
     const user = this.authService.loggedUserInstance;
     const activity = er.activity || [];
     if (user && er.isSent) {
-      if (user.leadOf.indexOf(er.projectId)) {
+      if (user.leadOf.indexOf(er.projectId) !== -1) {
         activity.push({
           action: SZ.VERIFIED,
           userId: this.authService.getLoggedUserId(),

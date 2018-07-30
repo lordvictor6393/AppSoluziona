@@ -98,6 +98,7 @@ export class ErAddEditComponent implements OnInit {
                       code: this.expenseReportService.generateErCode(frInstance.code),
                       createUserId: this.authService.loggedUserId
                     });
+                    this.updateCurrentSelectedUser();
                   }
                 );
               }
@@ -270,7 +271,7 @@ export class ErAddEditComponent implements OnInit {
     erData.totalSpent = this.getErTotal();
     erData.totalReceived = this.selectedFr.total;
     erData.balance = erData.totalReceived - erData.totalSpent;
-    erData.date = erData.date.getTime();
+    // erData.date = erData.date.getTime();
     console.log('report to be saved: ', erData);
     if (this.isNew) {
       this.expenseReportService.addEr(erData);
