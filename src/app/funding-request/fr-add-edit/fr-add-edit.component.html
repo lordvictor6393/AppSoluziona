@@ -194,10 +194,10 @@
   <div class="sz-action-btns">
     <h4 *ngIf="!isNew && initialFrData && initialFrData.isSent">Su solicitud ya fue enviada</h4>
     <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Enviar Solicitud</button>
-    <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="initialFrData && initialFrData.isSent && authService.CanApproveFr(initialFrData)">Aprobar</button>
-    <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="initialFrData && initialFrData.isSent && authService.CanApproveFr(initialFrData)">Rechazar</button>
-    <button mat-raised-button color="primary" type="button" (click)="onCreateEr()" *ngIf="initialFrData && fundingRequestService.isFrApproved(initialFrData)">Crear Formulario de Descargo</button>
-    <button mat-button color="warn" type="button" (click)="onDeleteFr()" *ngIf="initialFrData && !initialFrData.isSent">Eliminar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="!isNew && initialFrData && initialFrData.isSent && authService.CanApproveFr(initialFrData)">Aprobar</button>
+    <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="!isNew && initialFrData && initialFrData.isSent && authService.CanApproveFr(initialFrData)">Rechazar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onCreateEr()" *ngIf="!isNew && initialFrData && fundingRequestService.isFrApproved(initialFrData)">Crear Formulario de Descargo</button>
+    <button mat-button color="warn" type="button" (click)="onDeleteFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Eliminar</button>
     <div style="flex: 1;"></div>
     <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="isNew || (initialFrData && !initialFrData.isSent)">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
     <button mat-button (click)="backToFrList()" type="button">Cancelar</button>

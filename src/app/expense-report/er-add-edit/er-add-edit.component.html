@@ -193,9 +193,9 @@
   <div class="sz-action-btns">
     <h4 *ngIf="!isNew && initialErData && initialErData.isSent">Su descargo ya fue enviado</h4>
     <button mat-raised-button color="primary" type="button" (click)="onSendEr()" *ngIf="!isNew && initialErData && !initialErData.isSent">Enviar Descargo</button>
-    <button mat-raised-button color="primary" type="button" (click)="onApproveEr()" *ngIf="initialErData && initialErData.isSent && authService.CanApproveEr(initialErData)">Aprobar</button>
-    <button mat-raised-button color="warn" type="button" (click)="onRejectEr()" *ngIf="initialErData && initialErData.isSent && authService.CanApproveEr(initialErData)">Rechazar</button>
-    <button mat-button color="warn" type="button" (click)="onDeleteEr()" *ngIf="initialErData && !initialErData.isSent">Eliminar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onApproveEr()" *ngIf="!isNew && initialErData && initialErData.isSent && authService.CanApproveEr(initialErData)">Aprobar</button>
+    <button mat-raised-button color="warn" type="button" (click)="onRejectEr()" *ngIf="!isNew && initialErData && initialErData.isSent && authService.CanApproveEr(initialErData)">Rechazar</button>
+    <button mat-button color="warn" type="button" (click)="onDeleteEr()" *ngIf="!isNew && initialErData && !initialErData.isSent">Eliminar</button>
     <div style="flex: 1;"></div>
     <button mat-raised-button color="primary" (click)="onSaveEr()" *ngIf="isNew || (initialErData && !initialErData.isSent)">{{isNew ? 'Crear Descargo' : 'Actualizar Descargo'}}</button>
     <button mat-button (click)="backToErList()" type="button">Cancelar</button>

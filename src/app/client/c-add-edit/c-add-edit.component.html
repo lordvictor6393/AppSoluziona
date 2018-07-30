@@ -55,6 +55,6 @@
     <button mat-raised-button color="primary" (click)="onSaveClient()">{{isNew ? 'Crear Cliente' : 'Actualizar Cliente'}}</button>
     <button mat-button (click)="backToClientsList()" type="button">Cancelar</button>
     <div style="flex: 1;"></div>
-    <button mat-button color="warn" (click)="onDeleteClient()">Eliminar</button>
+    <button mat-button color="warn" (click)="onDeleteClient()" *ngIf="!isNew">Eliminar</button>
   </div>
 </form>

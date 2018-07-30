@@ -1,10 +1,13 @@
-import { Injectable } from "@angular/core";
-import { AngularFirestoreCollection, AngularFirestore, CollectionReference } from "angularfire2/firestore";
-import { User } from "./user.model";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { AngularFireAuth } from "angularfire2/auth";
-import { AuthService } from "../auth/auth.service";
+import { Injectable } from '@angular/core';
+import { AngularFirestoreCollection, AngularFirestore } from 'angularfire2/firestore';
+import { User } from './user.model';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { AuthService } from '../auth/auth.service';
+import { AngularFireModule } from '../../../node_modules/angularfire2';
+import { initializeApp } from 'firebase';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class UsersService {
@@ -36,7 +39,7 @@ export class UsersService {
                     filterdList = userList.filter(
                         user => {
                             let loggedIsLead = false;
-                            let loggedUser = this.authService.loggedUserInstance;
+                            const loggedUser = this.authService.loggedUserInstance;
                             loggedUser.leadOf.forEach(
                                 projId => {
                                     loggedIsLead = loggedIsLead || user.projectIds.indexOf(projId) !== -1;
@@ -53,7 +56,7 @@ export class UsersService {
     }
 
     getUser(userId: string): Observable<User> {
-        let userRef = this.db.doc('users/' + userId);
+        const userRef = this.db.doc('users/' + userId);
         if (userRef) {
             return userRef.valueChanges().pipe(
                 map(user => {
@@ -71,25 +74,25 @@ export class UsersService {
         let userId = '';
         userData.isDeleted = false;
         userData.roles = { common: true };
-        let userMail = this.afAuth.auth.currentUser.email;
-        let userPass = this.authService.userPassword;
+        const userMail = this.afAuth.auth.currentUser.email;
+        const userPass = this.authService.userPassword;
 
-        this.afAuth.auth.createUserWithEmailAndPassword(userData.mail, password)
+        const secondaryApp = initializeApp(environment.firebase, 'Secondary');
+        secondaryApp.auth().createUserWithEmailAndPassword(userData.mail, password)
             .then(
                 response => {
                     userId = response.user.uid;
                     this.userCollectionRef.doc(userId).set(userData).then(
-                        response => {
-                            this.afAuth.auth.signOut();
-                            this.authService.signinUser(userMail, userPass);
+                        () => {
+                            secondaryApp.auth().signOut();
                         }
                     );
                 }
-            )
+            );
     }
 
     updateUser(userId: string, userData) {
-        let userRef = this.db.doc('users/' + userId);
+        const userRef = this.db.doc('users/' + userId);
         if (userRef) {
             userRef.update(userData);
         } else {
@@ -98,7 +101,7 @@ export class UsersService {
     }
 
     deleteUser(userId: string) {
-        let userRef = this.db.doc('users/' + userId);
+        const userRef = this.db.doc('users/' + userId);
         if (userRef) {
             userRef.delete();
         } else {
@@ -108,17 +111,17 @@ export class UsersService {
     }
 
     registerProject(userId: string, projId: string, isLead?: boolean) {
-        let userRef = this.db.doc('users/' + userId);
+        const userRef = this.db.doc('users/' + userId);
         let userInstance: User;
         let userProjects: string[];
         let userProjectsAsLead: string[];
         isLead = isLead || false;
         if (userRef) {
-            userInstance = this.localUserList.find(user => user.id == userId);
+            userInstance = this.localUserList.find(user => user.id === userId);
             if (userInstance) {
                 userProjects = userInstance.projectIds || [];
                 userProjectsAsLead = userInstance.leadOf || [];
-                if (userProjects.indexOf(projId) == -1) {
+                if (userProjects.indexOf(projId) === -1) {
                     userProjects.push(projId);
                     userRef.update({ projectIds: userProjects });
                     console.log('project registered successfully');
@@ -126,7 +129,7 @@ export class UsersService {
                     console.log('project already registered');
                 }
                 if (isLead) {
-                    if (userProjectsAsLead.indexOf(projId) == -1) {
+                    if (userProjectsAsLead.indexOf(projId) === -1) {
                         userProjectsAsLead.push(projId);
                         userRef.update({ leadOf: userProjectsAsLead });
                         console.log('project lead registered successfully');
@@ -143,13 +146,13 @@ export class UsersService {
     }
 
     unregisterProject(userId: string, projId: string, wasLead?: boolean) {
-        let userRef = this.db.doc('users/' + userId);
+        const userRef = this.db.doc('users/' + userId);
         let idx: number;
         let userInstance: User;
         let userProjects: string[];
         let userProjectsAsLead: string[];
         if (userRef) {
-            userInstance = this.localUserList.find(user => user.id == userId);
+            userInstance = this.localUserList.find(user => user.id === userId);
             if (userInstance) {
                 userProjects = userInstance.projectIds || [];
                 userProjectsAsLead = userInstance.leadOf || [];
@@ -181,12 +184,13 @@ export class UsersService {
 
     getCompleteUserName(userId: string) {
         if (this.localUserList.length) {
-            let userInstance = this.localUserList.find(user => user.id == userId);
+            const userInstance = this.localUserList.find(user => user.id === userId);
             if (userInstance) {
                 return userInstance.name + ' ' + userInstance.lastName;
             } else {
                 console.error('Not able to find user in local users list');
             }
-        } else return '';
+        }
+        return '';
     }
 }

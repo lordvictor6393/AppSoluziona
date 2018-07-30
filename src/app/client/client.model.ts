@@ -13,7 +13,7 @@ export class Client {
         projectsIds?: string[]
     ) {
         this.isDeleted = false;
-        
+
         this.id = id;
         this.name = name;
         this.contactDetails = contactDetails;

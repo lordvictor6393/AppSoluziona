@@ -33,7 +33,7 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <input matInput placeholder="Correo" formControlName="mail" readonly>
+      <input matInput placeholder="Correo" formControlName="mail" [readonly]="!isNew">
     </mat-form-field>
     <br>
     <mat-form-field>
@@ -102,6 +102,6 @@
     <button mat-raised-button color="primary" (click)="onSaveUser()">{{isNew ? 'Crear Usuario' : 'Actualizar Usuario'}}</button>
     <button mat-button (click)="backToUsersList()" type="button">Cancelar</button>
     <div style="flex: 1;"></div>
-    <button mat-button color="warn" (click)="onDeleteUser()">Eliminar</button>
+    <button mat-button color="warn" (click)="onDeleteUser()" *ngIf="!isNew">Eliminar</button>
   </div>
 </form>

@@ -33,7 +33,7 @@ export class ErListComponent implements OnInit {
   users: User[];
   projects: Project[];
   states: string[] = [SZ.CREATED, SZ.SENT, SZ.VERIFIED, SZ.REJECTED, SZ.APPROVED];
-  
+
   constructor(private expenseReportService: ExpenseReportService,
     private userService: UsersService,
     private projectService: ProjectService,
@@ -62,22 +62,34 @@ export class ErListComponent implements OnInit {
     this.expenseReportService.getErList().subscribe(
       erList => {
         this.reports = erList;
-        if(this.reports.length) {
+        if (this.reports.length) {
           this.erDataSource.data = this.reports;
         }
       }
     );
     this.erDataSource.sort = this.sort;
     this.erDataSource.filterPredicate = (data: ExpenseReport) => {
-      let match: boolean = true;
-      if(this.filterByUserId) match = match && (data.createUserId == this.filterByUserId);
-      if(this.filterByProjectId) match = match && (data.projectId == this.filterByProjectId);
-      if(this.filterByState) match = match && (data.state == this.filterByState);
-      if(this.filterBySearchText) match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test('' + data.totalSpent));
-      if(this.filterBySearchText) match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test('' + data.totalReceived));
-      if(this.filterBySearchText) match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test('' + data.balance));
+      let match = true;
+      if (this.filterByUserId) {
+        match = match && (data.createUserId === this.filterByUserId);
+      }
+      if (this.filterByProjectId) {
+        match = match && (data.projectId === this.filterByProjectId);
+      }
+      if (this.filterByState) {
+        match = match && (data.state === this.filterByState);
+      }
+      if (this.filterBySearchText) {
+        match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test('' + data.totalSpent));
+      }
+      if (this.filterBySearchText) {
+        match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test('' + data.totalReceived));
+      }
+      if (this.filterBySearchText) {
+        match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test('' + data.balance));
+      }
       return match;
-    }
+    };
   }
 
   filterErListData(value?: string) {
@@ -92,12 +104,12 @@ export class ErListComponent implements OnInit {
   onEditExpenseReport(erId: string) {
     this.router.navigate([erId], {
       relativeTo: this.route
-    })
+    });
   }
 
   onSendExpenseReport(er: ExpenseReport) {
-    let user = this.authService.loggedUserInstance;
-    let activity = er.activity || [];
+    const user = this.authService.loggedUserInstance;
+    const activity = er.activity || [];
     if (user && !er.isSent) {
       activity.push({
         action: SZ.SENT,
@@ -108,9 +120,9 @@ export class ErListComponent implements OnInit {
     }
   }
 
-  onApproveFundingRequest(er: ExpenseReport) {
-    let user = this.authService.loggedUserInstance;
-    let activity = er.activity || [];
+  onApproveExpenseReport(er: ExpenseReport) {
+    const user = this.authService.loggedUserInstance;
+    const activity = er.activity || [];
     if (user && er.isSent) {
       if (user.leadOf.indexOf(er.projectId)) {
         activity.push({
@@ -130,13 +142,13 @@ export class ErListComponent implements OnInit {
     }
   }
 
-  onRejectFundingRequest(er: ExpenseReport) {
-    let user = this.authService.loggedUserInstance;
-    let activity = er.activity || [];
+  onRejectExpenseReport(er: ExpenseReport) {
+    const user = this.authService.loggedUserInstance;
+    const activity = er.activity || [];
     if (user && er.isSent) {
       this.dialog.open(RejectReasonComponent).afterClosed().subscribe(
         reason => {
-          if(reason) {
+          if (reason) {
             activity.push({
               action: SZ.REJECTED,
               userId: this.authService.getLoggedUserId(),
@@ -153,11 +165,11 @@ export class ErListComponent implements OnInit {
   onSelectFundingRequest() {
     this.dialog.open(FrSelectorComponent).afterClosed().subscribe(
       selectedFrId => {
-        if(selectedFrId) {
+        if (selectedFrId) {
           this.onAddExpenseReport(selectedFrId);
         }
       }
-    )
+    );
   }
 
   onAddExpenseReport(frId: string) {

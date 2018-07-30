@@ -100,6 +100,6 @@
     <button mat-raised-button color="primary" (click)="onSaveProject()">{{isNew ? 'Crear Proyecto' : 'Actualizar Proyecto'}}</button>
     <button mat-button (click)="backToProjectsList()" type="button">Cancelar</button>
     <div style="flex: 1;"></div>
-    <button mat-button color="warn" (click)="onDeleteProject()">Eliminar</button>
+    <button mat-button color="warn" (click)="onDeleteProject()" *ngIf="!isNew">Eliminar</button>
   </div>
 </form>

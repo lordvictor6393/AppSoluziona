@@ -1,9 +1,9 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from '../app.component';
-import { HomeComponent } from "../home/home.component";
-import { SigninComponent } from "../auth/signin/signin.component";
+import { HomeComponent } from '../home/home.component';
+import { SigninComponent } from '../auth/signin/signin.component';
 
 import { FrListComponent } from '../funding-request/fr-list/fr-list.component';
 import { FrAddEditComponent } from '../funding-request/fr-add-edit/fr-add-edit.component';
@@ -19,7 +19,7 @@ import { UAddEditComponent } from '../user/u-add-edit/u-add-edit.component';
 
 import { CListComponent } from '../client/c-list/c-list.component';
 import { CAddEditComponent } from '../client/c-add-edit/c-add-edit.component';
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from '../auth/auth.guard';
 
 
 const appRoutes: Routes = [{
