@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header" *ngIf="initialErData && initialErData.isSent">
   <button mat-raised-button color="primary" (click)="showErPreview()">Vista previa en PDF</button>
 </div>
 <form [formGroup]="expenseReportForm">
@@ -11,8 +11,8 @@
         <span *ngIf="selectedUser">{{selectedUser.name}} {{selectedUser.lastName}}</span>
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <mat-form-field>
-      <mat-select placeholder="Usuario" formControlName="createUserId" [(value)]='selectedUserId' (selectionChange)="updateCurrentSelectedUser()">
+    <mat-form-field *ngIf="authService.CanManageAllFrEr() && (!initialErData || !initialErData.isSent)">
+      <mat-select placeholder="Usuario" formControlName="createUserId" (selectionChange)="updateCurrentSelectedUser()">
         <mat-option *ngFor="let user of users" [value]='user.id'>
           {{user.name}} {{user.lastName}}
         </mat-option>
@@ -47,11 +47,11 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <input matInput placeholder="Lugar" formControlName="place">
+      <input matInput placeholder="Lugar" formControlName="place" [readonly]="initialErData && initialErData.isSent">
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput [matDatepicker]="erDate" placeholder="Fecha" formControlName="date">
+      <input matInput [matDatepicker]="erDate" placeholder="Fecha" formControlName="date" [readonly]="initialErData && initialErData.isSent">
       <mat-datepicker-toggle matSuffix [for]="erDate"></mat-datepicker-toggle>
       <mat-datepicker #erDate></mat-datepicker>
     </mat-form-field>
@@ -149,12 +149,12 @@
       <tr mat-footer-row *matFooterRowDef="erGridColumns"></tr>
     </table>
     <br>
-    <button mat-raised-button color="primary" (click)="addExpenseReportItem()">
+    <button mat-raised-button color="primary" (click)="addExpenseReportItem()" *ngIf="!initialErData || !initialErData.isSent">
       Añadir
     </button>
     <br>
     <mat-form-field>
-      <textarea matInput placeholder="Observaciones" formControlName="observations"></textarea>
+      <textarea matInput placeholder="Observaciones" formControlName="observations" [readonly]="initialErData && initialErData.isSent"></textarea>
     </mat-form-field>
   </mat-expansion-panel>
 
@@ -191,13 +191,12 @@
   </mat-expansion-panel>
   <br>
   <div class="sz-action-btns">
-    <h4 *ngIf="!isNew && initialErData && initialErData.isSent">Su descargo ya fue enviado</h4>
-    <button mat-raised-button color="primary" type="button" (click)="onSendEr()" *ngIf="!isNew && initialErData && !initialErData.isSent">Enviar Descargo</button>
+    <button mat-raised-button color="primary" (click)="onSaveEr()" *ngIf="isNew || (initialErData && !initialErData.isSent)">{{isNew ? 'Crear Descargo' : 'Actualizar Descargo'}}</button>
     <button mat-raised-button color="primary" type="button" (click)="onApproveEr()" *ngIf="!isNew && initialErData && initialErData.isSent && authService.CanApproveEr(initialErData)">Aprobar</button>
     <button mat-raised-button color="warn" type="button" (click)="onRejectEr()" *ngIf="!isNew && initialErData && initialErData.isSent && authService.CanApproveEr(initialErData)">Rechazar</button>
-    <button mat-button color="warn" type="button" (click)="onDeleteEr()" *ngIf="!isNew && initialErData && !initialErData.isSent">Eliminar</button>
+    <button mat-button (click)="backToErList()" type="button">Volver</button>
     <div style="flex: 1;"></div>
-    <button mat-raised-button color="primary" (click)="onSaveEr()" *ngIf="isNew || (initialErData && !initialErData.isSent)">{{isNew ? 'Crear Descargo' : 'Actualizar Descargo'}}</button>
-    <button mat-button (click)="backToErList()" type="button">Cancelar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onSendEr()" *ngIf="!isNew && initialErData && !initialErData.isSent">Enviar Descargo</button>
+    <button mat-button color="warn" type="button" (click)="onDeleteEr()" *ngIf="!isNew && initialErData && !initialErData.isSent">Eliminar</button>
   </div>
 </form>

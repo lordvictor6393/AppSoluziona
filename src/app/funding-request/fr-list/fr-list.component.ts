@@ -128,7 +128,7 @@ export class FrListComponent implements OnInit {
     const user = this.authService.loggedUserInstance;
     const activity = fr.activity || [];
     if (user && fr.isSent) {
-      if (user.leadOf.indexOf(fr.projectId)) {
+      if (user.leadOf.indexOf(fr.projectId) !== -1) {
         activity.push({
           action: SZ.VERIFIED,
           userId: this.authService.getLoggedUserId(),

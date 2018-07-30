@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header" *ngIf="initialFrData && initialFrData.isSent">
   <button mat-raised-button color="primary" (click)="showFrPreview()">Vista previa en PDF</button>
 </div>
 <form [formGroup]="fundingRequestForm">
@@ -11,8 +11,8 @@
         <span *ngIf="selectedUser">{{selectedUser.name}} {{selectedUser.lastName}}</span>
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <mat-form-field>
-      <mat-select placeholder="Usuario solicitante" formControlName="createUserId" [(value)]='selectedUserId' (selectionChange)="updateCurrentSelectedUser()">
+    <mat-form-field *ngIf="authService.CanManageAllFrEr() && (!initialFrData || !initialFrData.isSent)">
+      <mat-select placeholder="Usuario solicitante" formControlName="createUserId" (selectionChange)="updateCurrentSelectedUser()">
         <mat-option *ngFor="let user of users" [value]='user.id'>
           {{user.name}} {{user.lastName}}
         </mat-option>
@@ -47,25 +47,25 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <input matInput placeholder="Cliente" [value]="clientService.getClientName(clientIdOfSelectedProject)" readonly>
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-      <mat-select placeholder="Proyecto" formControlName="projectId" (selectionChange)="updateClientName()">
-        <mat-option *ngFor="let project of projects" [value]='project.id'>
+      <mat-select placeholder="Proyecto" formControlName="projectId" (selectionChange)="updateClientName()" [disabled]="initialFrData && initialFrData.isSent">
+        <mat-option *ngFor="let project of userProjects" [value]='project.id'>
           {{project.name}}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput [matDatepicker]="frDate" placeholder="Fecha" formControlName="date">
+      <input matInput placeholder="Cliente" [value]="clientService.getClientName(clientIdOfSelectedProject)" readonly>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput [matDatepicker]="frDate" placeholder="Fecha" formControlName="date" [readonly]="initialFrData && initialFrData.isSent">
       <mat-datepicker-toggle matSuffix [for]="frDate"></mat-datepicker-toggle>
       <mat-datepicker #frDate></mat-datepicker>
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput placeholder="Motivo del gasto" formControlName="detail">
+      <input matInput placeholder="Motivo del gasto" formControlName="detail" [readonly]="initialFrData && initialFrData.isSent">
     </mat-form-field>
     <br>
     <table *ngIf="initialFrData" mat-table class="mat-elevation-z2 sz-item-table" [dataSource]="initialFrData.activity">
@@ -138,12 +138,12 @@
       <tr mat-footer-row *matFooterRowDef="frGridColumns"></tr>
     </table>
     <br>
-    <button mat-raised-button color="primary" (click)="addFundingRequestItem()">
+    <button mat-raised-button color="primary" (click)="addFundingRequestItem()" *ngIf="!initialFrData || !initialFrData.isSent">
       Añadir
     </button>
     <br>
     <mat-form-field>
-      <textarea matInput placeholder="Observaciones" formControlName="observations"></textarea>
+      <textarea matInput placeholder="Observaciones" formControlName="observations" [readonly]="initialFrData && initialFrData.isSent"></textarea>
     </mat-form-field>
   </mat-expansion-panel>
 
@@ -192,14 +192,13 @@
   </mat-expansion-panel>
   <br>
   <div class="sz-action-btns">
-    <h4 *ngIf="!isNew && initialFrData && initialFrData.isSent">Su solicitud ya fue enviada</h4>
-    <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Enviar Solicitud</button>
+    <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="isNew || (initialFrData && !initialFrData.isSent)">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
     <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="!isNew && initialFrData && initialFrData.isSent && authService.CanApproveFr(initialFrData)">Aprobar</button>
     <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="!isNew && initialFrData && initialFrData.isSent && authService.CanApproveFr(initialFrData)">Rechazar</button>
     <button mat-raised-button color="primary" type="button" (click)="onCreateEr()" *ngIf="!isNew && initialFrData && fundingRequestService.isFrApproved(initialFrData)">Crear Formulario de Descargo</button>
-    <button mat-button color="warn" type="button" (click)="onDeleteFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Eliminar</button>
+    <button mat-button (click)="backToFrList()" type="button">Volver</button>
     <div style="flex: 1;"></div>
-    <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="isNew || (initialFrData && !initialFrData.isSent)">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
-    <button mat-button (click)="backToFrList()" type="button">Cancelar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Enviar Solicitud</button>
+    <button mat-button color="warn" type="button" (click)="onDeleteFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Eliminar</button>
   </div>
 </form>

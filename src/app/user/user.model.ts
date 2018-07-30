@@ -66,7 +66,7 @@ export class User {
             data.position,
             data.projectIds,
             data.leadOf
-        )
+        );
     }
 
     static getUserFromValue(userId, user): User {
@@ -83,6 +83,6 @@ export class User {
             user.position,
             user.projectIds,
             user.leadOf
-        )
+        );
     }
 }

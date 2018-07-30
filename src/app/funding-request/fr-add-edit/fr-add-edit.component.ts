@@ -16,6 +16,7 @@ import { FundingRequestService } from '../funding-request.service';
 import { AuthService } from '../../auth/auth.service';
 import { RejectReasonComponent } from '../reject-reason/reject-reason.component';
 import { FrPrintPreviewComponent } from '../fr-print-preview/fr-print-preview.component';
+import { combineLatest } from '../../../../node_modules/rxjs';
 
 @Component({
   selector: 'app-fr-add-edit',
@@ -34,7 +35,7 @@ export class FrAddEditComponent implements OnInit {
   fundingRequestForm: FormGroup;
 
   selectedUser: User;
-  selectedUserId: string;
+  userProjects: Project[] = [];
   clientIdOfSelectedProject = '';
   paymentTypes = ['Efectivo', 'Cheque', 'Transferencia'];
 
@@ -54,15 +55,6 @@ export class FrAddEditComponent implements OnInit {
     private dialog: MatDialog) { }
 
   ngOnInit() {
-    this.userService.getUserList().subscribe(
-      usersList => this.users = usersList
-    );
-    this.clientService.getClientList().subscribe(
-      clientList => this.clients = clientList
-    );
-    this.projectService.getProjectList().subscribe(
-      projList => this.projects = projList
-    );
     this.fundingRequestForm = new FormGroup({
       code: new FormControl(null),
       createUserId: new FormControl(null),
@@ -78,18 +70,34 @@ export class FrAddEditComponent implements OnInit {
       })
     });
 
-    this.route.params.subscribe(
-      params => {
-        this.selectedFrId = params.id;
-        if (this.selectedFrId) {
-          this.loadFundingRequestData();
-        } else {
-          this.isNew = true;
-          this.fundingRequestForm.patchValue({ code: this.fundingRequestService.generateFrCode() });
-          this.frItemsDataSource.data = [];
+    combineLatest(this.userService.getUserList(),
+      this.clientService.getClientList(),
+      this.projectService.getProjectList()).subscribe(
+        res => {
+          this.users = res[0] || [];
+          this.clients = res[1] || [];
+          this.projects = res[2] || [];
+          if (!this.users.length) {
+            this.users.push(this.authService.loggedUserInstance);
+          }
+          this.route.params.subscribe(
+            params => {
+              this.selectedFrId = params.id;
+              if (this.selectedFrId) {
+                this.loadFundingRequestData();
+              } else {
+                this.isNew = true;
+                this.fundingRequestForm.patchValue({
+                  code: this.fundingRequestService.generateFrCode(),
+                  createUserId: this.authService.loggedUserId
+                });
+                this.updateCurrentSelectedUser();
+                this.frItemsDataSource.data = [];
+              }
+            }
+          );
         }
-      }
-    );
+      );
 
     this.frItemsDataSource.sort = this.sort;
     this.frGridColumns = [
@@ -97,15 +105,19 @@ export class FrAddEditComponent implements OnInit {
       'detail',
       'quantity',
       'singlePrice',
-      'totalPrice',
-      'editBtn'
+      'totalPrice'
     ];
+    if (!this.initialFrData || !this.initialFrData.isSent) {
+      this.frGridColumns.push('editBtn');
+    }
   }
 
   updateCurrentSelectedUser() {
     this.selectedUser = this.users.find(
-      userElement => userElement.id === this.selectedUserId
+      userElement => userElement.id === this.fundingRequestForm.get('createUserId').value
     );
+    const userProjs = this.selectedUser.projectIds || [];
+    this.userProjects = this.projects.filter(proj => userProjs.includes(proj.id));
   }
 
   updateClientName() {
@@ -120,8 +132,6 @@ export class FrAddEditComponent implements OnInit {
     this.fundingRequestService.getFr(this.selectedFrId).subscribe(
       frData => {
         this.initialFrData = frData;
-        this.selectedUserId = frData.createUserId;
-        this.updateCurrentSelectedUser();
         this.fundingRequestForm.setValue({
           code: frData.code,
           createUserId: frData.createUserId,
@@ -137,6 +147,7 @@ export class FrAddEditComponent implements OnInit {
           }
         });
         this.updateClientName();
+        this.updateCurrentSelectedUser();
         this.frItems = frData.items.map(
           frItemData => new FundingRequestItem(
             frItemData.detail,
@@ -155,9 +166,9 @@ export class FrAddEditComponent implements OnInit {
   getFrTotal() {
     let total = 0;
     this.frItems.map(
-      frItem => total += frItem.totalPrice
+      frItem => total += (frItem.totalPrice * 10)
     );
-    return total;
+    return total / 10;
   }
 
   addFundingRequestItem(recordData?: FundingRequestItem) {
@@ -206,7 +217,7 @@ export class FrAddEditComponent implements OnInit {
     const user = this.authService.loggedUserInstance;
     const activity = this.initialFrData.activity || [];
     if (user && this.initialFrData.isSent) {
-      if (user.leadOf.indexOf(this.initialFrData.projectId)) {
+      if (user.leadOf.indexOf(this.initialFrData.projectId) !== -1) {
         activity.push({
           action: SZ.VERIFIED,
           userId: this.authService.getLoggedUserId(),
@@ -251,6 +262,7 @@ export class FrAddEditComponent implements OnInit {
     );
     frData.total = this.getFrTotal();
     frData.clientId = this.clientIdOfSelectedProject;
+    frData.date = frData.date.getTime();
     console.log('request to be saved: ', frData);
     if (this.isNew) {
       this.fundingRequestService.addFr(frData);

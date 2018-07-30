@@ -1,13 +1,13 @@
-import { Injectable } from "@angular/core";
-import { AngularFirestoreCollection, AngularFirestore } from "angularfire2/firestore";
-import { Project } from "./project.model";
-import { UsersService } from "../user/user.service";
-import { User } from "../user/user.model";
-import { Client } from "../client/client.model";
-import { ClientService } from "../client/client.service";
-import { Observable } from "../../../node_modules/rxjs";
-import { map } from "../../../node_modules/rxjs/operators";
-import { AuthService } from "../auth/auth.service";
+import { Injectable } from '@angular/core';
+import { AngularFirestoreCollection, AngularFirestore } from 'angularfire2/firestore';
+import { Project } from './project.model';
+import { UsersService } from '../user/user.service';
+import { User } from '../user/user.model';
+import { Client } from '../client/client.model';
+import { ClientService } from '../client/client.service';
+import { Observable } from '../../../node_modules/rxjs';
+import { map } from '../../../node_modules/rxjs/operators';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class ProjectService {
@@ -35,12 +35,15 @@ export class ProjectService {
             map(projectList => projectList.map(Project.getProjectFromSnapshot)),
             map(projectList => {
                 let filteredList = [];
-                if(!this.authService.CanReadProjects()) {
+                if (!this.authService.CanReadProjects()) {
                     filteredList = projectList.filter(
                         project => {
-                            let user = this.authService.loggedUserInstance;
-                            if(user) return user.projectIds.indexOf(project.id) !== -1;
-                            else return false;
+                            const user = this.authService.loggedUserInstance;
+                            if (user) {
+                                return user.projectIds.indexOf(project.id) !== -1;
+                            } else {
+                                return false;
+                            }
                         }
                     );
                     return filteredList;
@@ -51,7 +54,7 @@ export class ProjectService {
     }
 
     getProject(projectId: string): Observable<Project> {
-        let projectRef = this.db.doc('projects/' + projectId);
+        const projectRef = this.db.doc('projects/' + projectId);
         if (projectRef) {
             return projectRef.valueChanges().pipe(
                 map(project => {
@@ -71,8 +74,8 @@ export class ProjectService {
     }
 
     updateProject(projId, projectData) {
-        let members = projectData.membersIds;
-        let projectRef = this.db.doc('projects/' + projId);
+        const members = projectData.membersIds;
+        const projectRef = this.db.doc('projects/' + projId);
         if (this.users.length) {
             this.userService.registerProject(projectData.leadId, projId, true);
             members.forEach(memberId => {
@@ -84,12 +87,12 @@ export class ProjectService {
                 console.error('Cannot update project, not able to get project ' + projId);
             }
         } else {
-            console.error('project not saved/updated because users are not available.')
+            console.error('project not saved/updated because users are not available.');
         }
     }
     deleteProject(project: Project) {
-        let members = project.membersIds;
-        let projectRef = this.db.doc('projects/' + project.id);
+        const members = project.membersIds;
+        const projectRef = this.db.doc('projects/' + project.id);
         if (this.users.length && this.clients.length) {
             this.clientService.unregisterProject(project.clientId, project.id);
             this.userService.unregisterProject(project.leadId, project.id, true);
@@ -102,7 +105,7 @@ export class ProjectService {
                 console.error('Cannot remove project, not able to get project ' + project.id);
             }
         } else {
-            console.error('project not saved/updated because users are not available.')
+            console.error('project not saved/updated because users are not available.');
         }
         // this.updateProject(projId, { isDeleted: true });
     }
@@ -113,12 +116,14 @@ export class ProjectService {
 
     getProjectName(projId: string) {
         if (this.localProjectList.length) {
-            let projectInstance = this.localProjectList.find(project => project.id == projId);
+            const projectInstance = this.localProjectList.find(project => project.id === projId);
             if (projectInstance) {
                 return projectInstance.name;
             } else {
                 console.error('Not able to find project in local projects list');
             }
-        } else return '';
+        } else {
+            return '';
+        }
     }
 }

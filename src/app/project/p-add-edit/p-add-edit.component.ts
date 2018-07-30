@@ -195,7 +195,7 @@ export class PAddEditComponent implements OnInit {
       this.projectService.addProject(projData).then(
         projectRawData => {
           this.clientService.registerProject(projData.clientId, projectRawData.id);
-          this.userService.registerProject(projData.leadId, this.selectedProjectId, true);
+          this.userService.registerProject(projData.leadId, projectRawData.id, true);
           projData.membersIds.forEach(memberId => {
             this.userService.registerProject(memberId, projectRawData.id);
           });

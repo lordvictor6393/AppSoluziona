@@ -18,6 +18,7 @@ import { RejectReasonComponent } from '../../funding-request/reject-reason/rejec
 import { FundingRequestService } from '../../funding-request/funding-request.service';
 import { FundingRequest } from '../../funding-request/funding-request.model';
 import { ErPrintPreviewComponent } from '../er-print-preview/er-print-preview.component';
+import { combineLatest } from '../../../../node_modules/rxjs';
 
 @Component({
   selector: 'app-er-add-edit',
@@ -38,7 +39,6 @@ export class ErAddEditComponent implements OnInit {
   expenseReportForm: FormGroup;
 
   selectedUser: User;
-  selectedUserId: string;
   paymentTypes = ['Efectivo', 'Cheque', 'Transferencia'];
 
   erGridColumns: string[];
@@ -58,15 +58,6 @@ export class ErAddEditComponent implements OnInit {
     private dialog: MatDialog) { }
 
   ngOnInit() {
-    this.userService.getUserList().subscribe(
-      usersList => this.users = usersList
-    );
-    this.clientService.getClientList().subscribe(
-      clientList => this.clients = clientList
-    );
-    this.projectService.getProjectList().subscribe(
-      projList => this.projects = projList
-    );
     this.expenseReportForm = new FormGroup({
       code: new FormControl(null),
       createUserId: new FormControl(null),
@@ -81,24 +72,39 @@ export class ErAddEditComponent implements OnInit {
       })
     });
 
-    this.route.params.subscribe(
-      params => {
-        this.selectedErId = params.id;
-        this.selectedFrId = params.frId;
-        if (this.selectedErId) {
-          this.loadExpenseReportData();
-        } else {
-          this.isNew = true;
-          this.erItemsDataSource.data = [];
-          this.fundingRequestService.getFr(this.selectedFrId).subscribe(
-            frInstance => {
-              this.selectedFr = frInstance;
-              this.expenseReportForm.patchValue({ code: this.expenseReportService.generateErCode(frInstance.code) });
+    combineLatest(this.userService.getUserList(),
+      this.clientService.getClientList(),
+      this.projectService.getProjectList()).subscribe(
+        res => {
+          this.users = res[0] || [];
+          this.clients = res[1] || [];
+          this.projects = res[2] || [];
+          if (!this.users.length) {
+            this.users.push(this.authService.loggedUserInstance);
+          }
+          this.route.params.subscribe(
+            params => {
+              this.selectedErId = params.id;
+              this.selectedFrId = params.frId;
+              if (this.selectedErId) {
+                this.loadExpenseReportData();
+              } else {
+                this.isNew = true;
+                this.erItemsDataSource.data = [];
+                this.fundingRequestService.getFr(this.selectedFrId).subscribe(
+                  frInstance => {
+                    this.selectedFr = frInstance;
+                    this.expenseReportForm.patchValue({
+                      code: this.expenseReportService.generateErCode(frInstance.code),
+                      createUserId: this.authService.loggedUserId
+                    });
+                  }
+                );
+              }
             }
           );
         }
-      }
-    );
+      );
 
     this.erItemsDataSource.sort = this.sort;
     this.erGridColumns = [
@@ -109,14 +115,16 @@ export class ErAddEditComponent implements OnInit {
       'voucherNumber',
       'quantity',
       'singlePrice',
-      'totalPrice',
-      'editBtn'
+      'totalPrice'
     ];
+    if (!this.initialErData || !this.initialErData.isSent) {
+      this.erGridColumns.push('editBtn');
+    }
   }
 
   updateCurrentSelectedUser() {
     this.selectedUser = this.users.find(
-      userElement => userElement.id === this.selectedUserId
+      userElement => userElement.id === this.expenseReportForm.get('createUserId').value
     );
   }
 
@@ -125,8 +133,6 @@ export class ErAddEditComponent implements OnInit {
       erData => {
         this.initialErData = erData;
         this.selectedFrId = erData.frId;
-        this.selectedUserId = erData.createUserId;
-        this.updateCurrentSelectedUser();
         this.fundingRequestService.getFr(this.selectedFrId).subscribe(
           frInstance => this.selectedFr = frInstance
         );
@@ -143,7 +149,7 @@ export class ErAddEditComponent implements OnInit {
             receiverUserId: erData.accordance.receiverUserId
           }
         });
-
+        this.updateCurrentSelectedUser();
         this.erItems = erData.items.map(
           erItemData => new ExpenseReportItem(
             erItemData.detail,
@@ -165,9 +171,9 @@ export class ErAddEditComponent implements OnInit {
   getErTotal() {
     let total = 0;
     this.erItems.map(
-      erItem => total += erItem.totalPrice
+      erItem => total += (erItem.totalPrice * 10)
     );
-    return total;
+    return total / 10;
   }
 
   addExpenseReportItem(recordData?: ExpenseReportItem) {
@@ -216,7 +222,7 @@ export class ErAddEditComponent implements OnInit {
     const user = this.authService.loggedUserInstance;
     const activity = this.initialErData.activity || [];
     if (user && this.initialErData.isSent) {
-      if (user.leadOf.indexOf(this.initialErData.projectId)) {
+      if (user.leadOf.indexOf(this.initialErData.projectId) !== -1) {
         activity.push({
           action: SZ.VERIFIED,
           userId: this.authService.getLoggedUserId(),
@@ -264,6 +270,7 @@ export class ErAddEditComponent implements OnInit {
     erData.totalSpent = this.getErTotal();
     erData.totalReceived = this.selectedFr.total;
     erData.balance = erData.totalReceived - erData.totalSpent;
+    erData.date = erData.date.getTime();
     console.log('report to be saved: ', erData);
     if (this.isNew) {
       this.expenseReportService.addEr(erData);

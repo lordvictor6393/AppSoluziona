@@ -92,7 +92,7 @@ export class ExpenseReportService {
     updateEr(erId, erData) {
         const erRef = this.db.doc('expenseReports/' + erId);
         if (erRef) {
-            if (erData.data) {
+            if (erData.date) {
                 erData.date = erData.date.getTime();
             }
             erRef.update(erData);
@@ -122,7 +122,7 @@ export class ExpenseReportService {
         const me = this;
         me.updateEr(erId, {
             state: SZ.APPROVED,
-            approveUserId: me.authService.getLoggedUserId,
+            approveUserId: me.authService.getLoggedUserId(),
             activity: erActivity
         });
     }

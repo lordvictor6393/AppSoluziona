@@ -99,7 +99,7 @@ export class FundingRequestService {
         const me = this;
         const frRef = me.db.doc('fundingRequests/' + frId);
         if (frRef) {
-            if (frData.data) {
+            if (frData.date) {
                 frData.date = frData.date.getTime();
             }
             frRef.update(frData);
@@ -129,7 +129,7 @@ export class FundingRequestService {
         const me = this;
         me.updateFr(frId, {
             state: SZ.APPROVED,
-            approveUserId: me.authService.getLoggedUserId,
+            approveUserId: me.authService.getLoggedUserId(),
             activity: frActivity
         });
     }
