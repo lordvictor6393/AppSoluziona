@@ -262,7 +262,6 @@ export class FrAddEditComponent implements OnInit {
     );
     frData.total = this.getFrTotal();
     frData.clientId = this.clientIdOfSelectedProject;
-    frData.date = frData.date.getTime();
     console.log('request to be saved: ', frData);
     if (this.isNew) {
       this.fundingRequestService.addFr(frData);

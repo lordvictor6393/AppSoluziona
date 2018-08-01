@@ -37,6 +37,7 @@ export class FundingRequest {
     public items: DbFrItem[];
     public accordance: DbAccordance;
     public activity: DbFrActivity[];
+    public erId: string;
 
     constructor(
         id: string,
@@ -54,7 +55,8 @@ export class FundingRequest {
         accordance: DbAccordance,
 
         isSent?: boolean,
-        activity?: DbFrActivity[]
+        activity?: DbFrActivity[],
+        erId?: string
     ) {
         this.isDeleted = false;
         this.isSent = isSent || false;
@@ -73,6 +75,7 @@ export class FundingRequest {
         this.items = items;
         this.accordance = accordance;
         this.activity = activity || [];
+        this.erId = erId || '';
     }
 
     static getFrFromSnapshot(frData): FundingRequest {
@@ -92,7 +95,8 @@ export class FundingRequest {
             data.items,
             data.accordance,
             data.isSent,
-            data.activity
+            data.activity,
+            data.erId
         );
     }
 
@@ -112,7 +116,8 @@ export class FundingRequest {
             frData.items,
             frData.accordance,
             frData.isSent,
-            frData.activity
+            frData.activity,
+            frData.erId
         );
     }
 }

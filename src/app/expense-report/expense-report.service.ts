@@ -5,6 +5,7 @@ import { AngularFirestoreCollection, AngularFirestore } from '../../../node_modu
 import { Observable } from '../../../node_modules/rxjs';
 import { map } from '../../../node_modules/rxjs/operators';
 import { AuthService } from '../auth/auth.service';
+import { FundingRequestService } from '../funding-request/funding-request.service';
 
 @Injectable()
 export class ExpenseReportService {
@@ -12,6 +13,7 @@ export class ExpenseReportService {
     private erCollectionRef: AngularFirestoreCollection<ExpenseReport>;
 
     constructor(private authService: AuthService,
+        private frService: FundingRequestService,
         private db: AngularFirestore) {
         this.erCollectionRef = this.db.collection('expenseReports', ref => ref.where('isDeleted', '==', false));
         this.erCollectionRef.snapshotChanges().subscribe(
@@ -86,7 +88,12 @@ export class ExpenseReportService {
             userId: erData.createUserId,
             date: erData.date
         }];
-        this.erCollectionRef.add(erData);
+        this.erCollectionRef.add(erData)
+            .then(
+                (newErRef) => {
+                    this.frService.updateFr(erData.frId, { erId: newErRef.id });
+                }
+            );
     }
 
     updateEr(erId, erData) {

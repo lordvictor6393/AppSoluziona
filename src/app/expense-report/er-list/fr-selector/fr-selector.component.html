@@ -1,6 +1,9 @@
-Seleccione la solicitud asociada:
+<h3>
+  Lista de Solicitudes de Fondos Aprobadas
+</h3>
+<br>
 <mat-dialog-content>
-  <table mat-table class="mat-elevation-z2" [dataSource]="myFrList">
+  <table mat-table class="mat-elevation-z2" [dataSource]="myFrList" *ngIf="myFrList && myFrList.length">
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let fr">
@@ -22,6 +25,7 @@ Seleccione la solicitud asociada:
     <tr mat-header-row *matHeaderRowDef="['select', 'code', 'detail', 'project'];"></tr>
     <tr mat-row *matRowDef="let fr; columns: ['select', 'code', 'detail', 'project'];" (click)="onFrSelectionChange(fr.id)"></tr>
   </table>
+  <div *ngIf="myFrList && !myFrList.length"> No hay solicitudes de fondos aprobadas que no hayan sido descargadas.</div>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-raised-button color="primary" (click)="onFrSelected()" [disabled]="!selectedFrId"> Crear Descargo </button>

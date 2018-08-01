@@ -1,35 +1,33 @@
 <div class="sz-filters-section">
   <mat-form-field *ngIf="authService.CanManageAllFrEr() || authService.loggedUserInstance.leadOf.length">
-  <mat-select placeholder="Solicitante" [(value)]="filterByUserId" (selectionChange)="filterFrListData(filterByUserId)">
-    <mat-option>Todos</mat-option>
-    <mat-option *ngFor="let user of users" [value]="user.id">
-      {{user.name + ' ' + user.lastName}}
-    </mat-option>
-  </mat-select>
+    <mat-select placeholder="Solicitante" [(value)]="filterByUserId" (selectionChange)="filterFrListData(filterByUserId)">
+      <mat-option>Todos</mat-option>
+      <mat-option *ngFor="let user of users" [value]="user.id">
+        {{user.name + ' ' + user.lastName}}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
   <mat-form-field>
-  <mat-select placeholder="Proyecto" [(value)]="filterByProjectId" (selectionChange)="filterFrListData(filterByProjectId)">
-    <mat-option>Todos</mat-option>
-    <mat-option *ngFor="let project of projects" [value]="project.id">
-      {{project.name}}
-    </mat-option>
-  </mat-select>
+    <mat-select placeholder="Proyecto" [(value)]="filterByProjectId" (selectionChange)="filterFrListData(filterByProjectId)">
+      <mat-option>Todos</mat-option>
+      <mat-option *ngFor="let project of projects" [value]="project.id">
+        {{project.name}}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
   <mat-form-field>
-  <mat-select placeholder="Estado" [(value)]="filterByState" (selectionChange)="filterFrListData(filterByState)">
-    <mat-option>Todos</mat-option>
-    <mat-option *ngFor="let state of states" [value]="state">
-      {{state}}
-    </mat-option>
-  </mat-select>
+    <mat-select placeholder="Estado" [(value)]="filterByState" (selectionChange)="filterFrListData(filterByState)">
+      <mat-option>Todos</mat-option>
+      <mat-option *ngFor="let state of states" [value]="state">
+        {{state}}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
   <mat-form-field class="sz-search-box">
-      <input matInput (keyup)="searchText($event.target.value)" placeholder="Buscar">
+    <input matInput (keyup)="searchText($event.target.value)" placeholder="Buscar">
   </mat-form-field>
 </div>
-<table mat-table matSort
-  class="mat-elevation-z2 sz-item-table" 
-  [dataSource]="frDataSource">
+<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="frDataSource">
   <ng-container matColumnDef="code">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Solicitud </th>
     <td mat-cell *matCellDef="let request"> {{request.code}} </td>
@@ -57,7 +55,7 @@
       <button mat-raised-button color="primary" type="button" (click)="onSendFundingRequest(request)" *ngIf="!request.isSent">Enviar</button>
       <button mat-raised-button color="primary" type="button" (click)="onApproveFundingRequest(request)" *ngIf="request.isSent && authService.CanApproveFr(request)">Aprobar</button>
       <button mat-raised-button color="warn" type="button" (click)="onRejectFundingRequest(request)" *ngIf="request.isSent && authService.CanApproveFr(request)">Rechazar</button>
-      <button mat-raised-button color="primary" type="button" (click)="onCreateExpenseReport(request.id)" *ngIf="fundingRequestService.isFrApproved(request)">Crear Formulario de Descargo</button>
+      <button mat-raised-button color="primary" type="button" (click)="onCreateExpenseReport(request.id)" *ngIf="fundingRequestService.isFrApproved(request) && !request.erId">Crear Formulario de Descargo</button>
       <button mat-button color="warn" type="button" (click)="onDeleteFundingRequest(request.id)" *ngIf="!request.isSent">Eliminar</button>
     </td>
   </ng-container>

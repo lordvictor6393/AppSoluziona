@@ -57,7 +57,7 @@ export class FundingRequestService {
                         }
                     );
                     if (onlySended) {
-                        return filteredList.filter(fr => fr.isSent && this.isFrApproved(fr));
+                        return filteredList.filter(fr => fr.isSent && !fr.erId && this.isFrApproved(fr));
                     }
                     return filteredList;
                 })
