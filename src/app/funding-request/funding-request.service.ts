@@ -77,7 +77,7 @@ export class FundingRequestService {
                 })
             );
         } else {
-            console.error('Not able to get funding request ' + frId + ' from db');
+            console.warn('Not able to get funding request ' + frId + ' from db');
         }
     }
 
@@ -158,6 +158,6 @@ export class FundingRequestService {
         return 'SOL-' + (me.localFrList.length + 1);
     }
     isFrApproved(fr: FundingRequest) {
-        return fr.state === SZ.APPROVED;
+        return fr && fr.state === SZ.APPROVED;
     }
 }

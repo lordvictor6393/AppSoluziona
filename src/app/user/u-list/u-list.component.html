@@ -1,6 +1,4 @@
-<table mat-table matSort 
-  class="mat-elevation-z2 sz-item-table" 
-  [dataSource]="usersDataSource">
+<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="usersDataSource" matSortActive="name" matSortDirection="asc">
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
     <td mat-cell *matCellDef="let user"> {{user.name}} {{user.lastName}} </td>

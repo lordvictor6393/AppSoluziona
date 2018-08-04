@@ -173,15 +173,15 @@
     <br>
     <div formGroupName="accordance">
       <mat-form-field>
-        <input matInput placeholder="Orden de Servicio" formControlName="serviceOrder">
+        <input matInput placeholder="Orden de Servicio" formControlName="serviceOrder" [readonly]="!canBeModified()">
       </mat-form-field>
       <br>
       <mat-form-field>
-        <input matInput placeholder="No. de Comprobante" formControlName="voucher">
+        <input matInput placeholder="No. de Comprobante" formControlName="voucher" [readonly]="!canBeModified()">
       </mat-form-field>
       <br>
       <mat-form-field>
-        <mat-select placeholder="Recibido por" formControlName="receiverUserId">
+        <mat-select placeholder="Recibido por" formControlName="receiverUserId" [disabled]="!canBeModified()">
           <mat-option *ngFor="let user of users" [value]='user.id'>
             {{user.name}} {{user.lastName}}
           </mat-option>
@@ -191,12 +191,12 @@
   </mat-expansion-panel>
   <br>
   <div class="sz-action-btns">
-    <button mat-raised-button color="primary" (click)="onSaveEr()" *ngIf="isNew || (initialErData && !initialErData.isSent)">{{isNew ? 'Crear Descargo' : 'Actualizar Descargo'}}</button>
-    <button mat-raised-button color="primary" type="button" (click)="onApproveEr()" *ngIf="!isNew && initialErData && initialErData.isSent && authService.CanApproveEr(initialErData)">Aprobar</button>
-    <button mat-raised-button color="warn" type="button" (click)="onRejectEr()" *ngIf="!isNew && initialErData && initialErData.isSent && authService.CanApproveEr(initialErData)">Rechazar</button>
+    <button mat-raised-button color="primary" (click)="onSaveEr()" *ngIf="canBeModified()">{{isNew ? 'Crear Descargo' : 'Actualizar Descargo'}}</button>
+    <button mat-raised-button color="primary" type="button" (click)="onApproveEr()" *ngIf="!isNew && initialErData?.isSent && authService.CanApproveEr(initialErData)">Aprobar</button>
+    <button mat-raised-button color="warn" type="button" (click)="onRejectEr()" *ngIf="!isNew && initialErData?.isSent && authService.CanApproveEr(initialErData)">Rechazar</button>
     <button mat-button (click)="backToErList()" type="button">Volver</button>
     <div style="flex: 1;"></div>
-    <button mat-raised-button color="primary" type="button" (click)="onSendEr()" *ngIf="!isNew && initialErData && !initialErData.isSent">Enviar Descargo</button>
-    <button mat-button color="warn" type="button" (click)="onDeleteEr()" *ngIf="!isNew && initialErData && !initialErData.isSent">Eliminar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onSendEr()" *ngIf="!isNew && !initialErData?.isSent">Enviar Descargo</button>
+    <button mat-button color="warn" type="button" (click)="onDeleteEr()" *ngIf="!isNew && !initialErData?.isSent">Eliminar</button>
   </div>
 </form>

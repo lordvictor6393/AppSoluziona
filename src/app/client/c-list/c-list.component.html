@@ -1,13 +1,11 @@
-<table mat-table matSort 
-  class="mat-elevation-z2 sz-item-table" 
-  [dataSource]="clientsDataSource">
+<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="clientsDataSource" matSortActive="name" matSortDirection="asc">
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
     <td mat-cell *matCellDef="let client"> {{client.name}} </td>
   </ng-container>
   <ng-container matColumnDef="contact">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Datos de Contacto </th>
-    <td mat-cell *matCellDef="let client"> 
+    <td mat-cell *matCellDef="let client">
       <div>Nombre: {{client.contactDetails.name}}</div>
       <div>Telefono: {{client.contactDetails.phone}}</div>
     </td>
@@ -16,7 +14,7 @@
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Proyectos </th>
     <td mat-cell *matCellDef="let client">
       <mat-chip-list>
-        <mat-chip *ngFor="let project of client.projectsIds"> {{projectService.getProjectName(project)}} </mat-chip>    
+        <mat-chip *ngFor="let project of client.projectsIds"> {{projectService.getProjectName(project)}} </mat-chip>
       </mat-chip-list>
     </td>
   </ng-container>

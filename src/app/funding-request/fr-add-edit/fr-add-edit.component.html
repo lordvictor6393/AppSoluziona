@@ -162,7 +162,7 @@
     <br>
     <div formGroupName="accordance">
       <mat-form-field>
-        <mat-select placeholder="Entregado en" formControlName="paymentType">
+        <mat-select placeholder="Entregado en" formControlName="paymentType" [disabled]="!canBeModified()">
           <mat-option *ngFor="let type of paymentTypes" [value]='type'>
             {{type}}
           </mat-option>
@@ -170,11 +170,11 @@
       </mat-form-field>
       <br>
       <mat-form-field>
-        <input matInput placeholder="Comprobante" formControlName="voucher">
+        <input matInput placeholder="Comprobante" formControlName="voucher" [readonly]="!canBeModified()">
       </mat-form-field>
       <br>
       <mat-form-field>
-        <mat-select placeholder="Entregado por" formControlName="deliverUserId" [value]="selectedUserId">
+        <mat-select placeholder="Entregado por" formControlName="deliverUserId" [value]="selectedUserId" [disabled]="!canBeModified()">
           <mat-option *ngFor="let user of users" [value]='user.id'>
             {{user.name}} {{user.lastName}}
           </mat-option>
@@ -182,7 +182,7 @@
       </mat-form-field>
       <br>
       <mat-form-field>
-        <mat-select placeholder="Recibido por" formControlName="receiverUserId">
+        <mat-select placeholder="Recibido por" formControlName="receiverUserId" [disabled]="!canBeModified()">
           <mat-option *ngFor="let user of users" [value]='user.id'>
             {{user.name}} {{user.lastName}}
           </mat-option>
@@ -192,13 +192,13 @@
   </mat-expansion-panel>
   <br>
   <div class="sz-action-btns">
-    <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="isNew || (initialFrData && !initialFrData.isSent)">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
-    <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="!isNew && initialFrData && initialFrData.isSent && authService.CanApproveFr(initialFrData)">Aprobar</button>
-    <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="!isNew && initialFrData && initialFrData.isSent && authService.CanApproveFr(initialFrData)">Rechazar</button>
-    <button mat-raised-button color="primary" type="button" (click)="onCreateEr()" *ngIf="!isNew && initialFrData && fundingRequestService.isFrApproved(initialFrData)">Crear Formulario de Descargo</button>
+    <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="canBeModified()">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
+    <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="!isNew && initialFrData?.isSent && authService.CanApproveFr(initialFrData)">Aprobar</button>
+    <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="!isNew && initialFrData?.isSent && authService.CanApproveFr(initialFrData)">Rechazar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onCreateEr()" *ngIf="!isNew && fundingRequestService.isFrApproved(initialFrData)">Crear Formulario de Descargo</button>
     <button mat-button (click)="backToFrList()" type="button">Volver</button>
     <div style="flex: 1;"></div>
-    <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Enviar Solicitud</button>
-    <button mat-button color="warn" type="button" (click)="onDeleteFr()" *ngIf="!isNew && initialFrData && !initialFrData.isSent">Eliminar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && !initialFrData?.isSent">Enviar Solicitud</button>
+    <button mat-button color="warn" type="button" (click)="onDeleteFr()" *ngIf="!isNew && !initialFrData?.isSent">Eliminar</button>
   </div>
 </form>

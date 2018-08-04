@@ -1,6 +1,4 @@
-<table mat-table matSort
-  class="mat-elevation-z2 sz-item-table" 
-  [dataSource]="projectsDataSource">
+<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="projectsDataSource" matSortActive="code" matSortDirection="asc">
   <ng-container matColumnDef="code">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Codigo </th>
     <td mat-cell *matCellDef="let proj"> {{proj.code}} </td>

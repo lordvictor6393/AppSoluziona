@@ -16,7 +16,7 @@ import { Project } from '../project.model';
 })
 export class PAddEditComponent implements OnInit {
 
-  isNew: boolean = false;
+  isNew = false;
   selectedProjectId: string;
   initialProjectData: Project;
 
@@ -81,7 +81,7 @@ export class PAddEditComponent implements OnInit {
         this.selectedProjectId = params.id;
         this.projMembersDataSource.sort = this.sort;
         if (this.selectedProjectId) {
-          this.loadProjectData()
+          this.loadProjectData();
         } else {
           this.isNew = true;
           this.projectForm.patchValue({ code: this.projectService.generateProjectCode() });
@@ -111,12 +111,12 @@ export class PAddEditComponent implements OnInit {
         this.projectMembers = projData.membersIds.map(
           userId => {
             console.log(this.users);
-            let userInstance = this.users.find(
+            const userInstance = this.users.find(
               user => {
-                let matchId = user.id == userId;
+                const matchId = user.id === userId;
                 return matchId;
               }
-            )
+            );
             return userInstance;
           }
         );
@@ -133,7 +133,7 @@ export class PAddEditComponent implements OnInit {
     // console.log("get available users", this.users);
     return this.users.length ? this.users.filter(
       user => {
-        return !this.userIsInProject(user)
+        return !this.userIsInProject(user);
       }
     ) : [];
   }
@@ -141,15 +141,15 @@ export class PAddEditComponent implements OnInit {
   userIsInProject(user) {
     // console.log("get available users", this.projectMembers);
     return this.projectMembers.length ? this.projectMembers.find(
-      projUser => projUser.id == user.id
+      projUser => projUser.id === user.id
     ) : false;
   }
 
   addLeadMember() {
     const me = this;
-    let leadId = me.projectForm.get('leadId').value;
+    const leadId = me.projectForm.get('leadId').value;
     if (leadId) {
-      me.userToBeAdded = this.users.find(user => user.id == leadId);
+      me.userToBeAdded = this.users.find(user => user.id === leadId);
       me.onAddMember();
     }
   }
@@ -157,11 +157,11 @@ export class PAddEditComponent implements OnInit {
   onAddMember() {
     const me = this;
     if (me.userToBeAdded.id) {
-      if (me.projectMembers.findIndex(member => member.id == me.userToBeAdded.id) == -1) {
+      if (me.projectMembers.findIndex(member => member.id === me.userToBeAdded.id) === -1) {
         me.projectMembers.push(me.userToBeAdded);
         // me.membersTable.renderRows();
         me.projMembersDataSource.data = me.projectMembers;
-        let idx = me.userIdsToBeUnregistered.indexOf(me.userToBeAdded.id);
+        const idx = me.userIdsToBeUnregistered.indexOf(me.userToBeAdded.id);
         if (idx !== -1) {
           me.userIdsToBeUnregistered.splice(idx, 1);
         }
@@ -172,13 +172,13 @@ export class PAddEditComponent implements OnInit {
 
   onRemoveMember(userId) {
     const me = this;
-    if (me.projectForm.get('leadId').value != userId) {
-      let index = me.projectMembers.findIndex(user => user.id == userId);
-      if (index != -1) {
+    if (me.projectForm.get('leadId').value !== userId) {
+      const index = me.projectMembers.findIndex(user => user.id === userId);
+      if (index !== -1) {
         me.projectMembers.splice(index, 1);
         me.userIdsToBeUnregistered.push(userId);
       } else {
-        console.error('Cannot find user.')
+        console.warn('Cannot find user.');
       }
       // me.membersTable.renderRows();
       me.projMembersDataSource.data = me.projectMembers;
@@ -188,7 +188,7 @@ export class PAddEditComponent implements OnInit {
   }
 
   onSaveProject() {
-    let projData = this.projectForm.value;
+    const projData = this.projectForm.value;
     projData.membersIds = this.projectMembers.map(pMember => pMember.id);
     console.log('project to be saved: ', projData);
     if (this.isNew) {
@@ -202,14 +202,14 @@ export class PAddEditComponent implements OnInit {
         }
       );
     } else {
-      if (this.initialProjectData.leadId != projData.leadId) {
+      if (this.initialProjectData.leadId !== projData.leadId) {
         this.userService.unregisterProject(this.initialProjectData.leadId, this.selectedProjectId, true);
       }
       this.projectService.updateProject(this.selectedProjectId, projData);
       this.userIdsToBeUnregistered.forEach(
         userId => this.userService.unregisterProject(userId, this.selectedProjectId)
       );
-      if (this.initialProjectData.clientId != projData.clientId) {
+      if (this.initialProjectData.clientId !== projData.clientId) {
         this.clientService.unregisterProject(this.initialProjectData.clientId, this.selectedProjectId);
       }
       this.clientService.registerProject(projData.clientId, this.selectedProjectId);

@@ -27,7 +27,7 @@
     <input matInput (keyup)="searchText($event.target.value)" placeholder="Buscar">
   </mat-form-field>
 </div>
-<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="frDataSource">
+<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="frDataSource" matSortActive="code" matSortDirection="asc">
   <ng-container matColumnDef="code">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Solicitud </th>
     <td mat-cell *matCellDef="let request"> {{request.code}} </td>

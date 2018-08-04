@@ -70,6 +70,14 @@ export class FrAddEditComponent implements OnInit {
       })
     });
 
+    this.frGridColumns = [
+      'position',
+      'detail',
+      'quantity',
+      'singlePrice',
+      'totalPrice'
+    ];
+
     combineLatest(this.userService.getUserList(),
       this.clientService.getClientList(),
       this.projectService.getProjectList()).subscribe(
@@ -93,23 +101,14 @@ export class FrAddEditComponent implements OnInit {
                 });
                 this.updateCurrentSelectedUser();
                 this.frItemsDataSource.data = [];
+                this.frGridColumns.push('editBtn');
               }
             }
           );
         }
       );
 
-    this.frItemsDataSource.sort = this.sort;
-    this.frGridColumns = [
-      'position',
-      'detail',
-      'quantity',
-      'singlePrice',
-      'totalPrice'
-    ];
-    if (!this.initialFrData || !this.initialFrData.isSent) {
-      this.frGridColumns.push('editBtn');
-    }
+    // this.frItemsDataSource.sort = this.sort;
   }
 
   updateCurrentSelectedUser() {
@@ -148,6 +147,9 @@ export class FrAddEditComponent implements OnInit {
         });
         this.updateClientName();
         this.updateCurrentSelectedUser();
+        if (!this.initialFrData.isSent) {
+          this.frGridColumns.push('editBtn');
+        }
         this.frItems = frData.items.map(
           frItemData => new FundingRequestItem(
             frItemData.detail,
@@ -169,6 +171,15 @@ export class FrAddEditComponent implements OnInit {
       frItem => total += (frItem.totalPrice * 10)
     );
     return total / 10;
+  }
+
+  canBeModified() {
+    let allowed = this.isNew;
+    if (this.initialFrData) {
+      allowed = allowed || !this.initialFrData.isSent;
+      allowed = allowed || (this.authService.CanManageAllFrEr() && this.initialFrData.state === SZ.VERIFIED);
+    }
+    return allowed;
   }
 
   addFundingRequestItem(recordData?: FundingRequestItem) {

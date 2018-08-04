@@ -54,60 +54,68 @@ export class ProjectService {
     }
 
     getProject(projectId: string): Observable<Project> {
-        const projectRef = this.db.doc('projects/' + projectId);
-        if (projectRef) {
-            return projectRef.valueChanges().pipe(
-                map(project => {
-                    if (project) {
-                        return Project.getProjectFromValue(projectId, project);
-                    }
-                })
-            );
-        } else {
-            console.error('Not able to get project ' + projectId + ' from db');
+        if (projectId) {
+            const projectRef = this.db.doc('projects/' + projectId);
+            if (projectRef) {
+                return projectRef.valueChanges().pipe(
+                    map(project => {
+                        if (project) {
+                            return Project.getProjectFromValue(projectId, project);
+                        }
+                    })
+                );
+            } else {
+                console.warn('Not able to get project ' + projectId + ' from db');
+            }
         }
     }
 
     addProject(projectData) {
-        projectData.isDeleted = false;
-        return this.projectsCollectionRef.add(projectData);
+        if (projectData) {
+            projectData.isDeleted = false;
+            return this.projectsCollectionRef.add(projectData);
+        }
     }
 
     updateProject(projId, projectData) {
-        const members = projectData.membersIds;
-        const projectRef = this.db.doc('projects/' + projId);
-        if (this.users.length) {
-            this.userService.registerProject(projectData.leadId, projId, true);
-            members.forEach(memberId => {
-                this.userService.registerProject(memberId, projId);
-            });
-            if (projectRef) {
-                projectRef.update(projectData);
+        if (projId) {
+            const members = projectData.membersIds;
+            const projectRef = this.db.doc('projects/' + projId);
+            if (this.users.length) {
+                this.userService.registerProject(projectData.leadId, projId, true);
+                members.forEach(memberId => {
+                    this.userService.registerProject(memberId, projId);
+                });
+                if (projectRef) {
+                    projectRef.update(projectData);
+                } else {
+                    console.warn('Cannot update project, not able to get project ' + projId);
+                }
             } else {
-                console.error('Cannot update project, not able to get project ' + projId);
+                console.warn('project not saved/updated because users are not available.');
             }
-        } else {
-            console.error('project not saved/updated because users are not available.');
         }
     }
     deleteProject(project: Project) {
-        const members = project.membersIds;
-        const projectRef = this.db.doc('projects/' + project.id);
-        if (this.users.length && this.clients.length) {
-            this.clientService.unregisterProject(project.clientId, project.id);
-            this.userService.unregisterProject(project.leadId, project.id, true);
-            members.forEach(memberId => {
-                this.userService.unregisterProject(memberId, project.id);
-            });
-            if (projectRef) {
-                projectRef.delete();
+        if (project) {
+            const members = project.membersIds;
+            const projectRef = this.db.doc('projects/' + project.id);
+            if (this.users.length && this.clients.length) {
+                this.clientService.unregisterProject(project.clientId, project.id);
+                this.userService.unregisterProject(project.leadId, project.id, true);
+                members.forEach(memberId => {
+                    this.userService.unregisterProject(memberId, project.id);
+                });
+                if (projectRef) {
+                    projectRef.delete();
+                } else {
+                    console.warn('Cannot remove project, not able to get project ' + project.id);
+                }
             } else {
-                console.error('Cannot remove project, not able to get project ' + project.id);
+                console.warn('project not saved/updated because users are not available.');
             }
-        } else {
-            console.error('project not saved/updated because users are not available.');
+            // this.updateProject(projId, { isDeleted: true });
         }
-        // this.updateProject(projId, { isDeleted: true });
     }
 
     generateProjectCode(): string {
@@ -115,15 +123,17 @@ export class ProjectService {
     }
 
     getProjectName(projId: string) {
-        if (this.localProjectList.length) {
-            const projectInstance = this.localProjectList.find(project => project.id === projId);
-            if (projectInstance) {
-                return projectInstance.name;
+        if (projId) {
+            if (this.localProjectList.length) {
+                const projectInstance = this.localProjectList.find(project => project.id === projId);
+                if (projectInstance) {
+                    return projectInstance.name;
+                } else {
+                    console.warn('Not able to find project in local projects list');
+                }
             } else {
-                console.error('Not able to find project in local projects list');
+                return '';
             }
-        } else {
-            return '';
         }
     }
 }

@@ -72,6 +72,17 @@ export class ErAddEditComponent implements OnInit {
       })
     });
 
+    this.erGridColumns = [
+      'position',
+      'detail',
+      'date',
+      'billNumber',
+      'voucherNumber',
+      'quantity',
+      'singlePrice',
+      'totalPrice'
+    ];
+
     combineLatest(this.userService.getUserList(),
       this.clientService.getClientList(),
       this.projectService.getProjectList()).subscribe(
@@ -99,6 +110,7 @@ export class ErAddEditComponent implements OnInit {
                       createUserId: this.authService.loggedUserId
                     });
                     this.updateCurrentSelectedUser();
+                    this.erGridColumns.push('editBtn');
                   }
                 );
               }
@@ -107,20 +119,7 @@ export class ErAddEditComponent implements OnInit {
         }
       );
 
-    this.erItemsDataSource.sort = this.sort;
-    this.erGridColumns = [
-      'position',
-      'detail',
-      'date',
-      'billNumber',
-      'voucherNumber',
-      'quantity',
-      'singlePrice',
-      'totalPrice'
-    ];
-    if (!this.initialErData || !this.initialErData.isSent) {
-      this.erGridColumns.push('editBtn');
-    }
+    // this.erItemsDataSource.sort = this.sort;
   }
 
   updateCurrentSelectedUser() {
@@ -151,6 +150,9 @@ export class ErAddEditComponent implements OnInit {
           }
         });
         this.updateCurrentSelectedUser();
+        if (!this.initialErData.isSent) {
+          this.erGridColumns.push('editBtn');
+        }
         this.erItems = erData.items.map(
           erItemData => new ExpenseReportItem(
             erItemData.detail,
@@ -175,6 +177,15 @@ export class ErAddEditComponent implements OnInit {
       erItem => total += (erItem.totalPrice * 10)
     );
     return total / 10;
+  }
+
+  canBeModified() {
+    let allowed = this.isNew;
+    if (this.initialErData) {
+      allowed = allowed || !this.initialErData.isSent;
+      allowed = allowed || (this.authService.CanManageAllFrEr() && this.initialErData.state === SZ.VERIFIED);
+    }
+    return allowed;
   }
 
   addExpenseReportItem(recordData?: ExpenseReportItem) {

@@ -74,7 +74,7 @@ export class ExpenseReportService {
                 })
             );
         } else {
-            console.error('Not able to get expense report ' + erId + ' from db');
+            console.warn('Not able to get expense report ' + erId + ' from db');
         }
     }
 

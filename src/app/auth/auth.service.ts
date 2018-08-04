@@ -116,7 +116,7 @@ export class AuthService {
   }
 
   CanApproveFr(fr: FundingRequest) {
-    if (this.loggedUserInstance) {
+    if (this.loggedUserInstance && fr) {
       const userIsAdmin = this.CanManageAllFrEr();
       const userIsLead = this.loggedUserInstance.leadOf.indexOf(fr.projectId) !== -1;
 
@@ -126,7 +126,7 @@ export class AuthService {
   }
 
   CanApproveEr(er: ExpenseReport) {
-    if (this.loggedUserInstance) {
+    if (this.loggedUserInstance && er) {
       const userIsAdmin = this.CanManageAllFrEr();
       const userIsLead = this.loggedUserInstance.leadOf.indexOf(er.projectId) !== -1;
 
