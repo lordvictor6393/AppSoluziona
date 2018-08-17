@@ -190,7 +190,18 @@ export class PAddEditComponent implements OnInit {
 
   onSaveProject() {
     const projData = this.projectForm.value;
-    projData.membersIds = this.projectMembers.map(pMember => pMember.id);
+    if (!projData.code) { delete projData.code; }
+    if (!projData.name) { delete projData.name; }
+    if (!projData.leadId) { delete projData.leadId; }
+    if (!projData.budget) { delete projData.budget; }
+    if (!projData.clientId) { delete projData.clientId; }
+    if (!projData.contactDetails) {
+      delete projData.contactDetails;
+    } else {
+      if (!projData.contactDetails.contactName) { delete projData.contactDetails.contactName; }
+      if (!projData.contactDetails.contactPhone) { delete projData.contactDetails.contactPhone; }
+    }
+    if (this.projectMembers.length) { projData.membersIds = this.projectMembers.map(pMember => pMember.id); }
     console.log('project to be saved: ', projData);
     if (this.isNew) {
       this.projectService.addProject(projData).then(
