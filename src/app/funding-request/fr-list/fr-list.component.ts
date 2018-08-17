@@ -128,20 +128,27 @@ export class FrListComponent implements OnInit {
     const user = this.authService.loggedUserInstance;
     const activity = fr.activity || [];
     if (user && fr.isSent) {
-      if (user.leadOf.indexOf(fr.projectId) !== -1) {
-        activity.push({
-          action: SZ.VERIFIED,
-          userId: this.authService.getLoggedUserId(),
-          date: new Date().getTime()
-        });
-        this.fundingRequestService.verifyFr(fr.id, activity);
-      } else if (this.authService.CanManageAllFrEr()) {
+      if (this.authService.CanManageAllFrEr()) {
+        if (fr.state === SZ.SENT) {
+          activity.push({
+            action: SZ.VERIFIED,
+            userId: this.authService.getLoggedUserId(),
+            date: new Date().getTime()
+          });
+        }
         activity.push({
           action: SZ.APPROVED,
           userId: this.authService.getLoggedUserId(),
           date: new Date().getTime()
         });
         this.fundingRequestService.approveFr(fr.id, activity);
+      } else if (user.leadOf.indexOf(fr.projectId) !== -1) {
+        activity.push({
+          action: SZ.VERIFIED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.fundingRequestService.verifyFr(fr.id, activity);
       }
     }
   }

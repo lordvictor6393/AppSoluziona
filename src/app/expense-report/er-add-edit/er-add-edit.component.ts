@@ -136,19 +136,20 @@ export class ErAddEditComponent implements OnInit {
         this.fundingRequestService.getFr(this.selectedFrId).subscribe(
           frInstance => this.selectedFr = frInstance
         );
-        this.expenseReportForm.setValue({
-          code: erData.code,
-          createUserId: erData.createUserId,
-          totalReceived: erData.totalReceived,
-          observations: erData.observations,
-          place: erData.place,
-          date: erData.date,
-          accordance: {
-            serviceOrder: erData.accordance.serviceOrder,
-            voucher: erData.accordance.voucher,
-            receiverUserId: erData.accordance.receiverUserId
-          }
-        });
+        const patch = {};
+        if (erData.code) { patch['code'] = erData.code; }
+        if (erData.createUserId) { patch['createUserId'] = erData.createUserId; }
+        if (erData.totalReceived) { patch['totalReceived'] = erData.totalReceived; }
+        if (erData.date) { patch['date'] = erData.date; }
+        if (erData.place) { patch['place'] = erData.place; }
+        if (erData.observations) { patch['observations'] = erData.observations; }
+        if (erData.accordance) {
+          patch['accordance'] = {};
+          if (erData.accordance.serviceOrder) { patch['accordance']['serviceOrder'] = erData.accordance.serviceOrder; }
+          if (erData.accordance.voucher) { patch['accordance']['voucher'] = erData.accordance.voucher; }
+          if (erData.accordance.receiverUserId) { patch['accordance']['receiverUserId'] = erData.accordance.receiverUserId; }
+        }
+        this.expenseReportForm.patchValue(patch);
         this.updateCurrentSelectedUser();
         if (!this.initialErData.isSent) {
           this.erGridColumns.push('editBtn');

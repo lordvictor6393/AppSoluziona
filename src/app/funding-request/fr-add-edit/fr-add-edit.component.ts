@@ -131,20 +131,21 @@ export class FrAddEditComponent implements OnInit {
     this.fundingRequestService.getFr(this.selectedFrId).subscribe(
       frData => {
         this.initialFrData = frData;
-        this.fundingRequestForm.setValue({
-          code: frData.code,
-          createUserId: frData.createUserId,
-          projectId: frData.projectId,
-          date: frData.date,
-          detail: frData.detail,
-          observations: frData.observations,
-          accordance: {
-            paymentType: frData.accordance.paymentType,
-            voucher: frData.accordance.voucher,
-            receiverUserId: frData.accordance.receiverUserId,
-            deliverUserId: frData.accordance.deliverUserId,
-          }
-        });
+        const patch = {};
+        if (frData.code) { patch['code'] = frData.code; }
+        if (frData.createUserId) { patch['createUserId'] = frData.createUserId; }
+        if (frData.projectId) { patch['projectId'] = frData.projectId; }
+        if (frData.date) { patch['date'] = frData.date; }
+        if (frData.detail) { patch['detail'] = frData.detail; }
+        if (frData.observations) { patch['observations'] = frData.observations; }
+        if (frData.accordance) {
+          patch['accordance'] = {};
+          if (frData.accordance.paymentType) { patch['accordance']['paymentType'] = frData.accordance.paymentType; }
+          if (frData.accordance.voucher) { patch['accordance']['voucher'] = frData.accordance.voucher; }
+          if (frData.accordance.receiverUserId) { patch['accordance']['receiverUserId'] = frData.accordance.receiverUserId; }
+          if (frData.accordance.deliverUserId) { patch['accordance']['deliverUserId'] = frData.accordance.deliverUserId; }
+        }
+        this.fundingRequestForm.patchValue(patch);
         this.updateClientName();
         this.updateCurrentSelectedUser();
         if (!this.initialFrData.isSent) {

@@ -15,7 +15,7 @@ import { UsersService } from '../../user/user.service';
 })
 export class CAddEditComponent implements OnInit {
 
-  isNew: boolean = false;
+  isNew = false;
   selectedClientId: string;
   initialClientData: Client;
 
@@ -29,10 +29,10 @@ export class CAddEditComponent implements OnInit {
   @ViewChild(MatTable) projectsTable: MatTable<Project>;
 
   constructor(private route: ActivatedRoute,
-              private router: Router,
-              private projectService: ProjectService,
-              private userService: UsersService,
-              private clientService: ClientService) { }
+    private router: Router,
+    private projectService: ProjectService,
+    private userService: UsersService,
+    private clientService: ClientService) { }
 
   ngOnInit() {
     this.projectService.getProjectList().subscribe(
@@ -48,13 +48,13 @@ export class CAddEditComponent implements OnInit {
     this.route.params.subscribe(
       params => {
         this.selectedClientId = params.id;
-        if(this.selectedClientId) {
+        if (this.selectedClientId) {
           this.loadClient();
         } else {
           this.isNew = true;
         }
       }
-    )
+    );
     this.projDataSource.sort = this.sort;
     this.pGridColumns = ['code', 'name', 'lead'];
   }
@@ -63,38 +63,39 @@ export class CAddEditComponent implements OnInit {
     this.clientService.getClient(this.selectedClientId).subscribe(
       (client) => {
         this.initialClientData = client;
-        this.clientForm.setValue({
-          name: client.name,
-          contactDetails:{
-            name: client.contactDetails.name,
-            phone: client.contactDetails.phone
-          }
-        });
+        const patch = {};
+        if (client.name) { patch['name'] = client.name; }
+        if (client.contactDetails) {
+          patch['contactDetails'] = {};
+          if (client.contactDetails.name) { patch['contactDetails']['name'] = client.contactDetails.name; }
+          if (client.contactDetails.phone) { patch['contactDetails']['phone'] = client.contactDetails.phone; }
+        }
+        this.clientForm.patchValue(patch);
         this.clientProjects = client.projectsIds.map(
           projId => {
-            let projInstance = this.projects.find(
-              project => project.id == projId
+            const projInstance = this.projects.find(
+              project => project.id === projId
             );
             return projInstance;
           }
         );
-        if(this.clientProjects.length) {
+        if (this.clientProjects.length) {
           this.projDataSource.data = this.clientProjects;
         }
       }
-    )
+    );
   }
 
   onSaveClient() {
-    let formValues = this.clientForm.value;
-    let clientData = {
-      name: formValues.name,
-      contactDetails: {
-        name: formValues.contactDetails.name,
-        phone: formValues.contactDetails.phone
-      },
-    };
-    if(this.isNew) {
+    const clientData = this.clientForm.value;
+    if (!clientData.name) { delete clientData.name; }
+    if (!clientData.contactDetails) {
+      delete clientData.contactDetails;
+    } else {
+      if (!clientData.contactDetails.name) { delete clientData.contactDetails.name; }
+      if (!clientData.contactDetails.phone) { delete clientData.contactDetails.phone; }
+    }
+    if (this.isNew) {
       this.clientService.addClient(clientData);
     } else {
       this.clientService.updateClient(this.selectedClientId, clientData);
