@@ -11,6 +11,9 @@ import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class ProjectService {
+
+    private prCodeStartAt = 30;
+
     private users: User[];
     private clients: Client[];
     private localProjectList: Project[] = [];
@@ -119,7 +122,14 @@ export class ProjectService {
     }
 
     generateProjectCode(): string {
-        return 'PR-' + (this.localProjectList.length + 1);
+        const number = this.prCodeStartAt + this.localProjectList.length + 1;
+        let numberStr = '' + number;
+        if (numberStr.length === 1) {
+            numberStr = '00' + numberStr;
+        } else if (numberStr.length === 2) {
+            numberStr = '0' + numberStr;
+        }
+        return 'P-' + numberStr;
     }
 
     getProjectName(projId: string) {

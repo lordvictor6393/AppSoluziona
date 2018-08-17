@@ -97,17 +97,18 @@ export class PAddEditComponent implements OnInit {
     this.projectService.getProject(this.selectedProjectId).subscribe(
       projData => {
         this.initialProjectData = projData;
-        this.projectForm.setValue({
-          code: projData.code,
-          name: projData.name,
-          leadId: projData.leadId,
-          budget: projData.budget,
-          clientId: projData.clientId,
-          contactDetails: {
-            contactName: projData.contactDetails.contactName,
-            contactPhone: projData.contactDetails.contactPhone
-          }
-        });
+        const patch = {};
+        if (projData.code) { patch['code'] = projData.code; }
+        if (projData.name) { patch['name'] = projData.name; }
+        if (projData.leadId) { patch['leadId'] = projData.leadId; }
+        if (projData.budget) { patch['budget'] = projData.budget; }
+        if (projData.clientId) { patch['clientId'] = projData.clientId; }
+        if (projData.contactDetails) {
+          patch['contactDetails'] = {};
+          if (projData.contactDetails.contactName) { patch['contactDetails']['contactName'] = projData.contactDetails.contactName; }
+          if (projData.contactDetails.contactPhone) { patch['contactDetails']['contactPhone'] = projData.contactDetails.contactPhone; }
+        }
+        this.projectForm.patchValue(patch);
         this.projectMembers = projData.membersIds.map(
           userId => {
             console.log(this.users);
