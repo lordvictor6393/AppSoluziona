@@ -8,6 +8,9 @@ import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class FundingRequestService {
+
+    private frCodeStartAt = 418;
+
     private localFrList: FundingRequest[] = [];
     private frCollectionRef: AngularFirestoreCollection<FundingRequest>;
 
@@ -154,8 +157,14 @@ export class FundingRequestService {
     }
 
     generateFrCode(): string {
-        const me = this;
-        return 'SOL-' + (me.localFrList.length + 1);
+        const number = this.frCodeStartAt + this.localFrList.length + 1;
+        let numberStr = '' + number;
+        if (numberStr.length === 1) {
+            numberStr = '00' + numberStr;
+        } else if (numberStr.length === 2) {
+            numberStr = '0' + numberStr;
+        }
+        return 'SOL-' + numberStr;
     }
     isFrApproved(fr: FundingRequest) {
         return fr && fr.state === SZ.APPROVED;
