@@ -52,6 +52,7 @@ import { FrSelectorComponent } from './expense-report/er-list/fr-selector/fr-sel
 import { FrPrintPreviewComponent } from './funding-request/fr-print-preview/fr-print-preview.component';
 import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { ErPrintPreviewComponent } from './expense-report/er-print-preview/er-print-preview.component';
+import { SettingsComponent } from './settings/settings.component';
 
 
 registerLocaleData(localeEs, 'es-BO');
@@ -78,7 +79,8 @@ registerLocaleData(localeEs, 'es-BO');
     RejectReasonComponent,
     FrSelectorComponent,
     FrPrintPreviewComponent,
-    ErPrintPreviewComponent
+    ErPrintPreviewComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
