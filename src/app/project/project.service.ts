@@ -121,17 +121,6 @@ export class ProjectService {
         }
     }
 
-    generateProjectCode(): string {
-        const number = this.prCodeStartAt + this.localProjectList.length + 1;
-        let numberStr = '' + number;
-        if (numberStr.length === 1) {
-            numberStr = '00' + numberStr;
-        } else if (numberStr.length === 2) {
-            numberStr = '0' + numberStr;
-        }
-        return 'P-' + numberStr;
-    }
-
     getProjectName(projId: string) {
         if (projId) {
             if (this.localProjectList.length) {

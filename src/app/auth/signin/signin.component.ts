@@ -24,7 +24,7 @@ export class SigninComponent implements OnInit {
   }
 
   onUserSignin() {
-    let formValues = this.signinForm.value;
+    const formValues = this.signinForm.value;
     this.authService.signinUser(formValues.email, formValues.password)
       .then(
         (response) => {

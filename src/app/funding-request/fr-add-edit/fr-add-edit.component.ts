@@ -56,7 +56,6 @@ export class FrAddEditComponent implements OnInit {
 
   ngOnInit() {
     this.fundingRequestForm = new FormGroup({
-      code: new FormControl(null),
       createUserId: new FormControl(null),
       projectId: new FormControl(null),
       date: new FormControl(null),
@@ -96,7 +95,6 @@ export class FrAddEditComponent implements OnInit {
               } else {
                 this.isNew = true;
                 this.fundingRequestForm.patchValue({
-                  code: this.fundingRequestService.generateFrCode(),
                   createUserId: this.authService.loggedUserId
                 });
                 this.updateCurrentSelectedUser();

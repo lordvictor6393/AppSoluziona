@@ -5,8 +5,8 @@
         Informacion del Proyecto
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <mat-form-field>
-      <input matInput placeholder="Codigo" formControlName="code" readonly>
+    <mat-form-field *ngIf="!isNew">
+      <input matInput placeholder="Codigo" [value]="initialProjectData?.code" readonly>
     </mat-form-field>
     <br>
     <mat-form-field>

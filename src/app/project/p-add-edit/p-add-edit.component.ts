@@ -66,7 +66,6 @@ export class PAddEditComponent implements OnInit {
       }
     );
     this.projectForm = new FormGroup({
-      code: new FormControl(null),
       name: new FormControl(null),
       leadId: new FormControl(null),
       budget: new FormControl(null),
@@ -84,7 +83,6 @@ export class PAddEditComponent implements OnInit {
           this.loadProjectData();
         } else {
           this.isNew = true;
-          this.projectForm.patchValue({ code: this.projectService.generateProjectCode() });
           this.projMembersDataSource.data = [];
         }
       }
