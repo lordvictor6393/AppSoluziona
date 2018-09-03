@@ -130,7 +130,6 @@ export class FrAddEditComponent implements OnInit {
       frData => {
         this.initialFrData = frData;
         const patch = {};
-        if (frData.code) { patch['code'] = frData.code; }
         if (frData.createUserId) { patch['createUserId'] = frData.createUserId; }
         if (frData.projectId) { patch['projectId'] = frData.projectId; }
         if (frData.date) { patch['date'] = frData.date; }
