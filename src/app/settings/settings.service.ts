@@ -13,14 +13,7 @@ export class SettingsService {
 
   getAppSettings(): Observable<AppSettings> {
     return this.settingsCollection.snapshotChanges().pipe(
-      map(configDocs => {
-        let counts = configDocs.find(doc => doc.payload.doc.id === 'entitiesCount');
-        let companyData = configDocs.find(doc => doc.payload.doc.id === 'companyData');
-
-        if (counts) { counts = counts.payload.doc.data(); }
-        if (companyData) { companyData = companyData.payload.doc.data(); }
-        return new AppSettings(counts, companyData);
-      })
+      map(AppSettings.getAppSettingsFromSnapshot)
     );
   }
 

@@ -18,4 +18,13 @@ export class AppSettings {
         this.entitiesCount = entitiesCount;
         this.companyData = companyData;
     }
+    static getAppSettingsFromSnapshot(configDocs): AppSettings {
+        let counts = configDocs.find(doc => doc.payload.doc.id === 'entitiesCount');
+        let companyData = configDocs.find(doc => doc.payload.doc.id === 'companyData');
+
+        if (counts) { counts = counts.payload.doc.data(); }
+        if (companyData) { companyData = companyData.payload.doc.data(); }
+
+        return new AppSettings(counts, companyData);
+    }
 }
