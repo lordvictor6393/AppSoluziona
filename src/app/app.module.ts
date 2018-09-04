@@ -53,6 +53,7 @@ import { FrPrintPreviewComponent } from './funding-request/fr-print-preview/fr-p
 import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { ErPrintPreviewComponent } from './expense-report/er-print-preview/er-print-preview.component';
 import { SettingsComponent } from './settings/settings.component';
+import { SettingsService } from './settings/settings.service';
 
 
 registerLocaleData(localeEs, 'es-BO');
@@ -107,6 +108,7 @@ registerLocaleData(localeEs, 'es-BO');
     UsersService,
     ClientService,
     ProjectService,
+    SettingsService,
     FundingRequestService,
     ExpenseReportService,
     { provide: LOCALE_ID, useValue: 'es-BO' }

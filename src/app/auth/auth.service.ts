@@ -107,6 +107,11 @@ export class AuthService {
     return this.checkAuthorization(allowed);
   }
 
+  CanManageSettings() {
+    const allowed = [SZ.CHIEF];
+    return this.checkAuthorization(allowed);
+  }
+
   CanAccessReports() {
     const allowed = [
       SZ.ACCOUNTANT,

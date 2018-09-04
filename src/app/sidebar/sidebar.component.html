@@ -26,4 +26,10 @@
     routerLinkActive="active"
     routerLink="/clients"
     *ngIf="authService.CanManageClients()">Clientes</a>
+  <mat-divider></mat-divider>
+  <a mat-list-item
+    href="#"
+    routerLinkActive="active"
+    routerLink="/settings"
+    *ngIf="authService.CanManageSettings()">Configuración</a>
 </mat-nav-list>

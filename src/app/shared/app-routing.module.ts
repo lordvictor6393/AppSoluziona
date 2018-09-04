@@ -20,6 +20,7 @@ import { UAddEditComponent } from '../user/u-add-edit/u-add-edit.component';
 import { CListComponent } from '../client/c-list/c-list.component';
 import { CAddEditComponent } from '../client/c-add-edit/c-add-edit.component';
 import { AuthGuard } from '../auth/auth.guard';
+import { SettingsComponent } from '../settings/settings.component';
 
 
 const appRoutes: Routes = [{
@@ -75,6 +76,9 @@ const appRoutes: Routes = [{
     }, {
         path: 'clients/:id',
         component: CAddEditComponent
+    }, {
+        path: 'settings',
+        component: SettingsComponent
     }, {
         path: '**',
         redirectTo: '/'

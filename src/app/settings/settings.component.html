@@ -1,3 +1,40 @@
-<p>
-  settings works!
-</p>
+<form [formGroup]="settingsForm">
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Total de Solicitudes y Proyectos
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div formGroupName="entitiesCount">
+      <mat-form-field>
+        <input matInput type="number" placeholder="Total de Solicitudes creadas" formControlName="frCount">
+      </mat-form-field>
+      <br>
+      <mat-form-field>
+        <input matInput type="number" placeholder="Total de Proyectos creados" formControlName="projectCount">
+      </mat-form-field>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Datos de la empresa
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div formGroupName="companyData">
+      <mat-form-field>
+        <input matInput placeholder="Nit" formControlName="nit">
+      </mat-form-field>
+      <br>
+      <mat-form-field>
+        <input matInput placeholder="Razón Social" formControlName="name">
+      </mat-form-field>
+    </div>
+  </mat-expansion-panel>
+  <br>
+  <div class="sz-action-btns">
+    <button mat-raised-button color="primary" (click)="onSaveSettings()" [disabled]="!settingsForm.dirty">Guardar</button>
+    <button mat-raised-button (click)="onResetSettings()" *ngIf="!isNew" [disabled]="!settingsForm.dirty">Restaurar valores</button>
+  </div>
+</form>
