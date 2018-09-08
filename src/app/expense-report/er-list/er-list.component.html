@@ -28,7 +28,7 @@
   </mat-form-field>
 </div>
 
-<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="erDataSource" matSortActive="code" matSortDirection="asc">
+<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="erDataSource" matSortActive="code" matSortDirection="desc">
   <ng-container matColumnDef="code">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Solicitud </th>
     <td mat-cell *matCellDef="let report"> {{report.code}} </td>
@@ -43,15 +43,15 @@
   </ng-container>
   <ng-container matColumnDef="totalSpent">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Gastado </th>
-    <td mat-cell *matCellDef="let report"> {{report.totalSpent}} </td>
+    <td mat-cell *matCellDef="let report"> {{report.totalSpent | currency:'BOB':'symbol':'1.2-2':'es-BO'}} </td>
   </ng-container>
   <ng-container matColumnDef="totalReceived">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Recibido </th>
-    <td mat-cell *matCellDef="let report"> {{report.totalReceived}} </td>
+    <td mat-cell *matCellDef="let report"> {{report.totalReceived | currency:'BOB':'symbol':'1.2-2':'es-BO'}} </td>
   </ng-container>
   <ng-container matColumnDef="balance">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Saldo </th>
-    <td mat-cell *matCellDef="let report"> {{report.balance}} </td>
+    <td mat-cell *matCellDef="let report"> {{report.balance | currency:'BOB':'symbol':'1.2-2':'es-BO'}} </td>
   </ng-container>
   <ng-container matColumnDef="state">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
@@ -60,15 +60,36 @@
   <ng-container matColumnDef="editBtn">
     <th mat-header-cell *matHeaderCellDef> </th>
     <td mat-cell *matCellDef="let report">
-      <button mat-stroked-button color="primary" type="button" (click)="onEditExpenseReport(report.id)">{{report.isSent ? 'Ver' : 'Editar'}}</button>
-      <button mat-raised-button color="primary" type="button" (click)="onSendExpenseReport(report)" *ngIf="!report.isSent">Enviar</button>
-      <button mat-raised-button color="primary" type="button" (click)="onApproveExpenseReport(report)" *ngIf="report.isSent && authService.CanApproveEr(report)">Aprobar</button>
-      <button mat-raised-button color="warn" type="button" (click)="onRejectExpenseReport(report)" *ngIf="report.isSent && authService.CanApproveEr(report)">Rechazar</button>
-      <button mat-button color="warn" type="button" (click)="onDeleteExpenseReport(report.id)" *ngIf="!report.isSent">Eliminar</button>
+      <mat-menu #itemActions="matMenu">
+        <button mat-menu-item (click)="onEditExpenseReport(report.id)">
+          <mat-icon>{{report.isSent ? 'remove_red_eye' : 'edit'}}</mat-icon>
+          {{report.isSent ? 'Ver' : 'Editar'}}
+        </button>
+        <button mat-menu-item (click)="onSendExpenseReport(report)" *ngIf="!report.isSent">
+          <mat-icon>send</mat-icon>
+          Enviar
+        </button>
+        <button mat-menu-item (click)="onApproveExpenseReport(report)" *ngIf="report.isSent && authService.CanApproveEr(report)">
+          <mat-icon>check_circle</mat-icon>
+          Aprobar
+        </button>
+        <button mat-menu-item (click)="onRejectExpenseReport(report)" *ngIf="report.isSent && authService.CanApproveEr(report)">
+          <mat-icon>clear</mat-icon>
+          Rechazar
+        </button>
+        <button mat-menu-item (click)="onDeleteExpenseReport(report.id)" *ngIf="!report.isSent">
+          <mat-icon>delete</mat-icon>
+          Eliminar
+        </button>
+      </mat-menu>
+      <button mat-icon-button [matMenuTriggerFor]="itemActions">
+        <mat-icon>blur_on</mat-icon>
+      </button>
     </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="erListColumns; sticky: true"></tr>
   <tr mat-row *matRowDef="let row; columns: erListColumns;"></tr>
 </table>
+<mat-paginator [pageSizeOptions]="[10, 20, 50, 100]" showFirstLastButtons></mat-paginator>
 <br>
 <button mat-raised-button color="primary" (click)="onSelectFundingRequest()"> Crear </button>

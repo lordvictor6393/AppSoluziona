@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FundingRequest } from '../funding-request.model';
 import { FundingRequestService } from '../funding-request.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatTableDataSource, MatSort, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatSort, MatDialog, MatPaginator } from '@angular/material';
 import { UsersService } from '../../user/user.service';
 import { ProjectService } from '../../project/project.service';
 import { Project } from '../../project/project.model';
@@ -24,6 +24,7 @@ export class FrListComponent implements OnInit {
   requests: FundingRequest[];
   frDataSource: MatTableDataSource<FundingRequest> = new MatTableDataSource<FundingRequest>();
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   // Filters
   filterByUserId: string;
@@ -52,6 +53,7 @@ export class FrListComponent implements OnInit {
       'createUser',
       'projectName',
       'state',
+      'total',
       'editBtn'
     ];
     this.userService.getUserList().subscribe(
@@ -72,6 +74,20 @@ export class FrListComponent implements OnInit {
       }
     );
     this.frDataSource.sort = this.sort;
+    this.frDataSource.paginator = this.paginator;
+    this.frDataSource.sortingDataAccessor = (data, sortHeaderId) => {
+      if (sortHeaderId === 'code') {
+        return +data.code.split('-')[1];
+      } else if (sortHeaderId === 'createUser') {
+        return this.userService.getCompleteUserName(data.createUserId);
+      } else if (sortHeaderId === 'projectName') {
+        return this.projectService.getProjectName(data.projectId);
+      } else if (sortHeaderId === 'total') {
+        return data.total;
+      } else {
+        return (data[sortHeaderId] || '').toLowerCase();
+      }
+    };
     this.frDataSource.filterPredicate = (data: FundingRequest) => {
       let match = true;
       if (this.filterByUserId) {

@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ExpenseReportService } from '../expense-report.service';
 import { ActivatedRoute, Router } from '../../../../node_modules/@angular/router';
 import { ExpenseReport } from '../expense-report.model';
-import { MatTableDataSource, MatSort, MatDialog } from '../../../../node_modules/@angular/material';
+import { MatTableDataSource, MatSort, MatDialog, MatPaginator } from '../../../../node_modules/@angular/material';
 import { UsersService } from '../../user/user.service';
 import { User } from '../../user/user.model';
 import { Project } from '../../project/project.model';
@@ -23,6 +23,7 @@ export class ErListComponent implements OnInit {
   reports: ExpenseReport[];
   erDataSource: MatTableDataSource<ExpenseReport> = new MatTableDataSource<ExpenseReport>();
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   // Filters
   filterByUserId: string;
@@ -68,6 +69,24 @@ export class ErListComponent implements OnInit {
       }
     );
     this.erDataSource.sort = this.sort;
+    this.erDataSource.paginator = this.paginator;
+    this.erDataSource.sortingDataAccessor = (data, sortHeaderId) => {
+      if (sortHeaderId === 'code') {
+        return +data.code.split('-')[1];
+      } else if (sortHeaderId === 'createUser') {
+        return this.userService.getCompleteUserName(data.createUserId);
+      } else if (sortHeaderId === 'projectName') {
+        return this.projectService.getProjectName(data.projectId);
+      } else if (sortHeaderId === 'totalReceived') {
+        return data.totalReceived;
+      } else if (sortHeaderId === 'totalSpent') {
+        return data.totalSpent;
+      } else if (sortHeaderId === 'balance') {
+        return data.balance;
+      } else {
+        return (data[sortHeaderId] || '').toLowerCase();
+      }
+    };
     this.erDataSource.filterPredicate = (data: ExpenseReport) => {
       let match = true;
       if (this.filterByUserId) {

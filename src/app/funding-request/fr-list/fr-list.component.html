@@ -27,7 +27,7 @@
     <input matInput (keyup)="searchText($event.target.value)" placeholder="Buscar">
   </mat-form-field>
 </div>
-<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="frDataSource" matSortActive="code" matSortDirection="asc">
+<table mat-table matSort class="mat-elevation-z2 sz-item-table" [dataSource]="frDataSource" matSortActive="code" matSortDirection="desc">
   <ng-container matColumnDef="code">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Solicitud </th>
     <td mat-cell *matCellDef="let request"> {{request.code}} </td>
@@ -48,19 +48,47 @@
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
     <td mat-cell *matCellDef="let request"> {{request.state}} </td>
   </ng-container>
+  <ng-container matColumnDef="total">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total </th>
+    <td mat-cell *matCellDef="let request"> {{request.total | currency:'BOB':'symbol':'1.2-2':'es-BO'}} </td>
+  </ng-container>
   <ng-container matColumnDef="editBtn">
     <th mat-header-cell *matHeaderCellDef> </th>
-    <td mat-cell *matCellDef="let request">
-      <button mat-stroked-button color="primary" type="button" (click)="onEditFundingRequest(request.id)">{{request.isSent ? 'Ver' : 'Editar'}}</button>
-      <button mat-raised-button color="primary" type="button" (click)="onSendFundingRequest(request)" *ngIf="!request.isSent">Enviar</button>
-      <button mat-raised-button color="primary" type="button" (click)="onApproveFundingRequest(request)" *ngIf="request.isSent && authService.CanApproveFr(request)">Aprobar</button>
-      <button mat-raised-button color="warn" type="button" (click)="onRejectFundingRequest(request)" *ngIf="request.isSent && authService.CanApproveFr(request)">Rechazar</button>
-      <button mat-raised-button color="primary" type="button" (click)="onCreateExpenseReport(request.id)" *ngIf="fundingRequestService.isFrApproved(request) && !request.erId">Crear Formulario de Descargo</button>
-      <button mat-button color="warn" type="button" (click)="onDeleteFundingRequest(request.id)" *ngIf="!request.isSent">Eliminar</button>
+    <td mat-cell *matCellDef="let request; let idx = index">
+      <mat-menu #itemActions="matMenu">
+        <button mat-menu-item (click)="onEditFundingRequest(request.id)">
+          <mat-icon>{{request.isSent ? 'remove_red_eye' : 'edit'}}</mat-icon>
+          {{request.isSent ? 'Ver' : 'Editar'}}
+        </button>
+        <button mat-menu-item (click)="onSendFundingRequest(request)" *ngIf="!request.isSent">
+          <mat-icon>send</mat-icon>
+          Enviar
+        </button>
+        <button mat-menu-item (click)="onApproveFundingRequest(request)" *ngIf="request.isSent && authService.CanApproveFr(request)">
+          <mat-icon>check_circle</mat-icon>
+          Aprobar
+        </button>
+        <button mat-menu-item (click)="onRejectFundingRequest(request)" *ngIf="request.isSent && authService.CanApproveFr(request)">
+          <mat-icon>clear</mat-icon>
+          Rechazar
+        </button>
+        <button mat-menu-item (click)="onCreateExpenseReport(request.id)" *ngIf="fundingRequestService.isFrApproved(request) && !request.erId">
+          <mat-icon>list_alt</mat-icon>
+          Crear Descargo
+        </button>
+        <button mat-menu-item (click)="onDeleteFundingRequest(request.id)" *ngIf="!request.isSent">
+          <mat-icon>delete</mat-icon>
+          Eliminar
+        </button>
+      </mat-menu>
+      <button mat-icon-button [matMenuTriggerFor]="itemActions">
+        <mat-icon>blur_on</mat-icon>
+      </button>
     </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="frListColumns; sticky: true"></tr>
   <tr mat-row *matRowDef="let row; columns: frListColumns;"></tr>
 </table>
+<mat-paginator [pageSizeOptions]="[10, 20, 50, 100]" showFirstLastButtons></mat-paginator>
 <br>
 <button mat-raised-button color="primary" (click)="onAddFundingRequest()"> Crear </button>
