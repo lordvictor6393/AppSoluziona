@@ -35,6 +35,6 @@
   <br>
   <div class="sz-action-btns">
     <button mat-raised-button color="primary" (click)="onSaveSettings()" [disabled]="!settingsForm.dirty">Guardar</button>
-    <button mat-raised-button (click)="onResetSettings()" *ngIf="!isNew" [disabled]="!settingsForm.dirty">Restaurar valores</button>
+    <button mat-raised-button (click)="onResetSettings()" [disabled]="!settingsForm.dirty">Restaurar valores</button>
   </div>
 </form>
