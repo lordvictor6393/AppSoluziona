@@ -21,6 +21,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 const angularMaterialModules: any[] = [
     MatTabsModule,
@@ -44,7 +45,8 @@ const angularMaterialModules: any[] = [
     MatSnackBarModule,
     MatRadioModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSlideToggleModule
 ];
 
 @NgModule({

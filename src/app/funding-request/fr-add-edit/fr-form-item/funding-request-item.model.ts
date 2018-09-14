@@ -17,10 +17,18 @@ export class FundingRequestItem {
     }
 
     updateData(newData) {
-        if (newData.detail) this.detail = newData.detail;
-        if (newData.quantity) this.quantity = newData.quantity;
-        if (newData.singlePrice) this.singlePrice = newData.singlePrice;
-        if (newData.totalPrice) this.totalPrice = newData.totalPrice;
+        if (newData.detail) {
+            this.detail = newData.detail;
+        }
+        if (newData.quantity) {
+            this.quantity = newData.quantity;
+        }
+        if (newData.singlePrice) {
+            this.singlePrice = newData.singlePrice;
+        }
+        if (newData.totalPrice) {
+            this.totalPrice = newData.totalPrice;
+        }
     }
 
     getRawObject() {
@@ -29,6 +37,6 @@ export class FundingRequestItem {
             quantity: this.quantity,
             singlePrice: this.singlePrice,
             totalPrice: this.totalPrice
-        }
+        };
     }
 }

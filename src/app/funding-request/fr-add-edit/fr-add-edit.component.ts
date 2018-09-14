@@ -26,6 +26,7 @@ import { combineLatest } from '../../../../node_modules/rxjs';
 export class FrAddEditComponent implements OnInit {
 
   isNew = false;
+  isEditEnabled = false;
   selectedFrId: string;
   initialFrData: FundingRequest;
 
@@ -145,9 +146,6 @@ export class FrAddEditComponent implements OnInit {
         this.fundingRequestForm.patchValue(patch);
         this.updateClientName();
         this.updateCurrentSelectedUser();
-        if (!this.initialFrData.isSent) {
-          this.frGridColumns.push('editBtn');
-        }
         this.frItems = frData.items.map(
           frItemData => new FundingRequestItem(
             frItemData.detail,
@@ -171,11 +169,21 @@ export class FrAddEditComponent implements OnInit {
     return total / 10;
   }
 
+  updateEditEnabledState(enable) {
+    if (enable) {
+      this.isEditEnabled = true;
+      this.frGridColumns.push('editBtn');
+    } else {
+      this.isEditEnabled = false;
+      this.frGridColumns.pop();
+    }
+  }
+
   canBeModified() {
     let allowed = this.isNew;
     if (this.initialFrData) {
       allowed = allowed || !this.initialFrData.isSent;
-      // allowed = allowed || (this.authService.CanManageAllFrEr() && this.initialFrData.state === SZ.VERIFIED);
+      allowed = allowed || (this.authService.CanManageAllFrEr() && this.isEditEnabled);
     }
     return allowed;
   }

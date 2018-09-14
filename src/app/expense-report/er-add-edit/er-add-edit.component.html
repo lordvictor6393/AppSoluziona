@@ -1,5 +1,21 @@
-<div class="header" *ngIf="initialErData && initialErData.isSent">
-  <button mat-raised-button color="primary" (click)="showErPreview()">Vista previa en PDF</button>
+<div class="header">
+  <button mat-button (click)="backToErList()" type="button">
+    <mat-icon>chevron_left</mat-icon>
+    Volver
+  </button>
+  <div style="flex: 1;"></div>
+  <mat-slide-toggle
+    color="primary"
+    [checked]="isEditEnabled"
+    *ngIf="authService.CanManageAllFrEr() && initialErData?.isSent"
+    (change)="updateEditEnabledState($event.source.checked)">
+    Habilitar Edición
+  </mat-slide-toggle>
+  <div style="flex: 1;"></div>
+  <button mat-raised-button color="primary" (click)="showErPreview()" *ngIf="initialErData?.isSent">
+    <mat-icon>picture_as_pdf</mat-icon>
+    Vista previa en PDF
+  </button>
 </div>
 <form [formGroup]="expenseReportForm">
   <mat-expansion-panel class="sz-details-panel">
@@ -11,8 +27,11 @@
         <span *ngIf="selectedUser">{{selectedUser.name}} {{selectedUser.lastName}}</span>
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <mat-form-field *ngIf="authService.CanManageAllFrEr() && (!initialErData || !initialErData.isSent)">
-      <mat-select placeholder="Usuario" formControlName="createUserId" (selectionChange)="updateCurrentSelectedUser()">
+    <mat-form-field *ngIf="authService.CanManageAllFrEr() && canBeModified()">
+      <mat-select
+        placeholder="Usuario"
+        formControlName="createUserId"
+        (selectionChange)="updateCurrentSelectedUser()">
         <mat-option *ngFor="let user of users" [value]='user.id'>
           {{user.name}} {{user.lastName}}
         </mat-option>
@@ -20,20 +39,31 @@
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput placeholder="Nombres y apellidos" [value]="selectedUser ? (selectedUser.name + ' ' + selectedUser.lastName) : ''"
+      <input matInput
+        placeholder="Nombres y apellidos"
+        [value]="selectedUser ? (selectedUser.name + ' ' + selectedUser.lastName) : ''"
         [readonly]="true">
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput placeholder="Cargo" [value]="selectedUser ? selectedUser.position : ''" [readonly]="true">
+      <input matInput
+        placeholder="Cargo"
+        [value]="selectedUser ? selectedUser.position : ''"
+        [readonly]="true">
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput placeholder="Carnet de Identidad" [value]="selectedUser ? selectedUser.ci : ''" [readonly]="true">
+      <input matInput
+        placeholder="Carnet de Identidad"
+        [value]="selectedUser ? selectedUser.ci : ''"
+        [readonly]="true">
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput placeholder="Expedido" [value]="selectedUser ? selectedUser.ciPlace : ''" [readonly]="true">
+      <input matInput
+        placeholder="Expedido"
+        [value]="selectedUser ? selectedUser.ciPlace : ''"
+        [readonly]="true">
     </mat-form-field>
   </mat-expansion-panel>
 
@@ -47,11 +77,14 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <mat-form-field>
-      <input matInput placeholder="Lugar" formControlName="place" [readonly]="initialErData && initialErData.isSent">
+      <input matInput
+      placeholder="Lugar"
+      formControlName="place"
+      [readonly]="!canBeModified()">
     </mat-form-field>
     <br>
     <mat-form-field>
-      <input matInput [matDatepicker]="erDate" placeholder="Fecha" formControlName="date" [readonly]="initialErData && initialErData.isSent">
+      <input matInput [matDatepicker]="erDate" placeholder="Fecha" formControlName="date" [readonly]="!canBeModified()">
       <mat-datepicker-toggle matSuffix [for]="erDate"></mat-datepicker-toggle>
       <mat-datepicker #erDate></mat-datepicker>
     </mat-form-field>
@@ -149,16 +182,22 @@
       <tr mat-footer-row *matFooterRowDef="erGridColumns"></tr>
     </table>
     <br>
-    <button mat-raised-button color="primary" (click)="addExpenseReportItem()" *ngIf="!initialErData || !initialErData.isSent">
+    <button mat-raised-button
+      color="primary"
+      (click)="addExpenseReportItem()"
+      *ngIf="canBeModified()">
       Añadir
     </button>
     <br>
     <mat-form-field>
-      <textarea matInput placeholder="Observaciones" formControlName="observations" [readonly]="initialErData && initialErData.isSent"></textarea>
+      <textarea matInput
+        placeholder="Observaciones"
+        formControlName="observations"
+        [readonly]="!canBeModified()"></textarea>
     </mat-form-field>
   </mat-expansion-panel>
 
-  <mat-expansion-panel class="sz-details-panel" *ngIf="authService.CanManageAllFrEr() && initialErData && initialErData.isSent">
+  <mat-expansion-panel class="sz-details-panel" *ngIf="authService.CanManageAllFrEr() && initialErData?.isSent">
     <mat-expansion-panel-header>
       <mat-panel-title>
         Conformidad de la Rendicion
@@ -196,7 +235,7 @@
       {{isNew ? 'Crear Descargo' : 'Actualizar Descargo'}}
     </button>
     <button mat-raised-button color="primary" type="button" (click)="onVerifyEr()" *ngIf="!isNew && initialErData?.isSent && authService.CanVerifyEr(initialErData)">
-      <mat-icon>done</mat-icon>     
+      <mat-icon>done</mat-icon>
       Verificar
     </button>
     <button mat-raised-button color="primary" type="button" (click)="onApproveEr()" *ngIf="!isNew && initialErData?.isSent && authService.CanApproveEr(initialErData)">
@@ -206,10 +245,6 @@
     <button mat-raised-button color="warn" type="button" (click)="onRejectEr()" *ngIf="!isNew && initialErData?.isSent && (authService.CanApproveEr(initialErData) || authService.CanVerifyEr(initialErData))">
       <mat-icon>clear</mat-icon>
       Rechazar
-    </button>
-    <button mat-button (click)="backToErList()" type="button">
-      <mat-icon>chevron_left</mat-icon>
-      Volver
     </button>
     <div style="flex: 1;"></div>
     <button mat-raised-button color="primary" type="button" (click)="onSendEr()" *ngIf="!isNew && !initialErData?.isSent">

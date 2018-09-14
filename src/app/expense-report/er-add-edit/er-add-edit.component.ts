@@ -28,6 +28,7 @@ import { combineLatest } from '../../../../node_modules/rxjs';
 export class ErAddEditComponent implements OnInit {
 
   isNew = false;
+  isEditEnabled = false;
   selectedErId: string;
   selectedFrId: string;
   selectedFr: FundingRequest;
@@ -151,9 +152,6 @@ export class ErAddEditComponent implements OnInit {
         }
         this.expenseReportForm.patchValue(patch);
         this.updateCurrentSelectedUser();
-        if (!this.initialErData.isSent) {
-          this.erGridColumns.push('editBtn');
-        }
         this.erItems = erData.items.map(
           erItemData => new ExpenseReportItem(
             erItemData.detail,
@@ -180,11 +178,21 @@ export class ErAddEditComponent implements OnInit {
     return total / 10;
   }
 
+  updateEditEnabledState(enable) {
+    if (enable) {
+      this.isEditEnabled = true;
+      this.erGridColumns.push('editBtn');
+    } else {
+      this.isEditEnabled = false;
+      this.erGridColumns.pop();
+    }
+  }
+
   canBeModified() {
     let allowed = this.isNew;
     if (this.initialErData) {
       allowed = allowed || !this.initialErData.isSent;
-      // allowed = allowed || (this.authService.CanManageAllFrEr() && this.initialErData.state === SZ.VERIFIED);
+      allowed = allowed || (this.authService.CanManageAllFrEr() && this.isEditEnabled);
     }
     return allowed;
   }

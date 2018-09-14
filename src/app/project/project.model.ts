@@ -21,7 +21,7 @@ export class Project {
         membersIds: string[],
         budget: number,
         clientId: string,
-        contactDetails: any//,
+        contactDetails: any
         // status: string,
         // totalExpense: number,
         // childProjectsIds?: string[]
@@ -51,11 +51,11 @@ export class Project {
             data.membersIds,
             data.budget,
             data.clientId,
-            data.contactDetails//,
+            data.contactDetails
             // data.status,
             // data.totalExpense,
             // data.childProjectsIds
-        )
+        );
     }
 
     static getProjectFromValue(projectId, project): Project {
@@ -67,10 +67,10 @@ export class Project {
             project.membersIds,
             project.budget,
             project.clientId,
-            project.contactDetails//,
+            project.contactDetails
             // project.status,
             // project.totalExpense,
             // project.childProjectsIds
-        )
+        );
     }
 }
