@@ -175,7 +175,7 @@ export class FrAddEditComponent implements OnInit {
     let allowed = this.isNew;
     if (this.initialFrData) {
       allowed = allowed || !this.initialFrData.isSent;
-      allowed = allowed || (this.authService.CanManageAllFrEr() && this.initialFrData.state === SZ.VERIFIED);
+      // allowed = allowed || (this.authService.CanManageAllFrEr() && this.initialFrData.state === SZ.VERIFIED);
     }
     return allowed;
   }
@@ -217,28 +217,39 @@ export class FrAddEditComponent implements OnInit {
         userId: this.authService.getLoggedUserId(),
         date: new Date().getTime()
       });
+      this.onSaveFr();
       this.fundingRequestService.sendFr(this.initialFrData.id, activity);
     }
     this.backToFrList();
+  }
+
+  onVerifyFr() {
+    const user = this.authService.loggedUserInstance;
+    const activity = this.initialFrData.activity || [];
+    if (user && this.initialFrData.isSent) {
+      if (this.authService.CanVerifyFr(this.initialFrData)) {
+        activity.push({
+          action: SZ.VERIFIED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.onSaveFr();
+        this.fundingRequestService.verifyFr(this.initialFrData.id, activity);
+      }
+    }
   }
 
   onApproveFr() {
     const user = this.authService.loggedUserInstance;
     const activity = this.initialFrData.activity || [];
     if (user && this.initialFrData.isSent) {
-      if (user.leadOf.indexOf(this.initialFrData.projectId) !== -1) {
-        activity.push({
-          action: SZ.VERIFIED,
-          userId: this.authService.getLoggedUserId(),
-          date: new Date().getTime()
-        });
-        this.fundingRequestService.verifyFr(this.initialFrData.id, activity);
-      } else if (this.authService.CanManageAllFrEr()) {
+      if (this.authService.CanApproveFr(this.initialFrData)) {
         activity.push({
           action: SZ.APPROVED,
           userId: this.authService.getLoggedUserId(),
           date: new Date().getTime()
         });
+        this.onSaveFr();
         this.fundingRequestService.approveFr(this.initialFrData.id, activity);
       }
     }
@@ -257,6 +268,7 @@ export class FrAddEditComponent implements OnInit {
               date: new Date().getTime(),
               reason: reason
             });
+            this.onSaveFr();
             this.fundingRequestService.rejectFr(this.initialFrData.id, activity);
           }
         }
@@ -299,6 +311,7 @@ export class FrAddEditComponent implements OnInit {
     );
     frData.total = this.getFrTotal();
     frData.clientId = this.clientIdOfSelectedProject;
+    frData.code = this.initialFrData.code;
     this.dialog.open(FrPrintPreviewComponent, {
       data: {
         fr: frData,

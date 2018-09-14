@@ -21,6 +21,7 @@
       <mat-option *ngFor="let state of states" [value]="state">
         {{state}}
       </mat-option>
+      <mat-option value="withoutFr">Sin Descargo</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="sz-search-box">
@@ -64,11 +65,15 @@
           <mat-icon>send</mat-icon>
           Enviar
         </button>
+        <button mat-menu-item (click)="onVerifyFundingRequest(request)" *ngIf="request.isSent && authService.CanVerifyFr(request)">
+          <mat-icon>done</mat-icon>
+          Verificar
+        </button>
         <button mat-menu-item (click)="onApproveFundingRequest(request)" *ngIf="request.isSent && authService.CanApproveFr(request)">
-          <mat-icon>check_circle</mat-icon>
+          <mat-icon>done_all</mat-icon>
           Aprobar
         </button>
-        <button mat-menu-item (click)="onRejectFundingRequest(request)" *ngIf="request.isSent && authService.CanApproveFr(request)">
+        <button mat-menu-item (click)="onRejectFundingRequest(request)" *ngIf="request.isSent && (authService.CanApproveFr(request) || authService.CanVerifyFr(request))">
           <mat-icon>clear</mat-icon>
           Rechazar
         </button>

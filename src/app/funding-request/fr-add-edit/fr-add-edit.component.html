@@ -126,7 +126,7 @@
         <td mat-footer-cell *matFooterCellDef> {{getFrTotal()}} </td>
       </ng-container>
       <ng-container matColumnDef="editBtn">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
+        <th mat-header-cell *matHeaderCellDef> </th>
         <td mat-cell *matCellDef="let frItem; let idx = index">
           <button mat-raised-button color="primary" (click)="addFundingRequestItem(frItem)"> Editar </button>
           <button mat-button color="primary" (click)="deleteFundingRequestItem(idx)"> Eliminar </button>
@@ -192,13 +192,38 @@
   </mat-expansion-panel>
   <br>
   <div class="sz-action-btns">
-    <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="canBeModified()">{{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}</button>
-    <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="!isNew && initialFrData?.isSent && authService.CanApproveFr(initialFrData)">Aprobar</button>
-    <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="!isNew && initialFrData?.isSent && authService.CanApproveFr(initialFrData)">Rechazar</button>
-    <button mat-raised-button color="primary" type="button" (click)="onCreateEr()" *ngIf="!isNew && fundingRequestService.isFrApproved(initialFrData)">Crear Formulario de Descargo</button>
-    <button mat-button (click)="backToFrList()" type="button">Volver</button>
+    <button mat-raised-button color="primary" (click)="onSaveFr()" *ngIf="canBeModified()">
+        <mat-icon>save</mat-icon>
+      {{isNew ? 'Crear Solicitud' : 'Actualizar Solicitud'}}
+    </button>
+    <button mat-raised-button color="primary" type="button" (click)="onVerifyFr()" *ngIf="!isNew && initialFrData?.isSent && authService.CanVerifyFr(initialFrData)">
+      <mat-icon>done</mat-icon>
+      Verificar
+    </button>
+    <button mat-raised-button color="primary" type="button" (click)="onApproveFr()" *ngIf="!isNew && initialFrData?.isSent && authService.CanApproveFr(initialFrData)">
+      <mat-icon>done_all</mat-icon>
+      Aprobar
+    </button>
+    <button mat-raised-button color="warn" type="button" (click)="onRejectFr()" *ngIf="!isNew && initialFrData?.isSent && (authService.CanApproveFr(initialFrData) || authService.CanVerifyFr(initialFrData))">
+      <mat-icon>clear</mat-icon>
+      Rechazar
+    </button>
+    <button mat-raised-button color="primary" type="button" (click)="onCreateEr()" *ngIf="!isNew && fundingRequestService.isFrApproved(initialFrData) && !initialFrData?.erId">
+      <mat-icon>list_alt</mat-icon>
+      Crear Descargo
+    </button>
+    <button mat-button (click)="backToFrList()" type="button">
+      <mat-icon>chevron_left</mat-icon>
+      Volver
+    </button>
     <div style="flex: 1;"></div>
-    <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && !initialFrData?.isSent">Enviar Solicitud</button>
-    <button mat-button color="warn" type="button" (click)="onDeleteFr()" *ngIf="!isNew && !initialFrData?.isSent">Eliminar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onSendFr()" *ngIf="!isNew && !initialFrData?.isSent">
+      <mat-icon>send</mat-icon>
+      Enviar Solicitud
+    </button>
+    <button mat-button color="warn" type="button" (click)="onDeleteFr()" *ngIf="!isNew && !initialFrData?.isSent">
+      <mat-icon>delete</mat-icon>
+      Eliminar
+    </button>
   </div>
 </form>

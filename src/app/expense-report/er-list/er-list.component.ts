@@ -139,18 +139,26 @@ export class ErListComponent implements OnInit {
     }
   }
 
-  onApproveExpenseReport(er: ExpenseReport) {
+  onVerifyExpenseReport(er: ExpenseReport) {
     const user = this.authService.loggedUserInstance;
     const activity = er.activity || [];
     if (user && er.isSent) {
-      if (user.leadOf.indexOf(er.projectId) !== -1) {
+      if (this.authService.CanVerifyEr(er)) {
         activity.push({
           action: SZ.VERIFIED,
           userId: this.authService.getLoggedUserId(),
           date: new Date().getTime()
         });
         this.expenseReportService.verifyEr(er.id, activity);
-      } else if (this.authService.CanManageAllFrEr()) {
+      }
+    }
+  }
+
+  onApproveExpenseReport(er: ExpenseReport) {
+    const user = this.authService.loggedUserInstance;
+    const activity = er.activity || [];
+    if (user && er.isSent) {
+      if (this.authService.CanApproveEr(er)) {
         activity.push({
           action: SZ.APPROVED,
           userId: this.authService.getLoggedUserId(),

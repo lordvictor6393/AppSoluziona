@@ -113,13 +113,13 @@ export class UsersService {
 
     deleteUser(userId: string) {
         if (userId) {
-            const userRef = this.db.doc('users/' + userId);
-            if (userRef) {
-                userRef.delete();
-            } else {
-                console.warn('Cannot remove user, not able to get user ' + userId);
-            }
-            // this.updateUser(userId, { isDeleted: true });
+            // const userRef = this.db.doc('users/' + userId);
+            // if (userRef) {
+            //     userRef.delete();
+            // } else {
+            //     console.warn('Cannot remove user, not able to get user ' + userId);
+            // }
+            this.updateUser(userId, { isDeleted: true });
         }
     }
 

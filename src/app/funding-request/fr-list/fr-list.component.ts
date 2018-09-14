@@ -77,7 +77,7 @@ export class FrListComponent implements OnInit {
     this.frDataSource.paginator = this.paginator;
     this.frDataSource.sortingDataAccessor = (data, sortHeaderId) => {
       if (sortHeaderId === 'code') {
-        return +data.code.split('-')[1];
+        return data.code ? +data.code.split('-')[1] : '';
       } else if (sortHeaderId === 'createUser') {
         return this.userService.getCompleteUserName(data.createUserId);
       } else if (sortHeaderId === 'projectName') {
@@ -97,7 +97,12 @@ export class FrListComponent implements OnInit {
         match = match && (data.projectId === this.filterByProjectId);
       }
       if (this.filterByState) {
-        match = match && (data.state === this.filterByState);
+        if (this.filterByState === 'withoutFr') {
+          // TODO include completed state in this validation
+          match = match && !data.erId;
+        } else {
+          match = match && (data.state === this.filterByState);
+        }
       }
       if (this.filterBySearchText) {
         match = match && (new RegExp(this.filterBySearchText.trim(), 'i').test(data.detail));
@@ -140,31 +145,32 @@ export class FrListComponent implements OnInit {
     }
   }
 
-  onApproveFundingRequest(fr: FundingRequest) {
+  onVerifyFundingRequest(fr: FundingRequest) {
     const user = this.authService.loggedUserInstance;
     const activity = fr.activity || [];
     if (user && fr.isSent) {
-      if (this.authService.CanManageAllFrEr()) {
-        if (fr.state === SZ.SENT) {
-          activity.push({
-            action: SZ.VERIFIED,
-            userId: this.authService.getLoggedUserId(),
-            date: new Date().getTime()
-          });
-        }
-        activity.push({
-          action: SZ.APPROVED,
-          userId: this.authService.getLoggedUserId(),
-          date: new Date().getTime()
-        });
-        this.fundingRequestService.approveFr(fr.id, activity);
-      } else if (user.leadOf.indexOf(fr.projectId) !== -1) {
+      if (this.authService.CanVerifyFr(fr)) {
         activity.push({
           action: SZ.VERIFIED,
           userId: this.authService.getLoggedUserId(),
           date: new Date().getTime()
         });
         this.fundingRequestService.verifyFr(fr.id, activity);
+      }
+    }
+  }
+
+  onApproveFundingRequest(fr: FundingRequest) {
+    const user = this.authService.loggedUserInstance;
+    const activity = fr.activity || [];
+    if (user && fr.isSent) {
+      if (this.authService.CanApproveFr(fr)) {
+        activity.push({
+          action: SZ.APPROVED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.fundingRequestService.approveFr(fr.id, activity);
       }
     }
   }

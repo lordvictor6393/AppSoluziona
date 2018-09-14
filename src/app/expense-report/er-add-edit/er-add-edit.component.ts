@@ -184,7 +184,7 @@ export class ErAddEditComponent implements OnInit {
     let allowed = this.isNew;
     if (this.initialErData) {
       allowed = allowed || !this.initialErData.isSent;
-      allowed = allowed || (this.authService.CanManageAllFrEr() && this.initialErData.state === SZ.VERIFIED);
+      // allowed = allowed || (this.authService.CanManageAllFrEr() && this.initialErData.state === SZ.VERIFIED);
     }
     return allowed;
   }
@@ -226,28 +226,39 @@ export class ErAddEditComponent implements OnInit {
         userId: this.authService.getLoggedUserId(),
         date: new Date().getTime()
       });
+      this.onSaveEr();
       this.expenseReportService.sendEr(this.initialErData.id, activity);
     }
     this.backToErList();
+  }
+
+  onVerifyEr() {
+    const user = this.authService.loggedUserInstance;
+    const activity = this.initialErData.activity || [];
+    if (user && this.initialErData.isSent) {
+      if (this.authService.CanVerifyEr(this.initialErData)) {
+        activity.push({
+          action: SZ.VERIFIED,
+          userId: this.authService.getLoggedUserId(),
+          date: new Date().getTime()
+        });
+        this.onSaveEr();
+        this.expenseReportService.verifyEr(this.initialErData.id, activity);
+      }
+    }
   }
 
   onApproveEr() {
     const user = this.authService.loggedUserInstance;
     const activity = this.initialErData.activity || [];
     if (user && this.initialErData.isSent) {
-      if (user.leadOf.indexOf(this.initialErData.projectId) !== -1) {
-        activity.push({
-          action: SZ.VERIFIED,
-          userId: this.authService.getLoggedUserId(),
-          date: new Date().getTime()
-        });
-        this.expenseReportService.verifyEr(this.initialErData.id, activity);
-      } else if (this.authService.CanManageAllFrEr()) {
+      if (this.authService.CanApproveEr(this.initialErData)) {
         activity.push({
           action: SZ.APPROVED,
           userId: this.authService.getLoggedUserId(),
           date: new Date().getTime()
         });
+        this.onSaveEr();
         this.expenseReportService.approveEr(this.initialErData.id, activity);
       }
     }
@@ -266,6 +277,7 @@ export class ErAddEditComponent implements OnInit {
               date: new Date().getTime(),
               reason: reason
             });
+            this.onSaveEr();
             this.expenseReportService.rejectEr(this.initialErData.id, activity);
           }
         }

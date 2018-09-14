@@ -1,6 +1,6 @@
 <h2 mat-dialog-title> Vista previa </h2>
 <mat-dialog-content>
-  <kendo-pdf-export #frPrintPreview paperSize="Letter" margin="0.5in">
+  <kendo-pdf-export #erPrintPreview paperSize="Letter" margin="0.5in">
     <div class="main-page">
       <div class="panel header">
         <span class="logo">
@@ -135,6 +135,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button color="primary" (click)="frPrintPreview.saveAs('itWorksKendo.pdf')">Exportar a PDF</button>
+  <button mat-raised-button color="primary" (click)="downloadEr()">Exportar a PDF</button>
   <button mat-button color="primary" mat-dialog-close> Cerrar </button>
 </mat-dialog-actions>

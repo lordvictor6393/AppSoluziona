@@ -138,6 +138,7 @@ export class ExpenseReportService {
         const me = this;
         me.updateEr(erId, {
             state: SZ.REJECTED,
+            isSent: false,
             activity: erActivity
         });
     }

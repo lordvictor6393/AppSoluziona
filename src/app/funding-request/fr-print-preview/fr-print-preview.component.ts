@@ -18,6 +18,7 @@ export class FrPrintPreviewComponent implements OnInit {
   client: Client;
   fr: FundingRequest;
   emptyRows: Array<any>;
+  @ViewChild('frPrintPreview') pdfContent;
 
   constructor(private dialog: MatDialogRef<FrPrintPreviewComponent>,
     @Inject(MAT_DIALOG_DATA) private data: { fr: FundingRequest, projects: Project[], clients: Client[], users: User[] }) { }
@@ -29,5 +30,10 @@ export class FrPrintPreviewComponent implements OnInit {
     this.approver = this.data.users.find(user => user.id === this.fr.approveUserId);
     this.client = this.data.clients.find(client => client.id === this.fr.clientId);
     this.emptyRows = Array(15 - this.fr.items.length);
+  }
+
+  downloadFr() {
+    const pdfName = this.fr.code + '_' + this.proj.code + '_' + this.fr.detail + '.pdf';
+    this.pdfContent.saveAs(pdfName);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../node_modules/@angular/material';
 import { Project } from '../../project/project.model';
 import { Client } from '../../client/client.model';
@@ -20,6 +20,7 @@ export class ErPrintPreviewComponent implements OnInit {
   fr: FundingRequest;
   er: ExpenseReport;
   emptyRows: Array<any>;
+  @ViewChild('erPrintPreview') pdfContent;
 
   constructor(private dialog: MatDialogRef<ErPrintPreviewComponent>,
     @Inject(MAT_DIALOG_DATA) private data: {
@@ -40,4 +41,8 @@ export class ErPrintPreviewComponent implements OnInit {
     this.emptyRows = Array(15 - this.er.items.length);
   }
 
+  downloadEr() {
+    const pdfName = this.er.code + '_' + this.proj.code + '_' + this.fr.detail + '.pdf';
+    this.pdfContent.saveAs(pdfName);
+  }
 }

@@ -141,6 +141,8 @@ export class FundingRequestService {
         const me = this;
         me.updateFr(frId, {
             state: SZ.REJECTED,
+            // Enables editing for rejected funding requests
+            // isSent: false,
             activity: frActivity
         });
     }

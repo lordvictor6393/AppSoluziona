@@ -120,12 +120,30 @@ export class AuthService {
     return this.checkAuthorization(allowed);
   }
 
-  CanApproveFr(fr: FundingRequest) {
+  CanVerifyFr(fr: FundingRequest) {
     if (this.loggedUserInstance && fr) {
       const userIsAdmin = this.CanManageAllFrEr();
       const userIsLead = this.loggedUserInstance.leadOf.indexOf(fr.projectId) !== -1;
 
-      return (userIsLead && fr.state === SZ.SENT) || (userIsAdmin && (fr.state === SZ.SENT || fr.state === SZ.VERIFIED));
+      return fr.state === SZ.SENT && (userIsAdmin || userIsLead);
+    }
+    return false;
+  }
+
+  CanApproveFr(fr: FundingRequest) {
+    if (this.loggedUserInstance && fr) {
+      const userIsAdmin = this.CanManageAllFrEr();
+      return (userIsAdmin && fr.state === SZ.VERIFIED);
+    }
+    return false;
+  }
+
+  CanVerifyEr(er: ExpenseReport) {
+    if (this.loggedUserInstance && er) {
+      const userIsAdmin = this.CanManageAllFrEr();
+      const userIsLead = this.loggedUserInstance.leadOf.indexOf(er.projectId) !== -1;
+
+      return er.state === SZ.SENT && (userIsAdmin || userIsLead);
     }
     return false;
   }
@@ -133,9 +151,7 @@ export class AuthService {
   CanApproveEr(er: ExpenseReport) {
     if (this.loggedUserInstance && er) {
       const userIsAdmin = this.CanManageAllFrEr();
-      const userIsLead = this.loggedUserInstance.leadOf.indexOf(er.projectId) !== -1;
-
-      return (userIsLead && er.state === SZ.SENT) || (userIsAdmin && (er.state === SZ.SENT || er.state === SZ.VERIFIED));
+      return (userIsAdmin && er.state === SZ.VERIFIED);
     }
     return false;
   }
