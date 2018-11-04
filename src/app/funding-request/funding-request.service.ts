@@ -5,6 +5,8 @@ import { Observable } from '../../../node_modules/rxjs';
 import { map } from '../../../node_modules/rxjs/operators';
 import { Injectable } from '../../../node_modules/@angular/core';
 import { AuthService } from '../auth/auth.service';
+// last change
+// import { ProjectService } from '../project/project.service';
 
 @Injectable()
 export class FundingRequestService {
@@ -15,6 +17,8 @@ export class FundingRequestService {
     private frCollectionRef: AngularFirestoreCollection<FundingRequest>;
 
     constructor(private authService: AuthService,
+        // last change
+        // private projService: ProjectService,
         private db: AngularFirestore) {
         const me = this;
         me.frCollectionRef = me.db.collection('fundingRequests', ref => ref.where('isDeleted', '==', false));
@@ -112,12 +116,16 @@ export class FundingRequestService {
     }
 
     sendFr(frId: string, frActivity) {
+    // last change
+    // sendFr(frId: string, frActivity, frProjectId) {
         const me = this;
         me.updateFr(frId, {
             isSent: true,
             state: SZ.SENT,
             activity: frActivity
         });
+        // last change
+        // me.projService.updateProject(frProjectId, )
     }
 
     verifyFr(frId: string, frActivity) {

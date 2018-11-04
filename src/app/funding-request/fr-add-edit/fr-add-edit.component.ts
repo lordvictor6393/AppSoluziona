@@ -227,6 +227,8 @@ export class FrAddEditComponent implements OnInit {
       });
       this.onSaveFr();
       this.fundingRequestService.sendFr(this.initialFrData.id, activity);
+      // last change
+      // this.fundingRequestService.sendFr(this.initialFrData.id, activity, this.initialFrData.projectId);
     }
     this.backToFrList();
   }

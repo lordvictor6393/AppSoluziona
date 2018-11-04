@@ -8,7 +8,6 @@ export const REJECTED = 'Rechazado';
 export const APPROVED = 'Aprobado';
 export const DEPOSITED = 'Depositado';
 export const ACCEPTED = 'Aceptado';
-export const COMPLETED = 'Finalizado';
 
 // User roles
 export const COMMON = 'common';

@@ -142,6 +142,8 @@ export class FrListComponent implements OnInit {
         date: new Date().getTime()
       });
       this.fundingRequestService.sendFr(fr.id, activity);
+      // last change
+      // this.fundingRequestService.sendFr(fr.id, activity, fr.projectId);
     }
   }
 
