@@ -55,6 +55,7 @@ import { ErPrintPreviewComponent } from './expense-report/er-print-preview/er-pr
 import { SettingsComponent } from './settings/settings.component';
 import { SettingsService } from './settings/settings.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardService } from './dashboard/dashboard.service';
 
 
 registerLocaleData(localeEs, 'es-BO');
@@ -113,6 +114,7 @@ registerLocaleData(localeEs, 'es-BO');
     SettingsService,
     FundingRequestService,
     ExpenseReportService,
+    DashboardService,
     { provide: LOCALE_ID, useValue: 'es-BO' }
   ],
   bootstrap: [AppComponent]
