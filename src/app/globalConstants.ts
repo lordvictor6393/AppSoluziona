@@ -13,3 +13,4 @@ export const ACCEPTED = 'Aceptado';
 export const COMMON = 'common';
 export const ACCOUNTANT = 'accountant';
 export const CHIEF = 'chief';
+export const SUPERADMIN = 'superAdmin';

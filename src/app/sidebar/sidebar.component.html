@@ -1,4 +1,10 @@
 <mat-nav-list class="sz-sidebar">
+    <a mat-list-item
+    href="#"
+    routerLinkActive="active"
+    routerLink="/dashboard"
+    *ngIf="authService.CanAccessReports()">Dashboard</a>
+  <mat-divider></mat-divider>
   <a mat-list-item
     href="#"
     routerLinkActive="active"

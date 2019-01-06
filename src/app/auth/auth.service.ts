@@ -71,7 +71,8 @@ export class AuthService {
     const allowed = [
       SZ.COMMON,
       SZ.ACCOUNTANT,
-      SZ.CHIEF
+      SZ.CHIEF,
+      SZ.SUPERADMIN
     ];
     return this.checkAuthorization(allowed);
   }
@@ -79,7 +80,8 @@ export class AuthService {
   CanManageAllFrEr() {
     const allowed = [
       SZ.ACCOUNTANT,
-      SZ.CHIEF
+      SZ.CHIEF,
+      SZ.SUPERADMIN
     ];
     return this.checkAuthorization(allowed);
   }
@@ -87,35 +89,41 @@ export class AuthService {
   CanReadProjects() {
     const allowed = [
       SZ.ACCOUNTANT,
-      SZ.CHIEF
+      SZ.CHIEF,
+      SZ.SUPERADMIN
     ];
     return this.checkAuthorization(allowed);
   }
 
   CanManageProjects() {
-    const allowed = [SZ.CHIEF];
+    const allowed = [
+      SZ.CHIEF,
+      SZ.SUPERADMIN];
     return this.checkAuthorization(allowed);
   }
 
   CanManageClients() {
-    const allowed = [SZ.CHIEF];
+    const allowed = [
+      SZ.CHIEF,
+      SZ.SUPERADMIN];
     return this.checkAuthorization(allowed);
   }
 
   CanManageUsers() {
-    const allowed = [SZ.CHIEF];
+    const allowed = [SZ.SUPERADMIN];
     return this.checkAuthorization(allowed);
   }
 
   CanManageSettings() {
-    const allowed = [SZ.CHIEF];
+    const allowed = [SZ.SUPERADMIN];
     return this.checkAuthorization(allowed);
   }
 
   CanAccessReports() {
     const allowed = [
       SZ.ACCOUNTANT,
-      SZ.CHIEF
+      SZ.CHIEF,
+      SZ.SUPERADMIN
     ];
     return this.checkAuthorization(allowed);
   }

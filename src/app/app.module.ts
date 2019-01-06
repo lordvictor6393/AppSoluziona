@@ -54,6 +54,7 @@ import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { ErPrintPreviewComponent } from './expense-report/er-print-preview/er-print-preview.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SettingsService } from './settings/settings.service';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 registerLocaleData(localeEs, 'es-BO');
@@ -81,7 +82,8 @@ registerLocaleData(localeEs, 'es-BO');
     FrSelectorComponent,
     FrPrintPreviewComponent,
     ErPrintPreviewComponent,
-    SettingsComponent
+    SettingsComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
