@@ -216,6 +216,9 @@ export class PAddEditComponent implements OnInit {
         this.userService.unregisterProject(this.initialProjectData.leadId, this.selectedProjectId, true);
       }
       this.projectService.updateProject(this.selectedProjectId, projData);
+      projData.membersIds.forEach(memberId => {
+        this.userService.registerProject(memberId, this.initialProjectData.id);
+      });
       this.userIdsToBeUnregistered.forEach(
         userId => this.userService.unregisterProject(userId, this.selectedProjectId)
       );

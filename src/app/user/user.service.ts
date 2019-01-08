@@ -131,6 +131,15 @@ export class UsersService {
             let userProjectsAsLead: string[];
             isLead = isLead || false;
             if (userRef) {
+                if (!this.localUserList.length) {
+                    this.userCollectionRef.snapshotChanges().subscribe(
+                        userList => {
+                            this.localUserList = userList.map(User.getUserFromSnapshot);
+                            this.registerProject(userId, projId, isLead);
+                        }
+                    );
+                    return;
+                }
                 userInstance = this.localUserList.find(user => user.id === userId);
                 if (userInstance) {
                     userProjects = userInstance.projectIds || [];
