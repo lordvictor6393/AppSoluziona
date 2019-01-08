@@ -38,47 +38,53 @@
     [dataSource]="frErSummary">
     <ng-container matColumnDef="userName">
       <th mat-header-cell *matHeaderCellDef> Usuario </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.userName}} </td>
+      <td mat-cell *matCellDef="let userInfo"> {{userInfo.userName || 0}} </td>
     </ng-container>
     <ng-container matColumnDef="frCount">
       <th mat-header-cell *matHeaderCellDef> Solicitudes </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.frCount}} </td>
+      <td mat-cell *matCellDef="let userInfo"> {{userInfo.frCount || 0}} </td>
     </ng-container>
     <ng-container matColumnDef="totalRequested">
       <th mat-header-cell *matHeaderCellDef> Monto total solicitado </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.totalRequested}} </td>
+      <td mat-cell *matCellDef="let userInfo"> 
+        {{(userInfo.totalRequested || 0) | currency:'BOB':'symbol':'1.2-2':'es-BO'}} 
+      </td>
     </ng-container>
     <ng-container matColumnDef="frWithoutErCount">
       <th mat-header-cell *matHeaderCellDef> Solicitudes sin descargar </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.frWithoutErCount}} </td>
+      <td mat-cell *matCellDef="let userInfo"> {{userInfo.frWithoutErCount || 0}} </td>
     </ng-container>
     <ng-container matColumnDef="totalWithoutReport">
       <th mat-header-cell *matHeaderCellDef> Monto total sin descargar </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.totalWithoutReport}} </td>
+      <td mat-cell *matCellDef="let userInfo"> 
+        {{(userInfo.totalWithoutReport || 0) | currency:'BOB':'symbol':'1.2-2':'es-BO'}} 
+      </td>
     </ng-container>
     <ng-container matColumnDef="frRejectedCount">
       <th mat-header-cell *matHeaderCellDef> Solicitudes rechazadas </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.frRejectedCount}} </td>
+      <td mat-cell *matCellDef="let userInfo"> {{userInfo.frRejectedCount || 0}} </td>
     </ng-container>
     <ng-container matColumnDef="frApprovedCount">
       <th mat-header-cell *matHeaderCellDef> Solicitudes aprobadas </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.frApprovedCount}} </td>
+      <td mat-cell *matCellDef="let userInfo"> {{userInfo.frApprovedCount || 0}} </td>
     </ng-container>
     <ng-container matColumnDef="erCount">
       <th mat-header-cell *matHeaderCellDef> Descargos </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.erCount}} </td>
+      <td mat-cell *matCellDef="let userInfo"> {{userInfo.erCount || 0}} </td>
     </ng-container>
     <ng-container matColumnDef="totalReported">
       <th mat-header-cell *matHeaderCellDef> Monto total descargado </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.totalReported}} </td>
+      <td mat-cell *matCellDef="let userInfo"> 
+        {{(userInfo.totalReported || 0) | currency:'BOB':'symbol':'1.2-2':'es-BO'}} 
+      </td>
     </ng-container>
     <ng-container matColumnDef="erRejectedCount">
-      <th mat-header-cell *matHeaderCellDef> Descargos rechazadas </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.erRejectedCount}} </td>
+      <th mat-header-cell *matHeaderCellDef> Descargos rechazados </th>
+      <td mat-cell *matCellDef="let userInfo"> {{userInfo.erRejectedCount || 0}} </td>
     </ng-container>
     <ng-container matColumnDef="erApprovedCount">
-      <th mat-header-cell *matHeaderCellDef> Descargos aprobadas </th>
-      <td mat-cell *matCellDef="let userInfo"> {{userInfo.erApprovedCount}} </td>
+      <th mat-header-cell *matHeaderCellDef> Descargos aprobados </th>
+      <td mat-cell *matCellDef="let userInfo"> {{userInfo.erApprovedCount || 0}} </td>
     </ng-container>
     <tr mat-header-row
       *matHeaderRowDef="frErSummaryColumns"></tr>

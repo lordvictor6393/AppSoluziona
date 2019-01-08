@@ -13,16 +13,11 @@ export class DashboardComponent implements OnInit {
   frErSummary = [];
   frErSummaryColumns = [
     'userName',
-    'frCount',
-    'totalRequested',
-    'frWithoutErCount',
-    'totalWithoutReport',
-    'frRejectedCount',
     'frApprovedCount',
-    'erCount',
+    'erApprovedCount',
     'totalRequested',
-    'erRejectedCount',
-    'erApprovedCount'
+    'totalReported',
+    'totalWithoutReport'
   ];
 
   constructor(private dashboardService: DashboardService) { }
@@ -38,9 +33,9 @@ export class DashboardComponent implements OnInit {
 
   getFrErSummary() {
     const data = this.reportCriteriaForm.value;
-    this.frErSummary = this.dashboardService.GetFrErSummary(
+    this.dashboardService.GetFrErSummary(
       data.startDate,
       data.endDate
-    );
+    ).subscribe(dataSource => { this.frErSummary = dataSource; });
   }
 }

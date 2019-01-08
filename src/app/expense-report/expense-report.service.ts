@@ -23,6 +23,13 @@ export class ExpenseReportService {
         );
     }
 
+    getErData(erId: string, attr: string) {
+        const er = this.localErList.find(rep => rep.id === erId);
+        if (er) {
+            return er[attr];
+        }
+    }
+
     getListRestrictions() {
         const me = this;
         const user = this.authService.loggedUserInstance;

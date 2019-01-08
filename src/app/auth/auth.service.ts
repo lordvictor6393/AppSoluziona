@@ -121,8 +121,6 @@ export class AuthService {
 
   CanAccessReports() {
     const allowed = [
-      SZ.ACCOUNTANT,
-      SZ.CHIEF,
       SZ.SUPERADMIN
     ];
     return this.checkAuthorization(allowed);

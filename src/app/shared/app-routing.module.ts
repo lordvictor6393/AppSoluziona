@@ -22,6 +22,7 @@ import { CAddEditComponent } from '../client/c-add-edit/c-add-edit.component';
 import { AuthGuard } from '../auth/auth.guard';
 import { SettingsComponent } from '../settings/settings.component';
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { AdminGuard } from '../guards/admin.guard';
 
 
 const appRoutes: Routes = [{
@@ -33,6 +34,7 @@ const appRoutes: Routes = [{
     canActivate: [AuthGuard],
     children: [{
         path: 'dashboard',
+        canActivate: [AdminGuard],
         component: DashboardComponent
     }, {
         path: 'fundingRequests',
@@ -63,12 +65,15 @@ const appRoutes: Routes = [{
         component: PAddEditComponent
     }, {
         path: 'users',
+        canActivate: [AdminGuard],
         component: UListComponent
     }, {
         path: 'users/create',
+        canActivate: [AdminGuard],
         component: UAddEditComponent
     }, {
         path: 'users/:id',
+        canActivate: [AdminGuard],
         component: UAddEditComponent
     }, {
         path: 'clients',
@@ -82,6 +87,7 @@ const appRoutes: Routes = [{
         component: CAddEditComponent
     }, {
         path: 'settings',
+        canActivate: [AdminGuard],
         component: SettingsComponent
     }, {
         path: '**',
